@@ -1,0 +1,1422 @@
+basePath: /api/v1
+definitions:
+  ads.adData:
+    properties:
+      ad_id:
+        type: integer
+      company_id:
+        type: integer
+      created_at:
+        type: integer
+      created_id:
+        type: integer
+      industry:
+        type: string
+      price:
+        type: integer
+      responsible_id:
+        type: integer
+      text:
+        type: string
+      title:
+        type: string
+    type: object
+  ads.adListResponse:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/ads.adData'
+        type: array
+      error:
+        type: string
+    type: object
+  ads.adResponse:
+    properties:
+      data:
+        $ref: '#/definitions/ads.adData'
+      error:
+        type: string
+    type: object
+  ads.addAdRequest:
+    properties:
+      industry:
+        type: string
+      price:
+        type: integer
+      text:
+        type: string
+      title:
+        type: string
+    type: object
+  ads.updateAdRequest:
+    properties:
+      price:
+        type: integer
+      text:
+        type: string
+    type: object
+  companies.companyData:
+    properties:
+      created_at:
+        type: integer
+      industry:
+        type: string
+      owner_id:
+        type: integer
+      title:
+        type: string
+    type: object
+  companies.companyResponse:
+    properties:
+      data:
+        $ref: '#/definitions/companies.companyData'
+      error:
+        type: string
+    type: object
+  companies.industryResponse:
+    properties:
+      data:
+        additionalProperties:
+          type: string
+        type: object
+      error:
+        type: string
+    type: object
+  companies.mainPageData:
+    properties:
+      stats:
+        $ref: '#/definitions/companies.mainPageStatsData'
+      title:
+        type: string
+    type: object
+  companies.mainPageResponse:
+    properties:
+      data:
+        $ref: '#/definitions/companies.mainPageData'
+      error:
+        type: string
+    type: object
+  companies.mainPageStatsData:
+    properties:
+      active_ads_aount:
+        type: integer
+      active_leads_amount:
+        type: integer
+      active_leads_price:
+        type: integer
+      closed_leads_price:
+        type: integer
+      company_absolute_rating:
+        type: number
+      company_relative_rating:
+        type: number
+      total_leads_amount:
+        type: integer
+    type: object
+  companies.updateCompanyRequest:
+    properties:
+      industry:
+        type: integer
+      owner_id:
+        type: integer
+      title:
+        type: string
+    type: object
+  contacts.addContactRequest:
+    properties:
+      employee_id:
+        description: EmployeeId это id сотрудника, которого добавляют в контакты
+        type: integer
+    type: object
+  contacts.contactData:
+    properties:
+      company_name:
+        type: string
+      contact_id:
+        type: integer
+      creation_date:
+        type: integer
+      employee_id:
+        type: integer
+      first_name:
+        type: string
+      notes:
+        type: string
+      owner_id:
+        type: integer
+      second_name:
+        type: string
+    type: object
+  contacts.contactResponse:
+    properties:
+      data:
+        $ref: '#/definitions/contacts.contactData'
+      error:
+        type: string
+    type: object
+  contacts.updateContactRequest:
+    properties:
+      notes:
+        type: string
+    type: object
+  employees.addEmployeeRequest:
+    properties:
+      company_id:
+        type: integer
+      department:
+        type: string
+      first_name:
+        type: string
+      job_title:
+        type: string
+      login:
+        type: string
+      password:
+        type: string
+      second_name:
+        type: string
+    type: object
+  employees.employeeData:
+    properties:
+      company_id:
+        type: integer
+      creation_date:
+        type: integer
+      department:
+        type: string
+      employee_id:
+        type: integer
+      first_name:
+        type: string
+      job_title:
+        type: string
+      second_name:
+        type: string
+    type: object
+  employees.employeeListResponse:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/employees.employeeData'
+        type: array
+      error:
+        type: string
+    type: object
+  employees.employeeResponse:
+    properties:
+      data:
+        $ref: '#/definitions/employees.employeeData'
+      error:
+        type: string
+    type: object
+  employees.updateEmployeeRequest:
+    properties:
+      department:
+        type: string
+      employee_id:
+        type: integer
+      job_title:
+        type: string
+    type: object
+  leads.addLeadRequest:
+    properties:
+      consumer_id:
+        type: integer
+      price:
+        type: integer
+      producer_id:
+        type: integer
+      responsible_id:
+        type: integer
+      text:
+        type: string
+      title:
+        type: string
+    type: object
+  leads.leadData:
+    properties:
+      consumer_id:
+        type: integer
+      created_at:
+        type: integer
+      lead_id:
+        type: integer
+      price:
+        type: integer
+      producer_id:
+        type: integer
+      responsible_id:
+        type: integer
+      status:
+        type: integer
+      text:
+        type: string
+      title:
+        type: string
+    type: object
+  leads.leadListResponse:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/leads.leadData'
+        type: array
+      error:
+        type: string
+    type: object
+  leads.leadResponse:
+    properties:
+      data:
+        $ref: '#/definitions/leads.leadData'
+      error:
+        type: string
+    type: object
+  leads.stageResponse:
+    properties:
+      data:
+        additionalProperties:
+          type: string
+        type: object
+      error:
+        type: string
+    type: object
+  leads.updateLeadRequest:
+    properties:
+      price:
+        type: integer
+      responsible_id:
+        type: integer
+      status:
+        type: integer
+      text:
+        type: string
+      title:
+        type: string
+    type: object
+  tasks.addTaskRequest:
+    properties:
+      deadline:
+        type: integer
+      responsible_id:
+        type: integer
+      text:
+        type: string
+      title:
+        type: string
+    type: object
+  tasks.stageResponse:
+    properties:
+      data:
+        additionalProperties:
+          type: string
+        type: object
+      error:
+        type: string
+    type: object
+  tasks.taskData:
+    properties:
+      company_id:
+        type: integer
+      created_at:
+        type: integer
+      created_id:
+        type: integer
+      deadline:
+        type: integer
+      responsible_id:
+        type: integer
+      stage:
+        type: integer
+      task_id:
+        type: integer
+      text:
+        type: string
+      title:
+        type: string
+    type: object
+  tasks.taskListResponse:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/tasks.taskData'
+        type: array
+      error:
+        type: string
+    type: object
+  tasks.taskResponse:
+    properties:
+      data:
+        $ref: '#/definitions/tasks.taskData'
+      error:
+        type: string
+    type: object
+  tasks.updateTaskRequest:
+    properties:
+      deadline:
+        type: integer
+      responsible_id:
+        type: integer
+      stage:
+        type: integer
+      text:
+        type: string
+    type: object
+host: localhost:8080
+info:
+  contact: {}
+  description: Swagger документация к API
+  title: BRM API
+  version: "1.0"
+paths:
+  /ads:
+    get:
+      description: Получает список объявлений с использованием фильтрации и пагинации
+      parameters:
+      - description: Limit
+        in: query
+        name: limit
+        required: true
+        type: integer
+      - description: Offset
+        in: query
+        name: offset
+        required: true
+        type: integer
+      - description: Поиск по названию/тексту
+        in: query
+        name: name
+        required: true
+        type: string
+      - description: Поиск по отрасли
+        in: query
+        name: industry
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Успешное получение объявлений
+          schema:
+            $ref: '#/definitions/ads.adListResponse'
+        "400":
+          description: Неверный формат входных данных
+          schema:
+            $ref: '#/definitions/ads.adListResponse'
+        "500":
+          description: Проблемы на стороне сервера
+          schema:
+            $ref: '#/definitions/ads.adListResponse'
+      summary: Получение списка объявлений
+      tags:
+      - ads
+    post:
+      consumes:
+      - application/json
+      description: Добавляет новое объявление
+      parameters:
+      - description: Новое объявление в JSON
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/ads.addAdRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Успешное добавление объявления
+          schema:
+            $ref: '#/definitions/ads.adResponse'
+        "400":
+          description: Неверный формат входных данных
+          schema:
+            $ref: '#/definitions/ads.adResponse'
+        "500":
+          description: Проблемы на стороне сервера
+          schema:
+            $ref: '#/definitions/ads.adResponse'
+      summary: Добавление нового объявления
+      tags:
+      - ads
+  /ads/{id}:
+    delete:
+      description: Безвозвратно удаляет объявление
+      parameters:
+      - description: id объявления
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Успешное удаление объявления
+          schema:
+            $ref: '#/definitions/ads.adResponse'
+        "400":
+          description: Неверный формат входных данных
+          schema:
+            $ref: '#/definitions/ads.adResponse'
+        "404":
+          description: Объявление не найдено
+          schema:
+            $ref: '#/definitions/ads.adResponse'
+        "500":
+          description: Проблемы на стороне сервера
+          schema:
+            $ref: '#/definitions/ads.adResponse'
+      summary: Удаление объявления
+      tags:
+      - ads
+    get:
+      description: Получает объявление по id
+      parameters:
+      - description: id объявления
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Успешное получение объявления
+          schema:
+            $ref: '#/definitions/ads.adResponse'
+        "400":
+          description: Неверный формат входных данных
+          schema:
+            $ref: '#/definitions/ads.adResponse'
+        "404":
+          description: Объявление не найдено
+          schema:
+            $ref: '#/definitions/ads.adResponse'
+        "500":
+          description: Проблемы на стороне сервера
+          schema:
+            $ref: '#/definitions/ads.adResponse'
+      summary: Получение объявления
+      tags:
+      - ads
+    put:
+      consumes:
+      - application/json
+      description: Изменяет одно или несколько полей объявления
+      parameters:
+      - description: id объявления
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Новые поля
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/ads.updateAdRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Успешное обновление данных
+          schema:
+            $ref: '#/definitions/ads.adResponse'
+        "400":
+          description: Неверный формат входных данных
+          schema:
+            $ref: '#/definitions/ads.adResponse'
+        "404":
+          description: Объявление не найдено
+          schema:
+            $ref: '#/definitions/ads.adResponse'
+        "500":
+          description: Проблемы на стороне сервера
+          schema:
+            $ref: '#/definitions/ads.adResponse'
+      summary: Редактирование объявления
+      tags:
+      - ads
+  /companies/{id}:
+    delete:
+      description: Безвозвратно удаляет компанию и всё, что с этой компанией связано
+      parameters:
+      - description: id компании
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Успешное удаление компании
+          schema:
+            $ref: '#/definitions/companies.companyResponse'
+        "400":
+          description: Неверный формат входных данных
+          schema:
+            $ref: '#/definitions/companies.companyResponse'
+        "404":
+          description: Компания не найдена
+          schema:
+            $ref: '#/definitions/companies.companyResponse'
+        "500":
+          description: Проблемы на стороне сервера
+          schema:
+            $ref: '#/definitions/companies.companyResponse'
+      summary: Удаление компании
+      tags:
+      - core/companies
+    get:
+      description: Возвращает поля компании для страницы редактирования
+      parameters:
+      - description: id компании
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Успешное получение данных
+          schema:
+            $ref: '#/definitions/companies.companyResponse'
+        "400":
+          description: Неверный формат входных данных
+          schema:
+            $ref: '#/definitions/companies.companyResponse'
+        "404":
+          description: Компания не найдена
+          schema:
+            $ref: '#/definitions/companies.companyResponse'
+        "500":
+          description: Проблемы на стороне сервера
+          schema:
+            $ref: '#/definitions/companies.companyResponse'
+      summary: Получение информации о компании
+      tags:
+      - core/companies
+    put:
+      description: Изменяет одно или несколько полей компании
+      parameters:
+      - description: id компании
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Новые поля
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/companies.updateCompanyRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Успешное обновление данных
+          schema:
+            $ref: '#/definitions/companies.companyResponse'
+        "400":
+          description: Неверный формат входных данных
+          schema:
+            $ref: '#/definitions/companies.companyResponse'
+        "404":
+          description: Компания не найдена
+          schema:
+            $ref: '#/definitions/companies.companyResponse'
+        "500":
+          description: Проблемы на стороне сервера
+          schema:
+            $ref: '#/definitions/companies.companyResponse'
+      summary: Редактирование полей компании
+      tags:
+      - core/companies
+  /companies/industries:
+    get:
+      description: Возвращает словарь из отраслей и их id
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Успешное получение данных
+          schema:
+            $ref: '#/definitions/companies.industryResponse'
+        "400":
+          description: Неверный формат входных данных
+          schema:
+            $ref: '#/definitions/companies.industryResponse'
+        "500":
+          description: Проблемы на стороне сервера
+          schema:
+            $ref: '#/definitions/companies.industryResponse'
+      summary: Получение отраслей
+      tags:
+      - core/companies
+  /companies/mainpage/{id}:
+    get:
+      description: Возвращает название и статистику компании для главной страницы
+      parameters:
+      - description: id компании
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Успешное получение данных
+          schema:
+            $ref: '#/definitions/companies.mainPageResponse'
+        "400":
+          description: Неверный формат входных данных
+          schema:
+            $ref: '#/definitions/companies.mainPageResponse'
+        "404":
+          description: Компания не найдена
+          schema:
+            $ref: '#/definitions/companies.mainPageResponse'
+        "500":
+          description: Проблемы на стороне сервера
+          schema:
+            $ref: '#/definitions/companies.mainPageResponse'
+      summary: Получение информации о компании
+      tags:
+      - core/companies
+  /contacts:
+    get:
+      description: Получает список контактов сотрудника с использованием фильтрации
+        и пагинации
+      parameters:
+      - description: Limit
+        in: query
+        name: limit
+        required: true
+        type: integer
+      - description: Offset
+        in: query
+        name: offset
+        required: true
+        type: integer
+      - description: Поиск по имени/фамилии
+        in: query
+        name: name
+        required: true
+        type: string
+      - description: Поиск по компании
+        in: query
+        name: company
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Успешное получение контактов
+          schema:
+            $ref: '#/definitions/contacts.contactResponse'
+        "400":
+          description: Неверный формат входных данных
+          schema:
+            $ref: '#/definitions/contacts.contactResponse'
+        "500":
+          description: Проблемы на стороне сервера
+          schema:
+            $ref: '#/definitions/contacts.contactResponse'
+      summary: Получение списка контактов
+      tags:
+      - core/contacts
+    post:
+      consumes:
+      - application/json
+      description: Добавляет новый контакт в список контактов сотрудника
+      parameters:
+      - description: id сотрудника, которого добавляют в контакты
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/contacts.addContactRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Успешное добавление контакта
+          schema:
+            $ref: '#/definitions/contacts.contactResponse'
+        "400":
+          description: Неверный формат входных данных
+          schema:
+            $ref: '#/definitions/contacts.contactResponse'
+        "404":
+          description: Добавляемый сотрудник не найден
+          schema:
+            $ref: '#/definitions/contacts.contactResponse'
+        "500":
+          description: Проблемы на стороне сервера
+          schema:
+            $ref: '#/definitions/contacts.contactResponse'
+      summary: Добавление нового контакта
+      tags:
+      - core/contacts
+  /contacts/{id}:
+    delete:
+      description: Безвозвратно удаляет контакт и все его поля
+      parameters:
+      - description: id контакта
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Успешное удаление контакта
+          schema:
+            $ref: '#/definitions/contacts.contactResponse'
+        "400":
+          description: Неверный формат входных данных
+          schema:
+            $ref: '#/definitions/contacts.contactResponse'
+        "404":
+          description: Контакт не найден
+          schema:
+            $ref: '#/definitions/contacts.contactResponse'
+        "500":
+          description: Проблемы на стороне сервера
+          schema:
+            $ref: '#/definitions/contacts.contactResponse'
+      summary: Удаление контакта
+      tags:
+      - core/contacts
+    get:
+      description: Получает контакт по id
+      parameters:
+      - description: id контакта
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Успешное получение контакта
+          schema:
+            $ref: '#/definitions/contacts.contactResponse'
+        "400":
+          description: Неверный формат входных данных
+          schema:
+            $ref: '#/definitions/contacts.contactResponse'
+        "404":
+          description: Контакт не найден
+          schema:
+            $ref: '#/definitions/contacts.contactResponse'
+        "500":
+          description: Проблемы на стороне сервера
+          schema:
+            $ref: '#/definitions/contacts.contactResponse'
+      summary: Получение контакта
+      tags:
+      - core/contacts
+    put:
+      consumes:
+      - application/json
+      description: Изменяет одно или несколько полей контакта
+      parameters:
+      - description: id контакта
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Новые поля
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/contacts.updateContactRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Успешное обновление данных
+          schema:
+            $ref: '#/definitions/contacts.contactResponse'
+        "400":
+          description: Неверный формат входных данных
+          schema:
+            $ref: '#/definitions/contacts.contactResponse'
+        "404":
+          description: Контакт не найден
+          schema:
+            $ref: '#/definitions/contacts.contactResponse'
+        "500":
+          description: Проблемы на стороне сервера
+          schema:
+            $ref: '#/definitions/contacts.contactResponse'
+      summary: Редактирование контакта
+      tags:
+      - core/contacts
+  /employees:
+    get:
+      description: Получает список сотрудников компании с использованием фильтрации
+        и пагинации
+      parameters:
+      - description: Limit
+        in: query
+        name: limit
+        required: true
+        type: integer
+      - description: Offset
+        in: query
+        name: offset
+        required: true
+        type: integer
+      - description: Поиск по имени/фамилии
+        in: query
+        name: name
+        required: true
+        type: string
+      - description: Поиск по должности
+        in: query
+        name: jobtitle
+        required: true
+        type: string
+      - description: Поиск по названию отдела
+        in: query
+        name: department
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Успешное получение сотрудников
+          schema:
+            $ref: '#/definitions/employees.employeeListResponse'
+        "400":
+          description: Неверный формат входных данных
+          schema:
+            $ref: '#/definitions/employees.employeeListResponse'
+        "500":
+          description: Проблемы на стороне сервера
+          schema:
+            $ref: '#/definitions/employees.employeeListResponse'
+      summary: Получение списка сотрудников
+      tags:
+      - core/employees
+    post:
+      consumes:
+      - application/json
+      description: Добавляет нового сотрудника в компанию
+      parameters:
+      - description: id сотрудника, которого добавляют в контакты
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/employees.addEmployeeRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Успешное добавление сотрудника
+          schema:
+            $ref: '#/definitions/employees.employeeResponse'
+        "400":
+          description: Неверный формат входных данных
+          schema:
+            $ref: '#/definitions/employees.employeeResponse'
+        "500":
+          description: Проблемы на стороне сервера
+          schema:
+            $ref: '#/definitions/employees.employeeResponse'
+      summary: Добавление нового сотрудника
+      tags:
+      - core/employees
+  /employees/{id}:
+    delete:
+      description: Безвозвратно удаляет сотрудника и все его поля
+      parameters:
+      - description: id сотрудника
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Успешное удаление контакта
+          schema:
+            $ref: '#/definitions/employees.employeeResponse'
+        "400":
+          description: Неверный формат входных данных
+          schema:
+            $ref: '#/definitions/employees.employeeResponse'
+        "404":
+          description: Контакт не найден
+          schema:
+            $ref: '#/definitions/employees.employeeResponse'
+        "500":
+          description: Проблемы на стороне сервера
+          schema:
+            $ref: '#/definitions/employees.employeeResponse'
+      summary: Удаление сотрудника
+      tags:
+      - core/employees
+    get:
+      description: Получает сотрудника по id
+      parameters:
+      - description: id сотрудника
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Успешное получение сотрудника
+          schema:
+            $ref: '#/definitions/employees.employeeResponse'
+        "400":
+          description: Неверный формат входных данных
+          schema:
+            $ref: '#/definitions/employees.employeeResponse'
+        "404":
+          description: Сотрудник не найден
+          schema:
+            $ref: '#/definitions/employees.employeeResponse'
+        "500":
+          description: Проблемы на стороне сервера
+          schema:
+            $ref: '#/definitions/employees.employeeResponse'
+      summary: Получение сотрудника
+      tags:
+      - core/employees
+    put:
+      consumes:
+      - application/json
+      description: Изменяет одно или несколько полей сотрудника
+      parameters:
+      - description: id сотрудника
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Новые поля
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/employees.updateEmployeeRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Успешное обновление данных
+          schema:
+            $ref: '#/definitions/employees.employeeResponse'
+        "400":
+          description: Неверный формат входных данных
+          schema:
+            $ref: '#/definitions/employees.employeeResponse'
+        "404":
+          description: Контакт не найден
+          schema:
+            $ref: '#/definitions/employees.employeeResponse'
+        "500":
+          description: Проблемы на стороне сервера
+          schema:
+            $ref: '#/definitions/employees.employeeResponse'
+      summary: Редактирование сотрудника
+      tags:
+      - core/employees
+  /leads:
+    get:
+      description: Получает список сделок с использованием фильтрации и пагинации
+      parameters:
+      - description: Limit
+        in: query
+        name: limit
+        required: true
+        type: integer
+      - description: Offset
+        in: query
+        name: offset
+        required: true
+        type: integer
+      - description: Поиск по названию/тексту
+        in: query
+        name: name
+        required: true
+        type: string
+      - description: Поиск по этапу
+        in: query
+        name: stage
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Успешное получение сделок
+          schema:
+            $ref: '#/definitions/leads.leadListResponse'
+        "400":
+          description: Неверный формат входных данных
+          schema:
+            $ref: '#/definitions/leads.leadListResponse'
+        "500":
+          description: Проблемы на стороне сервера
+          schema:
+            $ref: '#/definitions/leads.leadListResponse'
+      summary: Получение списка сделок
+      tags:
+      - leads
+    post:
+      consumes:
+      - application/json
+      description: Добавляет новую сделку
+      parameters:
+      - description: Новая сделка в JSON
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/leads.addLeadRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Успешное добавление задачи
+          schema:
+            $ref: '#/definitions/leads.leadResponse'
+        "400":
+          description: Неверный формат входных данных
+          schema:
+            $ref: '#/definitions/leads.leadResponse'
+        "500":
+          description: Проблемы на стороне сервера
+          schema:
+            $ref: '#/definitions/leads.leadResponse'
+      summary: Добавление новой сделки
+      tags:
+      - leads
+  /leads/{id}:
+    delete:
+      description: Безвозвратно удаляет сделку
+      parameters:
+      - description: id сделки
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Успешное удаление сделки
+          schema:
+            $ref: '#/definitions/leads.leadResponse'
+        "400":
+          description: Неверный формат входных данных
+          schema:
+            $ref: '#/definitions/leads.leadResponse'
+        "404":
+          description: Сделка не найдена
+          schema:
+            $ref: '#/definitions/leads.leadResponse'
+        "500":
+          description: Проблемы на стороне сервера
+          schema:
+            $ref: '#/definitions/leads.leadResponse'
+      summary: Удаление сделки
+      tags:
+      - leads
+    get:
+      description: Получает сделку по id
+      parameters:
+      - description: id сделки
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Успешное получение сделки
+          schema:
+            $ref: '#/definitions/leads.leadResponse'
+        "400":
+          description: Неверный формат входных данных
+          schema:
+            $ref: '#/definitions/leads.leadResponse'
+        "404":
+          description: Задача не найдена
+          schema:
+            $ref: '#/definitions/leads.leadResponse'
+        "500":
+          description: Проблемы на стороне сервера
+          schema:
+            $ref: '#/definitions/leads.leadResponse'
+      summary: Получение сделки
+      tags:
+      - leads
+    put:
+      consumes:
+      - application/json
+      description: Изменяет одно или несколько полей сделки
+      parameters:
+      - description: id сделки
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Новые поля
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/leads.updateLeadRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Успешное обновление данных
+          schema:
+            $ref: '#/definitions/leads.leadResponse'
+        "400":
+          description: Неверный формат входных данных
+          schema:
+            $ref: '#/definitions/leads.leadResponse'
+        "404":
+          description: Сделка не найдена
+          schema:
+            $ref: '#/definitions/leads.leadResponse'
+        "500":
+          description: Проблемы на стороне сервера
+          schema:
+            $ref: '#/definitions/leads.leadResponse'
+      summary: Редактирование сделки
+      tags:
+      - leads
+  /leads/stages:
+    get:
+      description: Возвращает словарь из этапов и их id
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Успешное получение данных
+          schema:
+            $ref: '#/definitions/leads.stageResponse'
+        "400":
+          description: Неверный формат входных данных
+          schema:
+            $ref: '#/definitions/leads.stageResponse'
+        "500":
+          description: Проблемы на стороне сервера
+          schema:
+            $ref: '#/definitions/leads.stageResponse'
+      summary: Получение этапов сделки
+      tags:
+      - leads
+  /tasks:
+    get:
+      description: Получает список задач с использованием фильтрации и пагинации
+      parameters:
+      - description: Limit
+        in: query
+        name: limit
+        required: true
+        type: integer
+      - description: Offset
+        in: query
+        name: offset
+        required: true
+        type: integer
+      - description: Поиск по названию/тексту
+        in: query
+        name: name
+        required: true
+        type: string
+      - description: Поиск по этапу
+        in: query
+        name: stage
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Успешное получение задач
+          schema:
+            $ref: '#/definitions/tasks.taskListResponse'
+        "400":
+          description: Неверный формат входных данных
+          schema:
+            $ref: '#/definitions/tasks.taskListResponse'
+        "500":
+          description: Проблемы на стороне сервера
+          schema:
+            $ref: '#/definitions/tasks.taskListResponse'
+      summary: Получение списка задач
+      tags:
+      - tasks
+    post:
+      consumes:
+      - application/json
+      description: Добавляет новую задачу
+      parameters:
+      - description: Новая задача в JSON
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/tasks.addTaskRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Успешное добавление задачи
+          schema:
+            $ref: '#/definitions/tasks.taskResponse'
+        "400":
+          description: Неверный формат входных данных
+          schema:
+            $ref: '#/definitions/tasks.taskResponse'
+        "500":
+          description: Проблемы на стороне сервера
+          schema:
+            $ref: '#/definitions/tasks.taskResponse'
+      summary: Добавление новой задачи
+      tags:
+      - tasks
+  /tasks/{id}:
+    delete:
+      description: Безвозвратно удаляет задачу
+      parameters:
+      - description: id задачи
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Успешное удаление задачи
+          schema:
+            $ref: '#/definitions/tasks.taskResponse'
+        "400":
+          description: Неверный формат входных данных
+          schema:
+            $ref: '#/definitions/tasks.taskResponse'
+        "404":
+          description: Задача не найдена
+          schema:
+            $ref: '#/definitions/tasks.taskResponse'
+        "500":
+          description: Проблемы на стороне сервера
+          schema:
+            $ref: '#/definitions/tasks.taskResponse'
+      summary: Удаление задачи
+      tags:
+      - tasks
+    get:
+      description: Получает задачу по id
+      parameters:
+      - description: id задачи
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Успешное получение задачи
+          schema:
+            $ref: '#/definitions/tasks.taskResponse'
+        "400":
+          description: Неверный формат входных данных
+          schema:
+            $ref: '#/definitions/tasks.taskResponse'
+        "404":
+          description: Задача не найдена
+          schema:
+            $ref: '#/definitions/tasks.taskResponse'
+        "500":
+          description: Проблемы на стороне сервера
+          schema:
+            $ref: '#/definitions/tasks.taskResponse'
+      summary: Получение задачи
+      tags:
+      - tasks
+    put:
+      consumes:
+      - application/json
+      description: Изменяет одно или несколько полей задачи
+      parameters:
+      - description: id задачи
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Новые поля
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/tasks.updateTaskRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Успешное обновление данных
+          schema:
+            $ref: '#/definitions/tasks.taskResponse'
+        "400":
+          description: Неверный формат входных данных
+          schema:
+            $ref: '#/definitions/tasks.taskResponse'
+        "404":
+          description: Задача не найдена
+          schema:
+            $ref: '#/definitions/tasks.taskResponse'
+        "500":
+          description: Проблемы на стороне сервера
+          schema:
+            $ref: '#/definitions/tasks.taskResponse'
+      summary: Редактирование задачи
+      tags:
+      - tasks
+  /tasks/stages:
+    get:
+      description: Возвращает словарь из этапов и их id
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Успешное получение данных
+          schema:
+            $ref: '#/definitions/tasks.stageResponse'
+        "400":
+          description: Неверный формат входных данных
+          schema:
+            $ref: '#/definitions/tasks.stageResponse'
+        "500":
+          description: Проблемы на стороне сервера
+          schema:
+            $ref: '#/definitions/tasks.stageResponse'
+      summary: Получение этапов задачи
+      tags:
+      - tasks
+swagger: "2.0"
