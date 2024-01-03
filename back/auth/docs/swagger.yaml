@@ -1,0 +1,93 @@
+basePath: /auth/v1
+definitions:
+  httpserver.authorizeRequest:
+    properties:
+      login:
+        type: string
+      password:
+        type: string
+    type: object
+  httpserver.refreshRequest:
+    properties:
+      refresh:
+        type: string
+    type: object
+  httpserver.tokensData:
+    properties:
+      access:
+        type: string
+      refresh:
+        type: string
+    type: object
+  httpserver.tokensResponse:
+    properties:
+      data:
+        $ref: '#/definitions/httpserver.tokensData'
+      error:
+        type: string
+    type: object
+host: localhost:8082
+info:
+  contact: {}
+  description: Swagger документация к API авторизации
+  title: BRM API
+  version: "1.0"
+paths:
+  /authorize:
+    post:
+      consumes:
+      - application/json
+      description: Получает access и refresh-токены, используя авторизацию по логину
+        и паролю
+      parameters:
+      - description: Логин и пароль
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/httpserver.authorizeRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Успешное получение токенов
+          schema:
+            $ref: '#/definitions/httpserver.tokensResponse'
+        "400":
+          description: Неверный формат входных данных
+          schema:
+            $ref: '#/definitions/httpserver.tokensResponse'
+        "500":
+          description: Проблемы на стороне сервера
+          schema:
+            $ref: '#/definitions/httpserver.tokensResponse'
+      summary: Получение токенов
+  /refresh:
+    post:
+      consumes:
+      - application/json
+      description: Обновляет access и refresh-токены, старая пара становится непригодной
+      parameters:
+      - description: Refresh-токен
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/httpserver.refreshRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Успешное обновление токенов
+          schema:
+            $ref: '#/definitions/httpserver.tokensResponse'
+        "400":
+          description: Неверный формат входных данных
+          schema:
+            $ref: '#/definitions/httpserver.tokensResponse'
+        "500":
+          description: Проблемы на стороне сервера
+          schema:
+            $ref: '#/definitions/httpserver.tokensResponse'
+      summary: Обновление токенов
+swagger: "2.0"
