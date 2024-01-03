@@ -1,0 +1,168 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "Swagger документация к API регистрации",
+        "title": "BRM API",
+        "contact": {},
+        "version": "1.0"
+    },
+    "host": "localhost:8081",
+    "basePath": "/registration",
+    "paths": {
+        "/registration": {
+            "post": {
+                "description": "Добавляет новую компанию и её владельца, который является её первым сотрудником, одним запросом",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Добавление новой компании и владельца",
+                "parameters": [
+                    {
+                        "description": "Информация о компании и её владельце",
+                        "name": "input",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/httpserver.addCompanyWithOwnerRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Успешное добавление компании с владельцем",
+                        "schema": {
+                            "$ref": "#/definitions/httpserver.addCompanyAndOwnerResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Неверный формат входных данных",
+                        "schema": {
+                            "$ref": "#/definitions/httpserver.addCompanyAndOwnerResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Проблемы на стороне сервера",
+                        "schema": {
+                            "$ref": "#/definitions/httpserver.addCompanyAndOwnerResponse"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "httpserver.addCompanyAndOwnerData": {
+            "type": "object",
+            "properties": {
+                "company_data": {
+                    "$ref": "#/definitions/httpserver.companyData"
+                },
+                "owner_data": {
+                    "$ref": "#/definitions/httpserver.ownerData"
+                }
+            }
+        },
+        "httpserver.addCompanyAndOwnerResponse": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "$ref": "#/definitions/httpserver.addCompanyAndOwnerData"
+                },
+                "error": {
+                    "type": "string"
+                }
+            }
+        },
+        "httpserver.addCompanyRequest": {
+            "type": "object",
+            "properties": {
+                "industry": {
+                    "type": "integer"
+                },
+                "title": {
+                    "type": "string"
+                }
+            }
+        },
+        "httpserver.addCompanyWithOwnerRequest": {
+            "type": "object",
+            "properties": {
+                "company_data": {
+                    "$ref": "#/definitions/httpserver.addCompanyRequest"
+                },
+                "owner_data": {
+                    "$ref": "#/definitions/httpserver.addOwnerRequest"
+                }
+            }
+        },
+        "httpserver.addOwnerRequest": {
+            "type": "object",
+            "properties": {
+                "department": {
+                    "type": "string"
+                },
+                "first_name": {
+                    "type": "string"
+                },
+                "job_title": {
+                    "type": "string"
+                },
+                "login": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                },
+                "second_name": {
+                    "type": "string"
+                }
+            }
+        },
+        "httpserver.companyData": {
+            "type": "object",
+            "properties": {
+                "created_at": {
+                    "type": "integer"
+                },
+                "industry": {
+                    "type": "string"
+                },
+                "owner_id": {
+                    "type": "integer"
+                },
+                "title": {
+                    "type": "string"
+                }
+            }
+        },
+        "httpserver.ownerData": {
+            "type": "object",
+            "properties": {
+                "company_id": {
+                    "type": "integer"
+                },
+                "creation_date": {
+                    "type": "integer"
+                },
+                "department": {
+                    "type": "string"
+                },
+                "employee_id": {
+                    "type": "integer"
+                },
+                "first_name": {
+                    "type": "string"
+                },
+                "job_title": {
+                    "type": "string"
+                },
+                "second_name": {
+                    "type": "string"
+                }
+            }
+        }
+    }
+}
