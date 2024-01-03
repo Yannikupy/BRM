@@ -1,0 +1,13 @@
+.overlay {
+  background-color: #b3b3b3;
+}
+
+.flex-header {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 100px;
+  margin-left: 24px;
+  padding: 10px;
+  font-size: 36px;
+}

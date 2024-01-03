@@ -1,0 +1,23 @@
+.left-menu-flex {
+  width: 200px;
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  background-color: #b3b3b3;
+}
+
+.menu-item {
+  border-top: solid;
+  border-bottom: solid;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 50px;
+  border-color: black;
+}
+
+#last-menu-item {
+  border-bottom-right-radius: 10px;
+}
