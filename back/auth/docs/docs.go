@@ -16,9 +16,9 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/authorize": {
+        "/login": {
             "post": {
-                "description": "Получает access и refresh-токены, используя авторизацию по логину и паролю",
+                "description": "Получает access и refresh-токены, используя аутентификацию по логину и паролю",
                 "consumes": [
                     "application/json"
                 ],
@@ -33,13 +33,56 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/httpserver.authorizeRequest"
+                            "$ref": "#/definitions/httpserver.loginRequest"
                         }
                     }
                 ],
                 "responses": {
                     "200": {
                         "description": "Успешное получение токенов",
+                        "schema": {
+                            "$ref": "#/definitions/httpserver.tokensResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Неверный формат входных данных",
+                        "schema": {
+                            "$ref": "#/definitions/httpserver.tokensResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Проблемы на стороне сервера",
+                        "schema": {
+                            "$ref": "#/definitions/httpserver.tokensResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/logout": {
+            "post": {
+                "description": "Удаляет пару токенов",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Выход из аккаунта",
+                "parameters": [
+                    {
+                        "description": "Пара токенов",
+                        "name": "input",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/httpserver.logoutRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Успешный выход из аккаунта",
                         "schema": {
                             "$ref": "#/definitions/httpserver.tokensResponse"
                         }
@@ -71,7 +114,7 @@ const docTemplate = `{
                 "summary": "Обновление токенов",
                 "parameters": [
                     {
-                        "description": "Refresh-токен",
+                        "description": "Пара токенов",
                         "name": "input",
                         "in": "body",
                         "required": true,
@@ -104,7 +147,7 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "httpserver.authorizeRequest": {
+        "httpserver.loginRequest": {
             "type": "object",
             "properties": {
                 "login": {
@@ -115,9 +158,23 @@ const docTemplate = `{
                 }
             }
         },
+        "httpserver.logoutRequest": {
+            "type": "object",
+            "properties": {
+                "access": {
+                    "type": "string"
+                },
+                "refresh": {
+                    "type": "string"
+                }
+            }
+        },
         "httpserver.refreshRequest": {
             "type": "object",
             "properties": {
+                "access": {
+                    "type": "string"
+                },
                 "refresh": {
                     "type": "string"
                 }

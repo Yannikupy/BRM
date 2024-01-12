@@ -9,3 +9,7 @@ type tokensResponse struct {
 	Data *tokensData `json:"data"`
 	Err  *string     `json:"error"`
 }
+
+type logoutResponse struct {
+	Err *string `json:"error"`
+}
