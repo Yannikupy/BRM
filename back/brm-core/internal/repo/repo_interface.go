@@ -3,7 +3,21 @@ package repo
 import (
 	"brm-core/internal/model"
 	"context"
+
+	"github.com/jackc/pgx/v5"
 )
+
+type CoreRepo interface {
+	CompanyRepo
+	EmployeeRepo
+	ContactRepo
+}
+
+func New(conn *pgx.Conn) CoreRepo {
+	return &coreRepoImpl{
+		Conn: *conn,
+	}
+}
 
 type CompanyRepo interface {
 	GetCompany(ctx context.Context, id uint) (model.Company, error)

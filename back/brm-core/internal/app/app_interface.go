@@ -12,15 +12,9 @@ type App interface {
 	ContactApp
 }
 
-func New(
-	companyRepo repo.CompanyRepo,
-	contactRepo repo.ContactRepo,
-	employeeRepo repo.EmployeeRepo,
-) App {
+func New(coreRepo repo.CoreRepo) App {
 	return &appImpl{
-		companyRepo:  companyRepo,
-		contactRepo:  contactRepo,
-		employeeRepo: employeeRepo,
+		coreRepo: coreRepo,
 	}
 }
 
