@@ -4,6 +4,7 @@ import (
 	"brm-core/internal/model"
 	"brm-core/internal/repo"
 	"context"
+	"time"
 )
 
 type appImpl struct {
@@ -15,6 +16,8 @@ func (a *appImpl) GetCompany(ctx context.Context, id uint) (model.Company, error
 }
 
 func (a *appImpl) CreateCompanyAndOwner(ctx context.Context, company model.Company, owner model.Employee) (model.Company, model.Employee, error) {
+	company.CreationDate = time.Now().UTC()
+	owner.CreationDate = time.Now().UTC()
 	return a.coreRepo.CreateCompanyAndOwner(ctx, company, owner)
 }
 
@@ -29,12 +32,12 @@ func (a *appImpl) UpdateCompany(ctx context.Context, companyId uint, ownerId uin
 	return a.coreRepo.UpdateCompany(ctx, companyId, upd)
 }
 
-func (a *appImpl) DeleteCompany(ctx context.Context, companyId uint, ownerId uint) (model.Company, error) {
+func (a *appImpl) DeleteCompany(ctx context.Context, companyId uint, ownerId uint) error {
 	company, err := a.coreRepo.GetCompany(ctx, companyId)
 	if err != nil {
-		return model.Company{}, err
+		return err
 	} else if company.OwnerId != ownerId {
-		return model.Company{}, model.ErrAuthorization
+		return model.ErrAuthorization
 	}
 
 	return a.coreRepo.DeleteCompany(ctx, companyId)
@@ -51,6 +54,8 @@ func (a *appImpl) CreateEmployee(ctx context.Context, companyId uint, ownerId ui
 	} else if company.OwnerId != ownerId {
 		return model.Employee{}, model.ErrAuthorization
 	}
+
+	employee.CreationDate = time.Now().UTC()
 
 	return a.coreRepo.CreateEmployee(ctx, employee)
 }
@@ -73,19 +78,19 @@ func (a *appImpl) UpdateEmployee(ctx context.Context, companyId uint, ownerId ui
 	return a.coreRepo.UpdateEmployee(ctx, employeeId, upd)
 }
 
-func (a *appImpl) DeleteEmployee(ctx context.Context, companyId uint, ownerId uint, employeeId uint) (model.Employee, error) {
+func (a *appImpl) DeleteEmployee(ctx context.Context, companyId uint, ownerId uint, employeeId uint) error {
 	employee, err := a.coreRepo.GetEmployeeById(ctx, employeeId)
 	if err != nil {
-		return model.Employee{}, err
+		return err
 	} else if companyId != employee.CompanyId {
-		return model.Employee{}, model.ErrAuthorization
+		return model.ErrAuthorization
 	}
 
 	company, err := a.coreRepo.GetCompany(ctx, companyId)
 	if err != nil {
-		return model.Employee{}, err
+		return err
 	} else if company.OwnerId != ownerId {
-		return model.Employee{}, model.ErrAuthorization
+		return model.ErrAuthorization
 	}
 
 	return a.coreRepo.DeleteEmployee(ctx, employeeId)
@@ -118,7 +123,7 @@ func (a *appImpl) GetEmployeeByName(ctx context.Context, companyId uint, employe
 		return []model.Employee{}, model.ErrAuthorization
 	}
 
-	return a.coreRepo.GetEmployeeByName(ctx, ebn)
+	return a.coreRepo.GetEmployeeByName(ctx, companyId, ebn)
 }
 
 func (a *appImpl) GetEmployeeById(ctx context.Context, companyId uint, ownerId uint, employeeId uint) (model.Employee, error) {
@@ -147,7 +152,14 @@ func (a *appImpl) CreateContact(ctx context.Context, ownerId uint, employeeId ui
 		return model.Contact{}, err
 	}
 
-	return a.coreRepo.CreateContact(ctx, ownerId, employeeId)
+	return a.coreRepo.CreateContact(ctx, model.Contact{
+		OwnerId:      ownerId,
+		EmployeeId:   employeeId,
+		Notes:        "",
+		CreationDate: time.Now().UTC(),
+		IsDeleted:    false,
+		Empl:         model.Employee{},
+	})
 }
 
 func (a *appImpl) UpdateContact(ctx context.Context, ownerId uint, contactId uint, upd model.UpdateContact) (model.Contact, error) {
@@ -156,30 +168,30 @@ func (a *appImpl) UpdateContact(ctx context.Context, ownerId uint, contactId uin
 		return model.Contact{}, err
 	}
 
-	contact, err := a.coreRepo.GetContactById(ctx, contactId)
+	contact, err := a.coreRepo.GetContactById(ctx, ownerId, contactId)
 	if err != nil {
 		return model.Contact{}, err
 	} else if contact.OwnerId != ownerId {
 		return model.Contact{}, err
 	}
 
-	return a.coreRepo.UpdateContact(ctx, contactId, upd)
+	return a.coreRepo.UpdateContact(ctx, ownerId, contactId, upd)
 }
 
-func (a *appImpl) DeleteContact(ctx context.Context, ownerId uint, contactId uint) (model.Contact, error) {
+func (a *appImpl) DeleteContact(ctx context.Context, ownerId uint, contactId uint) error {
 	_, err := a.coreRepo.GetEmployeeById(ctx, ownerId)
 	if err != nil {
-		return model.Contact{}, err
+		return err
 	}
 
-	contact, err := a.coreRepo.GetContactById(ctx, contactId)
+	contact, err := a.coreRepo.GetContactById(ctx, ownerId, contactId)
 	if err != nil {
-		return model.Contact{}, err
+		return err
 	} else if contact.OwnerId != ownerId {
-		return model.Contact{}, err
+		return err
 	}
 
-	return a.coreRepo.DeleteContact(ctx, contactId)
+	return a.coreRepo.DeleteContact(ctx, ownerId, contactId)
 }
 
 func (a *appImpl) GetContacts(ctx context.Context, ownerId uint, pagination model.GetContacts) ([]model.Contact, error) {
@@ -197,12 +209,12 @@ func (a *appImpl) GetContactById(ctx context.Context, ownerId uint, contactId ui
 		return model.Contact{}, err
 	}
 
-	contact, err := a.coreRepo.GetContactById(ctx, contactId)
+	contact, err := a.coreRepo.GetContactById(ctx, ownerId, contactId)
 	if err != nil {
 		return model.Contact{}, err
 	} else if contact.OwnerId != ownerId {
 		return model.Contact{}, err
 	}
 
-	return a.coreRepo.GetContactById(ctx, contactId)
+	return a.coreRepo.GetContactById(ctx, ownerId, contactId)
 }

@@ -11,7 +11,6 @@ type Company struct {
 	Rating       float64
 	CreationDate time.Time
 	IsDeleted    bool
-	DeletionDate time.Time
 }
 
 type UpdateCompany struct {

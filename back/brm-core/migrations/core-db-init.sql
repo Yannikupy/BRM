@@ -6,8 +6,7 @@ CREATE TABLE companies (
     "owner_id" INTEGER,
     "rating" FLOAT,
     "creation_date" DATE,
-    "is_deleted" BOOLEAN,
-    "deletion_date" DATE
+    "is_deleted" BOOLEAN
 );
 
 CREATE TABLE industries (
@@ -24,8 +23,7 @@ CREATE TABLE employees (
     "job_title" VARCHAR(100),
     "department" VARCHAR(100),
     "creation_date" DATE,
-    "is_deleted" BOOLEAN,
-    "deletion_date" DATE
+    "is_deleted" BOOLEAN
 );
 
 CREATE TABLE contact_shard01 (
@@ -34,8 +32,7 @@ CREATE TABLE contact_shard01 (
     "employee_id" INTEGER,
     "notes" VARCHAR(500),
     "creation_date" DATE,
-    "is_deleted" BOOLEAN,
-    "deletion_date" DATE
+    "is_deleted" BOOLEAN
 );
 
 CREATE TABLE contact_shard02 (
@@ -44,8 +41,7 @@ CREATE TABLE contact_shard02 (
     "employee_id" INTEGER,
     "notes" VARCHAR(500),
     "creation_date" DATE,
-    "is_deleted" BOOLEAN,
-    "deletion_date" DATE
+    "is_deleted" BOOLEAN
 );
 
 CREATE TABLE contact_shard03 (
@@ -54,8 +50,7 @@ CREATE TABLE contact_shard03 (
     "employee_id" INTEGER,
     "notes" VARCHAR(500),
     "creation_date" DATE,
-    "is_deleted" BOOLEAN,
-    "deletion_date" DATE
+    "is_deleted" BOOLEAN
 );
 
 CREATE TABLE contact_shard04 (
@@ -64,6 +59,5 @@ CREATE TABLE contact_shard04 (
     "employee_id" INTEGER,
     "notes" VARCHAR(500),
     "creation_date" DATE,
-    "is_deleted" BOOLEAN,
-    "deletion_date" DATE
+    "is_deleted" BOOLEAN
 );

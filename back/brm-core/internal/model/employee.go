@@ -12,7 +12,6 @@ type Employee struct {
 	Department   string
 	CreationDate time.Time
 	IsDeleted    bool
-	DeletionDate time.Time
 }
 
 type UpdateEmployee struct {

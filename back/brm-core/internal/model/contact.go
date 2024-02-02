@@ -9,7 +9,6 @@ type Contact struct {
 	Notes        string
 	CreationDate time.Time
 	IsDeleted    bool
-	DeletedAt    time.Time
 	Empl         Employee
 }
 
