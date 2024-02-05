@@ -16,8 +16,19 @@ func (a *appImpl) GetCompany(ctx context.Context, id uint) (model.Company, error
 }
 
 func (a *appImpl) CreateCompanyAndOwner(ctx context.Context, company model.Company, owner model.Employee) (model.Company, model.Employee, error) {
+	// setting company fields
+	company.Id = 0
+	company.OwnerId = 0
+	company.Rating = 4.
 	company.CreationDate = time.Now().UTC()
+	company.IsDeleted = false
+
+	// setting owner fields
+	owner.Id = 0
+	owner.CompanyId = 0
 	owner.CreationDate = time.Now().UTC()
+	owner.IsDeleted = false
+
 	return a.coreRepo.CreateCompanyAndOwner(ctx, company, owner)
 }
 
@@ -55,7 +66,10 @@ func (a *appImpl) CreateEmployee(ctx context.Context, companyId uint, ownerId ui
 		return model.Employee{}, model.ErrAuthorization
 	}
 
+	// setting up employee fields
+	employee.Id = 0
 	employee.CreationDate = time.Now().UTC()
+	employee.IsDeleted = false
 
 	return a.coreRepo.CreateEmployee(ctx, employee)
 }
@@ -153,6 +167,7 @@ func (a *appImpl) CreateContact(ctx context.Context, ownerId uint, employeeId ui
 	}
 
 	return a.coreRepo.CreateContact(ctx, model.Contact{
+		Id:           0,
 		OwnerId:      ownerId,
 		EmployeeId:   employeeId,
 		Notes:        "",
