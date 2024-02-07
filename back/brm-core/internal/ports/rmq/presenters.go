@@ -1,16 +1,14 @@
 package rmq
 
-import "time"
-
 type companyData struct {
-	Id           uint      `json:"id"`
-	Name         string    `json:"name"`
-	Description  string    `json:"description"`
-	Industry     uint      `json:"industry"`
-	OwnerId      uint      `json:"owner_id"`
-	Rating       float64   `json:"rating"`
-	CreationDate time.Time `json:"creation_date"`
-	IsDeleted    bool      `json:"is_deleted"`
+	Id           uint    `json:"id"`
+	Name         string  `json:"name"`
+	Description  string  `json:"description"`
+	Industry     uint    `json:"industry"`
+	OwnerId      uint    `json:"owner_id"`
+	Rating       float64 `json:"rating"`
+	CreationDate int64   `json:"creation_date"`
+	IsDeleted    bool    `json:"is_deleted"`
 }
 
 type updateCompanyData struct {
@@ -21,15 +19,15 @@ type updateCompanyData struct {
 }
 
 type employeeData struct {
-	Id           uint      `json:"id"`
-	CompanyId    uint      `json:"company_id"`
-	FirstName    string    `json:"first_name"`
-	SecondName   string    `json:"second_name"`
-	Email        string    `json:"email"`
-	JobTitle     string    `json:"job_title"`
-	Department   string    `json:"department"`
-	CreationDate time.Time `json:"creation_date"`
-	IsDeleted    bool      `json:"is_deleted"`
+	Id           uint   `json:"id"`
+	CompanyId    uint   `json:"company_id"`
+	FirstName    string `json:"first_name"`
+	SecondName   string `json:"second_name"`
+	Email        string `json:"email"`
+	JobTitle     string `json:"job_title"`
+	Department   string `json:"department"`
+	CreationDate int64  `json:"creation_date"`
+	IsDeleted    bool   `json:"is_deleted"`
 }
 
 type updateEmployeeData struct {
@@ -41,6 +39,13 @@ type updateEmployeeData struct {
 }
 
 type contactData struct {
+	Id           uint         `json:"id"`
+	OwnerId      uint         `json:"owner_id"`
+	EmployeeId   uint         `json:"employee_id"`
+	Notes        string       `json:"notes"`
+	CreationDate int64        `json:"creation_date"`
+	IsDeleted    bool         `json:"is_deleted"`
+	Empl         employeeData `json:"empl"`
 }
 
 type updateContactData struct {
