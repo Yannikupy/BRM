@@ -1,0 +1,109 @@
+syntax = "proto3";
+
+package core;
+option go_package = "/pb";
+import "google/protobuf/empty.proto";
+
+service CoreService {
+  rpc GetCompany(GetCompanyRequest) returns (CompanyResponse) {}
+
+  rpc GetCompanyEmployees(GetCompanyEmployeesRequest) returns (EmployeesListResponse) {}
+  rpc GetEmployeeByName(GetEmployeeByNameRequest) returns (EmployeesListResponse) {}
+  rpc GetEmployeeById(GetEmployeeByIdRequest) returns (EmployeeResponse) {}
+
+  rpc GetContacts(GetContactsRequest) returns (ContactsListResponse) {}
+  rpc GetContactById(GetContactByIdRequest) returns (ContactResponse) {}
+}
+
+message GetCompanyRequest {
+  uint64 id = 1;
+}
+
+message CompanyResponse {
+  uint64 id = 1;
+  string name = 2;
+  string description = 3;
+  uint64 industry = 4;
+  uint64 owner_id = 5;
+  double rating = 6;
+  int64 creation_date = 7;
+  bool is_deleted = 8;
+}
+
+message GetCompanyEmployeesRequest {
+  uint64 company_id = 1;
+  uint64 owner_id = 2;
+  FilterEmployee filter = 3;
+}
+
+message FilterEmployee {
+  bool by_job_title = 1;
+  string job_title = 2;
+  bool by_department = 3;
+  string department = 4;
+  int64 limit = 5;
+  int64 offset = 6;
+}
+
+message GetEmployeeByNameRequest {
+  uint64 company_id = 1;
+  uint64 owner_id = 2;
+  EmployeeByName ebn = 3;
+}
+
+message EmployeeByName {
+  string pattern = 1;
+  int64 limit = 2;
+  int64 offset = 3;
+}
+
+message GetEmployeeByIdRequest {
+  uint64 company_id = 1;
+  uint64 owner_id = 2;
+  uint64 employee_id = 3;
+}
+
+message EmployeesListResponse {
+  repeated EmployeeResponse list = 1;
+}
+
+message EmployeeResponse {
+  uint64 id = 1;
+  uint64 company_id = 2;
+  string first_name = 3;
+  string second_name = 4;
+  string email = 5;
+  string job_title = 6;
+  string department = 7;
+  int64 creation_date = 8;
+  bool is_deleted = 9;
+}
+
+message GetContactsRequest {
+  uint64 owner_id = 1;
+  GetContactsPagination pagination = 2;
+}
+
+message GetContactsPagination {
+  int64 limit = 1;
+  int64 offset = 2;
+}
+
+message GetContactByIdRequest {
+  uint64 owner_id = 1;
+  uint64 contact_id = 2;
+}
+
+message ContactsListResponse {
+  repeated ContactResponse list = 1;
+}
+
+message ContactResponse {
+  uint64 id = 1;
+  uint64 owner_id = 2;
+  uint64 employee_id = 3;
+  string notes = 4;
+  int64 creation_date = 5;
+  bool is_deleted = 6;
+  EmployeeResponse empl = 7;
+}
