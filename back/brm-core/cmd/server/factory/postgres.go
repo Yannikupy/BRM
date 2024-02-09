@@ -12,12 +12,12 @@ import (
 
 func ConnectToPostgres(ctx context.Context) (*pgx.Conn, error) {
 	coreRepoUrl := fmt.Sprintf("postgres://%s:%s@%s:%d/%s?sslmode=%s",
-		viper.GetString("postgres_core.username"),
+		viper.GetString("postgres-core.username"),
 		os.Getenv("POSTGRES_CORE_PASSWORD"),
-		viper.GetString("postgres_core.host"),
-		viper.GetInt("postgres_core.port"),
-		viper.GetString("postgres_core.dbname"),
-		viper.GetString("postgres_core.sslmode"))
+		viper.GetString("postgres-core.host"),
+		viper.GetInt("postgres-core.port"),
+		viper.GetString("postgres-core.dbname"),
+		viper.GetString("postgres-core.sslmode"))
 
 	// 30 attempts to connect to postgres starting in docker container
 	for i := 0; i < 30; i++ {

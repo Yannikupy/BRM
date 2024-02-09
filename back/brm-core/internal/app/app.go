@@ -203,7 +203,7 @@ func (a *appImpl) DeleteContact(ctx context.Context, ownerId uint, contactId uin
 	if err != nil {
 		return err
 	} else if contact.OwnerId != ownerId {
-		return err
+		return model.ErrAuthorization
 	}
 
 	return a.coreRepo.DeleteContact(ctx, ownerId, contactId)

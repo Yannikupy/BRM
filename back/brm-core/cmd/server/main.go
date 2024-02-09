@@ -9,7 +9,6 @@ import (
 	"log"
 	"os"
 	"os/signal"
-	"sync"
 	"syscall"
 )
 
@@ -26,54 +25,23 @@ func main() {
 
 	a := app.New(repo.New(coreRepo))
 
-	shards, err := factory.ConnectToRabbitmq()
-	if err != nil {
-		log.Fatal(err.Error())
-	}
-	defer func() {
-		for _, s := range shards {
-			s.Close()
-		}
-	}()
-
-	// preparing graceful shutdown
-	sigQuit := make(chan os.Signal, 1)
-	defer close(sigQuit)
-	signal.Ignore(syscall.SIGHUP, syscall.SIGPIPE)
-	signal.Notify(sigQuit, syscall.SIGINT, syscall.SIGTERM)
-	shutdownChans := make([]chan struct{}, len(shards))
-	for i := range shutdownChans {
-		shutdownChans[i] = make(chan struct{})
-	}
-
-	wg := new(sync.WaitGroup)
-	for i := range shards {
-		wg.Add(1)
-		go func(i int) {
-			defer wg.Done()
-			shards[i].HandleJobs(ctx, a, shutdownChans[i])
-		}(i)
-	}
-
 	srv := grpcserver.New(a)
 	lis, err := factory.PrepareListener()
 	if err != nil {
 		log.Fatal(err.Error())
 	}
 
-	wg.Add(1)
+	// preparing graceful shutdown
+	osSignals := make(chan os.Signal, 1)
+	signal.Notify(osSignals, os.Interrupt, syscall.SIGTERM)
+	signal.Notify(osSignals, os.Interrupt, syscall.SIGINT)
+
 	go func() {
-		defer wg.Done()
-		_ = srv.Serve(lis)
+		if err = srv.Serve(lis); err != nil {
+			log.Fatal("starting grpc server: ", err.Error())
+		}
 	}()
 
-	select {
-	case <-sigQuit:
-		srv.GracefulStop()
-		for i := range shutdownChans {
-			shutdownChans[i] <- struct{}{}
-		}
-	}
-
-	wg.Wait()
+	<-osSignals
+	srv.GracefulStop()
 }
