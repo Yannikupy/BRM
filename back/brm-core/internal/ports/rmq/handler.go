@@ -9,8 +9,15 @@ import (
 )
 
 // HandleJobs слушает очередь rabbitmq, запускать в отдельной горутине
-func (s *Shard) HandleJobs(ctx context.Context, a app.App) {
+func (s *Shard) HandleJobs(ctx context.Context, a app.App, shutdown chan struct{}) {
 	for jobDelivery := range s.consumer.messages {
+
+		select {
+		case <-shutdown:
+			return
+		default:
+		}
+
 		var job jobRequest
 		err := json.Unmarshal(jobDelivery.Body, &job)
 		if err != nil {

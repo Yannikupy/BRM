@@ -10,10 +10,19 @@ services:
       POSTGRES_PASSWORD: root
     profiles: ["dev_front", "dev_back"]
     ports:
-      - "5432:5432"
+      - "40000:5432"
     volumes:
       - ./back/brm-core/migrations/:/docker-entrypoint-initdb.d/
       - core-data:/var/lib/postgresql/data
+
+  rabbitmq-core:
+    image: "rabbitmq:3-management"
+    ports:
+      - "14000:5672"
+      - "15000:15672"
+    environment:
+      RABBITMQ_DEFAULT_USER: root
+      RABBITMQ_DEFAULT_PASS: root
 
 volumes:
   core-data:
