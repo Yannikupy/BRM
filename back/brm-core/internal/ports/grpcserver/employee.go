@@ -7,18 +7,83 @@ import (
 	"github.com/golang/protobuf/ptypes/empty"
 )
 
+func employeeToModelEmployee(employee *pb.Employee) model.Employee {
+	if employee == nil {
+		return model.Employee{}
+	}
+	return model.Employee{
+		Id:           uint(employee.Id),
+		CompanyId:    uint(employee.CompanyId),
+		FirstName:    employee.FirstName,
+		SecondName:   employee.SecondName,
+		Email:        employee.Email,
+		JobTitle:     employee.JobTitle,
+		Department:   employee.Department,
+		CreationDate: employee.CreationDate,
+		IsDeleted:    employee.IsDeleted,
+	}
+}
+
+func modelEmployeeToEmployee(employee model.Employee) *pb.Employee {
+	if employee.Id == 0 {
+		return nil
+	}
+	return &pb.Employee{
+		Id:           uint64(employee.Id),
+		CompanyId:    uint64(employee.CompanyId),
+		FirstName:    employee.FirstName,
+		SecondName:   employee.SecondName,
+		Email:        employee.Email,
+		JobTitle:     employee.JobTitle,
+		Department:   employee.Department,
+		CreationDate: employee.CreationDate,
+		IsDeleted:    employee.IsDeleted,
+	}
+}
+
 func (s *Server) CreateEmployee(ctx context.Context, req *pb.CreateEmployeeRequest) (*pb.CreateEmployeeResponse, error) {
-	// TODO implement
-	return nil, nil
+	employee, err := s.App.CreateEmployee(ctx,
+		uint(req.CompanyId),
+		uint(req.OwnerId),
+		employeeToModelEmployee(req.Employee),
+	)
+	if err != nil {
+		return nil, mapErrors(err)
+	}
+	return &pb.CreateEmployeeResponse{
+		Employee: modelEmployeeToEmployee(employee),
+	}, nil
 }
 
 func (s *Server) UpdateEmployee(ctx context.Context, req *pb.UpdateEmployeeRequest) (*pb.UpdateEmployeeResponse, error) {
-	// TODO implement
-	return nil, nil
+	employee, err := s.App.UpdateEmployee(ctx,
+		uint(req.CompanyId),
+		uint(req.OwnerId),
+		uint(req.EmployeeId),
+		model.UpdateEmployee{
+			FirstName:  req.Upd.FirstName,
+			SecondName: req.Upd.SecondName,
+			Email:      req.Upd.Email,
+			JobTitle:   req.Upd.JobTitle,
+			Department: req.Upd.Department,
+		},
+	)
+	if err != nil {
+		return nil, mapErrors(err)
+	}
+	return &pb.UpdateEmployeeResponse{
+		Employee: modelEmployeeToEmployee(employee),
+	}, nil
 }
 
 func (s *Server) DeleteEmployee(ctx context.Context, req *pb.DeleteEmployeeRequest) (*empty.Empty, error) {
-	// TODO implement
+	if err := s.App.DeleteEmployee(ctx,
+		uint(req.CompanyId),
+		uint(req.OwnerId),
+		uint(req.EmployeeId),
+	); err != nil {
+		return nil, mapErrors(err)
+	}
 	return &empty.Empty{}, nil
 }
 
@@ -43,17 +108,7 @@ func (s *Server) GetCompanyEmployees(ctx context.Context, req *pb.GetCompanyEmpl
 		List: make([]*pb.Employee, len(employees)),
 	}
 	for i, empl := range employees {
-		resp.List[i] = &pb.Employee{
-			Id:           uint64(empl.Id),
-			CompanyId:    uint64(empl.CompanyId),
-			FirstName:    empl.FirstName,
-			SecondName:   empl.SecondName,
-			Email:        empl.Email,
-			JobTitle:     empl.JobTitle,
-			Department:   empl.Department,
-			CreationDate: empl.CreationDate,
-			IsDeleted:    empl.IsDeleted,
-		}
+		resp.List[i] = modelEmployeeToEmployee(empl)
 	}
 	return resp, nil
 }
@@ -76,17 +131,7 @@ func (s *Server) GetEmployeeByName(ctx context.Context, req *pb.GetEmployeeByNam
 		List: make([]*pb.Employee, len(employees)),
 	}
 	for i, empl := range employees {
-		resp.List[i] = &pb.Employee{
-			Id:           uint64(empl.Id),
-			CompanyId:    uint64(empl.CompanyId),
-			FirstName:    empl.FirstName,
-			SecondName:   empl.SecondName,
-			Email:        empl.Email,
-			JobTitle:     empl.JobTitle,
-			Department:   empl.Department,
-			CreationDate: empl.CreationDate,
-			IsDeleted:    empl.IsDeleted,
-		}
+		resp.List[i] = modelEmployeeToEmployee(empl)
 	}
 	return resp, nil
 }
@@ -103,16 +148,6 @@ func (s *Server) GetEmployeeById(ctx context.Context, req *pb.GetEmployeeByIdReq
 	}
 
 	return &pb.GetEmployeeByIdResponse{
-		Employee: &pb.Employee{
-			Id:           uint64(employee.Id),
-			CompanyId:    uint64(employee.CompanyId),
-			FirstName:    employee.FirstName,
-			SecondName:   employee.SecondName,
-			Email:        employee.Email,
-			JobTitle:     employee.JobTitle,
-			Department:   employee.Department,
-			CreationDate: employee.CreationDate,
-			IsDeleted:    employee.IsDeleted,
-		},
+		Employee: modelEmployeeToEmployee(employee),
 	}, nil
 }
