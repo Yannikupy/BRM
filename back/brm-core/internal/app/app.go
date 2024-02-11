@@ -20,13 +20,13 @@ func (a *appImpl) CreateCompanyAndOwner(ctx context.Context, company model.Compa
 	company.Id = 0
 	company.OwnerId = 0
 	company.Rating = 4.
-	company.CreationDate = time.Now().UTC().Unix()
+	company.CreationDate = time.Now().UTC()
 	company.IsDeleted = false
 
 	// setting owner fields
 	owner.Id = 0
 	owner.CompanyId = 0
-	owner.CreationDate = time.Now().UTC().Unix()
+	owner.CreationDate = time.Now().UTC()
 	owner.IsDeleted = false
 
 	return a.coreRepo.CreateCompanyAndOwner(ctx, company, owner)
@@ -68,7 +68,7 @@ func (a *appImpl) CreateEmployee(ctx context.Context, companyId uint, ownerId ui
 
 	// setting up employee fields
 	employee.Id = 0
-	employee.CreationDate = time.Now().UTC().Unix()
+	employee.CreationDate = time.Now().UTC()
 	employee.IsDeleted = false
 
 	return a.coreRepo.CreateEmployee(ctx, employee)
@@ -171,7 +171,7 @@ func (a *appImpl) CreateContact(ctx context.Context, ownerId uint, employeeId ui
 		OwnerId:      ownerId,
 		EmployeeId:   employeeId,
 		Notes:        "",
-		CreationDate: time.Now().UTC().Unix(),
+		CreationDate: time.Now().UTC(),
 		IsDeleted:    false,
 		Empl:         model.Employee{},
 	})

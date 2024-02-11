@@ -5,6 +5,7 @@ import (
 	"brm-core/internal/ports/grpcserver/pb"
 	"context"
 	"github.com/golang/protobuf/ptypes/empty"
+	"time"
 )
 
 func contactToModelContact(contact *pb.Contact) model.Contact {
@@ -16,7 +17,7 @@ func contactToModelContact(contact *pb.Contact) model.Contact {
 		OwnerId:      uint(contact.OwnerId),
 		EmployeeId:   uint(contact.EmployeeId),
 		Notes:        contact.Notes,
-		CreationDate: contact.CreationDate,
+		CreationDate: time.Unix(contact.CreationDate, 0),
 		IsDeleted:    contact.IsDeleted,
 		Empl:         employeeToModelEmployee(contact.Empl),
 	}
@@ -31,7 +32,7 @@ func modelContactToContact(contact model.Contact) *pb.Contact {
 		OwnerId:      uint64(contact.OwnerId),
 		EmployeeId:   uint64(contact.EmployeeId),
 		Notes:        contact.Notes,
-		CreationDate: contact.CreationDate,
+		CreationDate: contact.CreationDate.UTC().Unix(),
 		IsDeleted:    contact.IsDeleted,
 		Empl:         modelEmployeeToEmployee(contact.Empl),
 	}
