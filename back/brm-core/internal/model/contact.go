@@ -1,15 +1,12 @@
 package model
 
-import "time"
-
 type Contact struct {
 	Id           uint
 	OwnerId      uint
 	EmployeeId   uint
 	Notes        string
-	CreationDate time.Time
+	CreationDate int64
 	IsDeleted    bool
-	DeletedAt    time.Time
 	Empl         Employee
 }
 
