@@ -11,6 +11,8 @@ type App interface {
 	CoreContact
 }
 
+// TODO добавить в слой app авторизацию
+
 type CoreCompany interface {
 	GetCompany(ctx context.Context, id uint) (core.Company, error)
 	CreateCompanyAndOwner(ctx context.Context, company core.Company, owner core.Employee) (core.Company, core.Employee, error)

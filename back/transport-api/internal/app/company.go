@@ -6,21 +6,17 @@ import (
 )
 
 func (a *appImpl) GetCompany(ctx context.Context, id uint) (core.Company, error) {
-	// TODO implement
-	return core.Company{}, nil
+	return a.core.GetCompany(ctx, id)
 }
 
 func (a *appImpl) CreateCompanyAndOwner(ctx context.Context, company core.Company, owner core.Employee) (core.Company, core.Employee, error) {
-	// TODO implement
-	return core.Company{}, core.Employee{}, nil
+	return a.core.CreateCompanyAndOwner(ctx, company, owner)
 }
 
 func (a *appImpl) UpdateCompany(ctx context.Context, companyId uint, ownerId uint, upd core.UpdateCompany) (core.Company, error) {
-	// TODO implement
-	return core.Company{}, nil
+	return a.core.UpdateCompany(ctx, companyId, ownerId, upd)
 }
 
 func (a *appImpl) DeleteCompany(ctx context.Context, companyId uint, ownerId uint) error {
-	// TODO implement
-	return nil
+	return a.core.DeleteCompany(ctx, companyId, ownerId)
 }
