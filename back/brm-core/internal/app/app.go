@@ -140,19 +140,19 @@ func (a *appImpl) GetEmployeeByName(ctx context.Context, companyId uint, employe
 	return a.coreRepo.GetEmployeeByName(ctx, companyId, ebn)
 }
 
-func (a *appImpl) GetEmployeeById(ctx context.Context, companyId uint, ownerId uint, employeeId uint) (model.Employee, error) {
+func (a *appImpl) GetEmployeeById(ctx context.Context, companyId uint, _ uint, employeeIdToFind uint) (model.Employee, error) {
 	_, err := a.coreRepo.GetCompany(ctx, companyId)
 	if err != nil {
 		return model.Employee{}, err
 	}
-	employee, err := a.coreRepo.GetEmployeeById(ctx, employeeId)
+	employee, err := a.coreRepo.GetEmployeeById(ctx, employeeIdToFind)
 	if err != nil {
 		return model.Employee{}, err
 	} else if companyId != employee.CompanyId {
 		return model.Employee{}, model.ErrAuthorization
 	}
 
-	return a.coreRepo.GetEmployeeById(ctx, employeeId)
+	return a.coreRepo.GetEmployeeById(ctx, employeeIdToFind)
 }
 
 func (a *appImpl) CreateContact(ctx context.Context, ownerId uint, employeeId uint) (model.Contact, error) {

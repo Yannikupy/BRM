@@ -30,9 +30,9 @@ type EmployeeApp interface {
 	UpdateEmployee(ctx context.Context, companyId uint, ownerId uint, employeeId uint, upd model.UpdateEmployee) (model.Employee, error)
 	DeleteEmployee(ctx context.Context, companyId uint, ownerId uint, employeeId uint) error
 
-	GetCompanyEmployees(ctx context.Context, companyId uint, ownerId uint, filter model.FilterEmployee) ([]model.Employee, error)
-	GetEmployeeByName(ctx context.Context, companyId uint, ownerId uint, ebn model.EmployeeByName) ([]model.Employee, error)
-	GetEmployeeById(ctx context.Context, companyId uint, ownerId uint, employeeId uint) (model.Employee, error)
+	GetCompanyEmployees(ctx context.Context, companyId uint, employeeId uint, filter model.FilterEmployee) ([]model.Employee, error)
+	GetEmployeeByName(ctx context.Context, companyId uint, employeeId uint, ebn model.EmployeeByName) ([]model.Employee, error)
+	GetEmployeeById(ctx context.Context, companyId uint, employeeId uint, employeeIdToFind uint) (model.Employee, error)
 }
 
 type ContactApp interface {

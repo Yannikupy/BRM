@@ -91,7 +91,7 @@ func (s *Server) GetCompanyEmployees(ctx context.Context, req *pb.GetCompanyEmpl
 	employees, err := s.App.GetCompanyEmployees(
 		ctx,
 		uint(req.CompanyId),
-		uint(req.OwnerId),
+		uint(req.EmployeeId),
 		model.FilterEmployee{
 			ByJobTitle:   req.Filter.ByJobTitle,
 			JobTitle:     req.Filter.JobTitle,
@@ -117,7 +117,7 @@ func (s *Server) GetEmployeeByName(ctx context.Context, req *pb.GetEmployeeByNam
 	employees, err := s.App.GetEmployeeByName(
 		ctx,
 		uint(req.CompanyId),
-		uint(req.OwnerId),
+		uint(req.EmployeeId),
 		model.EmployeeByName{
 			Pattern: req.Ebn.Pattern,
 			Limit:   int(req.Ebn.Limit),
@@ -140,8 +140,8 @@ func (s *Server) GetEmployeeById(ctx context.Context, req *pb.GetEmployeeByIdReq
 	employee, err := s.App.GetEmployeeById(
 		ctx,
 		uint(req.CompanyId),
-		uint(req.OwnerId),
 		uint(req.EmployeeId),
+		uint(req.EmployeeIdToFind),
 	)
 	if err != nil {
 		return nil, mapErrors(err)
