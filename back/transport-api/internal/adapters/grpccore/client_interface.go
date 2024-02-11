@@ -1,17 +1,15 @@
-package app
+package grpccore
 
 import (
 	"context"
 	"transport-api/internal/model/core"
 )
 
-type App interface {
+type CoreClient interface {
 	CoreCompany
 	CoreEmployee
 	CoreContact
 }
-
-// TODO добавить в слой app авторизацию
 
 type CoreCompany interface {
 	GetCompany(ctx context.Context, id uint) (core.Company, error)
