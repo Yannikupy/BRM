@@ -5,6 +5,7 @@ import (
 	"brm-core/internal/ports/grpcserver/pb"
 	"context"
 	"github.com/golang/protobuf/ptypes/empty"
+	"time"
 )
 
 func employeeToModelEmployee(employee *pb.Employee) model.Employee {
@@ -19,7 +20,7 @@ func employeeToModelEmployee(employee *pb.Employee) model.Employee {
 		Email:        employee.Email,
 		JobTitle:     employee.JobTitle,
 		Department:   employee.Department,
-		CreationDate: employee.CreationDate,
+		CreationDate: time.Unix(employee.CreationDate, 0),
 		IsDeleted:    employee.IsDeleted,
 	}
 }
@@ -36,7 +37,7 @@ func modelEmployeeToEmployee(employee model.Employee) *pb.Employee {
 		Email:        employee.Email,
 		JobTitle:     employee.JobTitle,
 		Department:   employee.Department,
-		CreationDate: employee.CreationDate,
+		CreationDate: employee.CreationDate.UTC().Unix(),
 		IsDeleted:    employee.IsDeleted,
 	}
 }

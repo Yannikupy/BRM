@@ -5,6 +5,7 @@ import (
 	"brm-core/internal/ports/grpcserver/pb"
 	"context"
 	"github.com/golang/protobuf/ptypes/empty"
+	"time"
 )
 
 func companyToModelCompany(company *pb.Company) model.Company {
@@ -18,7 +19,7 @@ func companyToModelCompany(company *pb.Company) model.Company {
 		Industry:     uint(company.Industry),
 		OwnerId:      uint(company.OwnerId),
 		Rating:       company.Rating,
-		CreationDate: company.CreationDate,
+		CreationDate: time.Unix(company.CreationDate, 0),
 		IsDeleted:    company.IsDeleted,
 	}
 }
@@ -34,7 +35,7 @@ func modelCompanyToCompany(company model.Company) *pb.Company {
 		Industry:     uint64(company.Industry),
 		OwnerId:      uint64(company.OwnerId),
 		Rating:       company.Rating,
-		CreationDate: company.CreationDate,
+		CreationDate: company.CreationDate.UTC().Unix(),
 		IsDeleted:    company.IsDeleted,
 	}
 }

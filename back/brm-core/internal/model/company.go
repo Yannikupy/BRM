@@ -1,5 +1,7 @@
 package model
 
+import "time"
+
 type Company struct {
 	Id           uint
 	Name         string
@@ -7,7 +9,7 @@ type Company struct {
 	Industry     uint
 	OwnerId      uint
 	Rating       float64
-	CreationDate int64
+	CreationDate time.Time
 	IsDeleted    bool
 }
 

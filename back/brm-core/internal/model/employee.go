@@ -1,5 +1,7 @@
 package model
 
+import "time"
+
 type Employee struct {
 	Id           uint
 	CompanyId    uint
@@ -8,7 +10,7 @@ type Employee struct {
 	Email        string
 	JobTitle     string
 	Department   string
-	CreationDate int64
+	CreationDate time.Time
 	IsDeleted    bool
 }
 
