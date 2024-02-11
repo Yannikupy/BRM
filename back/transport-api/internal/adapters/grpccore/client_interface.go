@@ -22,9 +22,9 @@ type CoreEmployee interface {
 	CreateEmployee(ctx context.Context, companyId uint, ownerId uint, employee core.Employee) (core.Employee, error)
 	UpdateEmployee(ctx context.Context, companyId uint, ownerId uint, employeeId uint, upd core.UpdateEmployee) (core.Employee, error)
 	DeleteEmployee(ctx context.Context, companyId uint, ownerId uint, employeeId uint) error
-	GetCompanyEmployees(ctx context.Context, companyId uint, ownerId uint, filter core.FilterEmployee) ([]core.Employee, error)
-	GetEmployeeByName(ctx context.Context, companyId uint, ownerId uint, ebn core.EmployeeByName) ([]core.Employee, error)
-	GetEmployeeById(ctx context.Context, companyId uint, ownerId uint, employeeId uint) (core.Employee, error)
+	GetCompanyEmployees(ctx context.Context, companyId uint, employeeId uint, filter core.FilterEmployee) ([]core.Employee, error)
+	GetEmployeeByName(ctx context.Context, companyId uint, employeeId uint, ebn core.EmployeeByName) ([]core.Employee, error)
+	GetEmployeeById(ctx context.Context, companyId uint, employeeId uint, employeeIdToFind uint) (core.Employee, error)
 }
 
 type CoreContact interface {

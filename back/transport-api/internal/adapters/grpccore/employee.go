@@ -111,10 +111,10 @@ func (c *coreClientImpl) DeleteEmployee(ctx context.Context, companyId uint, own
 	return nil
 }
 
-func (c *coreClientImpl) GetCompanyEmployees(ctx context.Context, companyId uint, ownerId uint, filter core.FilterEmployee) ([]core.Employee, error) {
+func (c *coreClientImpl) GetCompanyEmployees(ctx context.Context, companyId uint, employeeId uint, filter core.FilterEmployee) ([]core.Employee, error) {
 	resp, err := c.cli.GetCompanyEmployees(ctx, &pb.GetCompanyEmployeesRequest{
-		CompanyId: uint64(companyId),
-		OwnerId:   uint64(ownerId),
+		CompanyId:  uint64(companyId),
+		EmployeeId: uint64(employeeId),
 		Filter: &pb.FilterEmployee{
 			ByJobTitle:   filter.ByJobTitle,
 			JobTitle:     filter.JobTitle,
@@ -144,10 +144,10 @@ func (c *coreClientImpl) GetCompanyEmployees(ctx context.Context, companyId uint
 	return employees, nil
 }
 
-func (c *coreClientImpl) GetEmployeeByName(ctx context.Context, companyId uint, ownerId uint, ebn core.EmployeeByName) ([]core.Employee, error) {
+func (c *coreClientImpl) GetEmployeeByName(ctx context.Context, companyId uint, employeeId uint, ebn core.EmployeeByName) ([]core.Employee, error) {
 	resp, err := c.cli.GetEmployeeByName(ctx, &pb.GetEmployeeByNameRequest{
-		CompanyId: uint64(companyId),
-		OwnerId:   uint64(ownerId),
+		CompanyId:  uint64(companyId),
+		EmployeeId: uint64(employeeId),
 		Ebn: &pb.EmployeeByName{
 			Pattern: ebn.Pattern,
 			Limit:   int64(ebn.Limit),
@@ -174,11 +174,11 @@ func (c *coreClientImpl) GetEmployeeByName(ctx context.Context, companyId uint, 
 	return employees, nil
 }
 
-func (c *coreClientImpl) GetEmployeeById(ctx context.Context, companyId uint, ownerId uint, employeeId uint) (core.Employee, error) {
+func (c *coreClientImpl) GetEmployeeById(ctx context.Context, companyId uint, employeeId uint, employeeIdToFind uint) (core.Employee, error) {
 	resp, err := c.cli.GetEmployeeById(ctx, &pb.GetEmployeeByIdRequest{
-		CompanyId:  uint64(companyId),
-		OwnerId:    uint64(ownerId),
-		EmployeeId: uint64(employeeId),
+		CompanyId:        uint64(companyId),
+		EmployeeId:       uint64(employeeId),
+		EmployeeIdToFind: uint64(employeeIdToFind),
 	})
 	if err != nil {
 		code := status.Code(err)
