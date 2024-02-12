@@ -8,4 +8,4 @@ COPY . .
 RUN go mod download
 RUN go build -o transport-api-app cmd/server/main.go
 
-CMD ["./transport-api-app"]
+CMD ["./transport-api-app --docker"]
