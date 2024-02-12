@@ -264,6 +264,49 @@
                 }
             }
         },
+        "/companies": {
+            "post": {
+                "description": "Возвращает созданную компанию и её владельца",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "core/companies"
+                ],
+                "summary": "Создание компании и её владельца",
+                "parameters": [
+                    {
+                        "description": "Информация о новой компании и её владельце",
+                        "name": "input",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/companies.addCompanyAndOwnerRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Успешное создание компании и владельца",
+                        "schema": {
+                            "$ref": "#/definitions/companies.companyAndOwnerResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Неверный формат входных данных",
+                        "schema": {
+                            "$ref": "#/definitions/companies.companyAndOwnerResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Проблемы на стороне сервера",
+                        "schema": {
+                            "$ref": "#/definitions/companies.companyAndOwnerResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/companies/industries": {
             "get": {
                 "description": "Возвращает словарь из отраслей и их id",
@@ -511,20 +554,6 @@
                         "type": "integer",
                         "description": "Offset",
                         "name": "offset",
-                        "in": "query",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "Поиск по имени/фамилии",
-                        "name": "name",
-                        "in": "query",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "Поиск по компании",
-                        "name": "company",
                         "in": "query",
                         "required": true
                     }
@@ -779,22 +808,19 @@
                         "type": "string",
                         "description": "Поиск по имени/фамилии",
                         "name": "name",
-                        "in": "query",
-                        "required": true
+                        "in": "query"
                     },
                     {
                         "type": "string",
                         "description": "Поиск по должности",
                         "name": "jobtitle",
-                        "in": "query",
-                        "required": true
+                        "in": "query"
                     },
                     {
                         "type": "string",
                         "description": "Поиск по названию отдела",
                         "name": "department",
-                        "in": "query",
-                        "required": true
+                        "in": "query"
                     }
                 ],
                 "responses": {
@@ -1673,20 +1699,99 @@
                 }
             }
         },
+        "companies.addCompanyAndOwnerRequest": {
+            "type": "object",
+            "properties": {
+                "company": {
+                    "$ref": "#/definitions/companies.addCompanyData"
+                },
+                "owner": {
+                    "$ref": "#/definitions/companies.addOwnerData"
+                }
+            }
+        },
+        "companies.addCompanyData": {
+            "type": "object",
+            "properties": {
+                "description": {
+                    "type": "string"
+                },
+                "industry": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
+        "companies.addOwnerData": {
+            "type": "object",
+            "properties": {
+                "department": {
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "first_name": {
+                    "type": "string"
+                },
+                "job_title": {
+                    "type": "string"
+                },
+                "second_name": {
+                    "type": "string"
+                }
+            }
+        },
+        "companies.companyAndOwnerData": {
+            "type": "object",
+            "properties": {
+                "company": {
+                    "$ref": "#/definitions/companies.companyData"
+                },
+                "owner": {
+                    "$ref": "#/definitions/companies.ownerData"
+                }
+            }
+        },
+        "companies.companyAndOwnerResponse": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "$ref": "#/definitions/companies.companyAndOwnerData"
+                },
+                "err": {
+                    "type": "string"
+                }
+            }
+        },
         "companies.companyData": {
             "type": "object",
             "properties": {
-                "created_at": {
+                "creation_date": {
+                    "type": "integer"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "id": {
                     "type": "integer"
                 },
                 "industry": {
+                    "type": "integer"
+                },
+                "is_deleted": {
+                    "type": "boolean"
+                },
+                "name": {
                     "type": "string"
                 },
                 "owner_id": {
                     "type": "integer"
                 },
-                "title": {
-                    "type": "string"
+                "rating": {
+                    "type": "number"
                 }
             }
         },
@@ -1705,8 +1810,8 @@
             "type": "object",
             "properties": {
                 "data": {
-                    "type": "object",
-                    "additionalProperties": {
+                    "type": "array",
+                    "items": {
                         "type": "string"
                     }
                 },
@@ -1763,17 +1868,52 @@
                 }
             }
         },
+        "companies.ownerData": {
+            "type": "object",
+            "properties": {
+                "company_id": {
+                    "type": "integer"
+                },
+                "creation_date": {
+                    "type": "integer"
+                },
+                "department": {
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "first_name": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "is_deleted": {
+                    "type": "boolean"
+                },
+                "job_title": {
+                    "type": "string"
+                },
+                "second_name": {
+                    "type": "string"
+                }
+            }
+        },
         "companies.updateCompanyRequest": {
             "type": "object",
             "properties": {
+                "description": {
+                    "type": "string"
+                },
                 "industry": {
                     "type": "integer"
                 },
+                "name": {
+                    "type": "string"
+                },
                 "owner_id": {
                     "type": "integer"
-                },
-                "title": {
-                    "type": "string"
                 }
             }
         },
@@ -1789,29 +1929,26 @@
         "contacts.contactData": {
             "type": "object",
             "properties": {
-                "company_name": {
-                    "type": "string"
-                },
-                "contact_id": {
-                    "type": "integer"
-                },
                 "creation_date": {
                     "type": "integer"
+                },
+                "employee": {
+                    "$ref": "#/definitions/contacts.employeeData"
                 },
                 "employee_id": {
                     "type": "integer"
                 },
-                "first_name": {
-                    "type": "string"
+                "id": {
+                    "type": "integer"
+                },
+                "is_deleted": {
+                    "type": "boolean"
                 },
                 "notes": {
                     "type": "string"
                 },
                 "owner_id": {
                     "type": "integer"
-                },
-                "second_name": {
-                    "type": "string"
                 }
             }
         },
@@ -1822,6 +1959,38 @@
                     "$ref": "#/definitions/contacts.contactData"
                 },
                 "error": {
+                    "type": "string"
+                }
+            }
+        },
+        "contacts.employeeData": {
+            "type": "object",
+            "properties": {
+                "company_id": {
+                    "type": "integer"
+                },
+                "creation_date": {
+                    "type": "integer"
+                },
+                "department": {
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "first_name": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "is_deleted": {
+                    "type": "boolean"
+                },
+                "job_title": {
+                    "type": "string"
+                },
+                "second_name": {
                     "type": "string"
                 }
             }
@@ -1843,16 +2012,13 @@
                 "department": {
                     "type": "string"
                 },
+                "email": {
+                    "type": "string"
+                },
                 "first_name": {
                     "type": "string"
                 },
                 "job_title": {
-                    "type": "string"
-                },
-                "login": {
-                    "type": "string"
-                },
-                "password": {
                     "type": "string"
                 },
                 "second_name": {
@@ -1872,11 +2038,17 @@
                 "department": {
                     "type": "string"
                 },
-                "employee_id": {
-                    "type": "integer"
+                "email": {
+                    "type": "string"
                 },
                 "first_name": {
                     "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "is_deleted": {
+                    "type": "boolean"
                 },
                 "job_title": {
                     "type": "string"
@@ -1917,10 +2089,16 @@
                 "department": {
                     "type": "string"
                 },
-                "employee_id": {
-                    "type": "integer"
+                "email": {
+                    "type": "string"
+                },
+                "first_name": {
+                    "type": "string"
                 },
                 "job_title": {
+                    "type": "string"
+                },
+                "second_name": {
                     "type": "string"
                 }
             }

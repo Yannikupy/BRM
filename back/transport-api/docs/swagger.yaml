@@ -55,16 +55,67 @@ definitions:
       text:
         type: string
     type: object
+  companies.addCompanyAndOwnerRequest:
+    properties:
+      company:
+        $ref: '#/definitions/companies.addCompanyData'
+      owner:
+        $ref: '#/definitions/companies.addOwnerData'
+    type: object
+  companies.addCompanyData:
+    properties:
+      description:
+        type: string
+      industry:
+        type: integer
+      name:
+        type: string
+    type: object
+  companies.addOwnerData:
+    properties:
+      department:
+        type: string
+      email:
+        type: string
+      first_name:
+        type: string
+      job_title:
+        type: string
+      second_name:
+        type: string
+    type: object
+  companies.companyAndOwnerData:
+    properties:
+      company:
+        $ref: '#/definitions/companies.companyData'
+      owner:
+        $ref: '#/definitions/companies.ownerData'
+    type: object
+  companies.companyAndOwnerResponse:
+    properties:
+      data:
+        $ref: '#/definitions/companies.companyAndOwnerData'
+      err:
+        type: string
+    type: object
   companies.companyData:
     properties:
-      created_at:
+      creation_date:
+        type: integer
+      description:
+        type: string
+      id:
         type: integer
       industry:
+        type: integer
+      is_deleted:
+        type: boolean
+      name:
         type: string
       owner_id:
         type: integer
-      title:
-        type: string
+      rating:
+        type: number
     type: object
   companies.companyResponse:
     properties:
@@ -76,9 +127,9 @@ definitions:
   companies.industryResponse:
     properties:
       data:
-        additionalProperties:
+        items:
           type: string
-        type: object
+        type: array
       error:
         type: string
     type: object
@@ -113,14 +164,37 @@ definitions:
       total_leads_amount:
         type: integer
     type: object
+  companies.ownerData:
+    properties:
+      company_id:
+        type: integer
+      creation_date:
+        type: integer
+      department:
+        type: string
+      email:
+        type: string
+      first_name:
+        type: string
+      id:
+        type: integer
+      is_deleted:
+        type: boolean
+      job_title:
+        type: string
+      second_name:
+        type: string
+    type: object
   companies.updateCompanyRequest:
     properties:
+      description:
+        type: string
       industry:
         type: integer
+      name:
+        type: string
       owner_id:
         type: integer
-      title:
-        type: string
     type: object
   contacts.addContactRequest:
     properties:
@@ -130,28 +204,47 @@ definitions:
     type: object
   contacts.contactData:
     properties:
-      company_name:
-        type: string
-      contact_id:
-        type: integer
       creation_date:
         type: integer
+      employee:
+        $ref: '#/definitions/contacts.employeeData'
       employee_id:
         type: integer
-      first_name:
-        type: string
+      id:
+        type: integer
+      is_deleted:
+        type: boolean
       notes:
         type: string
       owner_id:
         type: integer
-      second_name:
-        type: string
     type: object
   contacts.contactResponse:
     properties:
       data:
         $ref: '#/definitions/contacts.contactData'
       error:
+        type: string
+    type: object
+  contacts.employeeData:
+    properties:
+      company_id:
+        type: integer
+      creation_date:
+        type: integer
+      department:
+        type: string
+      email:
+        type: string
+      first_name:
+        type: string
+      id:
+        type: integer
+      is_deleted:
+        type: boolean
+      job_title:
+        type: string
+      second_name:
         type: string
     type: object
   contacts.updateContactRequest:
@@ -165,13 +258,11 @@ definitions:
         type: integer
       department:
         type: string
+      email:
+        type: string
       first_name:
         type: string
       job_title:
-        type: string
-      login:
-        type: string
-      password:
         type: string
       second_name:
         type: string
@@ -184,10 +275,14 @@ definitions:
         type: integer
       department:
         type: string
-      employee_id:
-        type: integer
+      email:
+        type: string
       first_name:
         type: string
+      id:
+        type: integer
+      is_deleted:
+        type: boolean
       job_title:
         type: string
       second_name:
@@ -213,9 +308,13 @@ definitions:
     properties:
       department:
         type: string
-      employee_id:
-        type: integer
+      email:
+        type: string
+      first_name:
+        type: string
       job_title:
+        type: string
+      second_name:
         type: string
     type: object
   leads.addLeadRequest:
@@ -537,6 +636,34 @@ paths:
       summary: Редактирование объявления
       tags:
       - ads
+  /companies:
+    post:
+      description: Возвращает созданную компанию и её владельца
+      parameters:
+      - description: Информация о новой компании и её владельце
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/companies.addCompanyAndOwnerRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Успешное создание компании и владельца
+          schema:
+            $ref: '#/definitions/companies.companyAndOwnerResponse'
+        "400":
+          description: Неверный формат входных данных
+          schema:
+            $ref: '#/definitions/companies.companyAndOwnerResponse'
+        "500":
+          description: Проблемы на стороне сервера
+          schema:
+            $ref: '#/definitions/companies.companyAndOwnerResponse'
+      summary: Создание компании и её владельца
+      tags:
+      - core/companies
   /companies/{id}:
     delete:
       description: Безвозвратно удаляет компанию и всё, что с этой компанией связано
@@ -701,16 +828,6 @@ paths:
         name: offset
         required: true
         type: integer
-      - description: Поиск по имени/фамилии
-        in: query
-        name: name
-        required: true
-        type: string
-      - description: Поиск по компании
-        in: query
-        name: company
-        required: true
-        type: string
       produces:
       - application/json
       responses:
@@ -879,17 +996,14 @@ paths:
       - description: Поиск по имени/фамилии
         in: query
         name: name
-        required: true
         type: string
       - description: Поиск по должности
         in: query
         name: jobtitle
-        required: true
         type: string
       - description: Поиск по названию отдела
         in: query
         name: department
-        required: true
         type: string
       produces:
       - application/json
