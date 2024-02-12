@@ -1,50 +1,13 @@
 package employees
 
-import "transport-api/internal/model/core"
-
-func errorResponse(err error) employeeResponse {
-	if err == nil {
-		return employeeResponse{}
-	}
-	errStr := err.Error()
-	return employeeResponse{
-		Data: nil,
-		Err:  &errStr,
-	}
-}
-
-func employeeToEmployeeData(employee core.Employee) employeeData {
-	return employeeData{
-		Id:           employee.Id,
-		CompanyId:    employee.CompanyId,
-		FirstName:    employee.FirstName,
-		SecondName:   employee.SecondName,
-		Email:        employee.Email,
-		JobTitle:     employee.JobTitle,
-		Department:   employee.Department,
-		CreationDate: employee.CreationDate,
-		IsDeleted:    employee.IsDeleted,
-	}
-}
-
-func employeesToEmployeeDataList(employees []core.Employee) []employeeData {
-	data := make([]employeeData, len(employees))
-	for i, employee := range employees {
-		data[i] = employeeToEmployeeData(employee)
-	}
-	return data
-}
-
 type employeeData struct {
-	Id           uint   `json:"id"`
-	CompanyId    uint   `json:"company_id"`
+	CompanyId    int    `json:"company_id"`
+	EmployeeId   int    `json:"employee_id"`
 	FirstName    string `json:"first_name"`
 	SecondName   string `json:"second_name"`
-	Email        string `json:"email"`
 	JobTitle     string `json:"job_title"`
 	Department   string `json:"department"`
-	CreationDate int64  `json:"creation_date"`
-	IsDeleted    bool   `json:"is_deleted"`
+	CreationDate uint   `json:"creation_date"`
 }
 
 type employeeResponse struct {

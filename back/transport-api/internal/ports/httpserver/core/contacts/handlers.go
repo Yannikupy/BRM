@@ -1,13 +1,8 @@
 package contacts
 
 import (
-	"errors"
 	"github.com/gin-gonic/gin"
-	"net/http"
-	"strconv"
 	"transport-api/internal/app"
-	"transport-api/internal/model"
-	"transport-api/internal/model/core"
 )
 
 // @Summary		Добавление нового контакта
@@ -23,44 +18,7 @@ import (
 // @Router			/contacts [post]
 func AddContact(a app.App) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		// TODO заменить header на auth и добавить поддержку 401 unauthorized
-		_, err := strconv.ParseUint(c.GetHeader("company_id"), 10, 64)
-		if err != nil {
-			c.AbortWithStatusJSON(http.StatusBadRequest, errorResponse(model.ErrInvalidInput))
-			return
-		}
-		ownerId, err := strconv.ParseUint(c.GetHeader("employee_id"), 10, 64)
-		if err != nil {
-			c.AbortWithStatusJSON(http.StatusBadRequest, errorResponse(model.ErrInvalidInput))
-			return
-		}
-
-		var req addContactRequest
-		if err = c.BindJSON(&req); err != nil {
-			c.AbortWithStatusJSON(http.StatusBadRequest, errorResponse(model.ErrInvalidInput))
-			return
-		}
-
-		contact, err := a.CreateContact(c, uint(ownerId), uint(req.EmployeeId))
-
-		switch {
-		case err == nil:
-			data := contactToContactData(contact)
-			c.JSON(http.StatusOK, contactResponse{
-				Data: &data,
-				Err:  nil,
-			})
-		case errors.Is(err, model.ErrCompanyNotExists):
-			c.AbortWithStatusJSON(http.StatusNotFound, errorResponse(model.ErrCompanyNotExists))
-		case errors.Is(err, model.ErrEmployeeNotExists):
-			c.AbortWithStatusJSON(http.StatusNotFound, errorResponse(model.ErrEmployeeNotExists))
-		case errors.Is(err, model.ErrAuthorization):
-			c.AbortWithStatusJSON(http.StatusForbidden, errorResponse(model.ErrAuthorization))
-		case errors.Is(err, model.ErrCoreError):
-			c.AbortWithStatusJSON(http.StatusInternalServerError, errorResponse(model.ErrCoreError))
-		default:
-			c.AbortWithStatusJSON(http.StatusInternalServerError, errorResponse(model.ErrCoreUnknown))
-		}
+		// TODO implement
 	}
 }
 
@@ -70,59 +28,15 @@ func AddContact(a app.App) gin.HandlerFunc {
 // @Produce		json
 // @Param			limit	query		int				true	"Limit"
 // @Param			offset	query		int				true	"Offset"
+// @Param			name	query		string			true	"Поиск по имени/фамилии"
+// @Param			company	query		string			true	"Поиск по компании"
 // @Success		200		{object}	contactResponse	"Успешное получение контактов"
 // @Failure		500		{object}	contactResponse	"Проблемы на стороне сервера"
 // @Failure		400		{object}	contactResponse	"Неверный формат входных данных"
 // @Router			/contacts [get]
 func GetContactsList(a app.App) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		// TODO заменить header на auth и добавить поддержку 401 unauthorized
-		_, err := strconv.ParseUint(c.GetHeader("company_id"), 10, 64)
-		if err != nil {
-			c.AbortWithStatusJSON(http.StatusBadRequest, errorResponse(model.ErrInvalidInput))
-			return
-		}
-		ownerId, err := strconv.ParseUint(c.GetHeader("employee_id"), 10, 64)
-		if err != nil {
-			c.AbortWithStatusJSON(http.StatusBadRequest, errorResponse(model.ErrInvalidInput))
-			return
-		}
-
-		limit, err := strconv.Atoi(c.Query("limit"))
-		if err != nil {
-			c.AbortWithStatusJSON(http.StatusBadRequest, errorResponse(model.ErrInvalidInput))
-			return
-		}
-		offset, err := strconv.Atoi(c.Query("offset"))
-		if err != nil {
-			c.AbortWithStatusJSON(http.StatusBadRequest, errorResponse(model.ErrInvalidInput))
-			return
-		}
-
-		contacts, err := a.GetContacts(c,
-			uint(ownerId),
-			core.GetContacts{
-				Limit:  limit,
-				Offset: offset,
-			})
-		switch {
-		case err == nil:
-			data := contactsToContactDataList(contacts)
-			c.JSON(http.StatusOK, сontactListResponse{
-				Data: data,
-				Err:  nil,
-			})
-		case errors.Is(err, model.ErrCompanyNotExists):
-			c.AbortWithStatusJSON(http.StatusNotFound, errorResponse(model.ErrCompanyNotExists))
-		case errors.Is(err, model.ErrEmployeeNotExists):
-			c.AbortWithStatusJSON(http.StatusNotFound, errorResponse(model.ErrEmployeeNotExists))
-		case errors.Is(err, model.ErrAuthorization):
-			c.AbortWithStatusJSON(http.StatusForbidden, errorResponse(model.ErrAuthorization))
-		case errors.Is(err, model.ErrCoreError):
-			c.AbortWithStatusJSON(http.StatusInternalServerError, errorResponse(model.ErrCoreError))
-		default:
-			c.AbortWithStatusJSON(http.StatusInternalServerError, errorResponse(model.ErrCoreUnknown))
-		}
+		// TODO implement
 	}
 }
 
@@ -138,43 +52,7 @@ func GetContactsList(a app.App) gin.HandlerFunc {
 // @Router			/contacts/{id} [get]
 func GetContact(a app.App) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		// TODO заменить header на auth и добавить поддержку 401 unauthorized
-		_, err := strconv.ParseUint(c.GetHeader("company_id"), 10, 64)
-		if err != nil {
-			c.AbortWithStatusJSON(http.StatusBadRequest, errorResponse(model.ErrInvalidInput))
-			return
-		}
-		ownerId, err := strconv.ParseUint(c.GetHeader("employee_id"), 10, 64)
-		if err != nil {
-			c.AbortWithStatusJSON(http.StatusBadRequest, errorResponse(model.ErrInvalidInput))
-			return
-		}
-
-		id, err := strconv.ParseUint(c.Param("id"), 10, 64)
-		if err != nil {
-			c.AbortWithStatusJSON(http.StatusBadRequest, errorResponse(model.ErrInvalidInput))
-			return
-		}
-
-		contact, err := a.GetContactById(c, uint(ownerId), uint(id))
-		switch {
-		case err == nil:
-			data := contactToContactData(contact)
-			c.JSON(http.StatusOK, contactResponse{
-				Data: &data,
-				Err:  nil,
-			})
-		case errors.Is(err, model.ErrCompanyNotExists):
-			c.AbortWithStatusJSON(http.StatusNotFound, errorResponse(model.ErrCompanyNotExists))
-		case errors.Is(err, model.ErrEmployeeNotExists):
-			c.AbortWithStatusJSON(http.StatusNotFound, errorResponse(model.ErrEmployeeNotExists))
-		case errors.Is(err, model.ErrAuthorization):
-			c.AbortWithStatusJSON(http.StatusForbidden, errorResponse(model.ErrAuthorization))
-		case errors.Is(err, model.ErrCoreError):
-			c.AbortWithStatusJSON(http.StatusInternalServerError, errorResponse(model.ErrCoreError))
-		default:
-			c.AbortWithStatusJSON(http.StatusInternalServerError, errorResponse(model.ErrCoreUnknown))
-		}
+		// TODO implement
 	}
 }
 
@@ -192,54 +70,7 @@ func GetContact(a app.App) gin.HandlerFunc {
 // @Router			/contacts/{id} [put]
 func UpdateContact(a app.App) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		// TODO заменить header на auth и добавить поддержку 401 unauthorized
-		_, err := strconv.ParseUint(c.GetHeader("company_id"), 10, 64)
-		if err != nil {
-			c.AbortWithStatusJSON(http.StatusBadRequest, errorResponse(model.ErrInvalidInput))
-			return
-		}
-		ownerId, err := strconv.ParseUint(c.GetHeader("employee_id"), 10, 64)
-		if err != nil {
-			c.AbortWithStatusJSON(http.StatusBadRequest, errorResponse(model.ErrInvalidInput))
-			return
-		}
-
-		id, err := strconv.ParseUint(c.Param("id"), 10, 64)
-		if err != nil {
-			c.AbortWithStatusJSON(http.StatusBadRequest, errorResponse(model.ErrInvalidInput))
-			return
-		}
-
-		var req updateContactRequest
-		if err = c.BindJSON(&req); err != nil {
-			c.AbortWithStatusJSON(http.StatusBadRequest, errorResponse(model.ErrInvalidInput))
-			return
-		}
-
-		contact, err := a.UpdateContact(c,
-			uint(ownerId),
-			uint(id),
-			core.UpdateContact{
-				Notes: req.Notes,
-			})
-		switch {
-		case err == nil:
-			data := contactToContactData(contact)
-			c.JSON(http.StatusOK, contactResponse{
-				Data: &data,
-				Err:  nil,
-			})
-		case errors.Is(err, model.ErrCompanyNotExists):
-			c.AbortWithStatusJSON(http.StatusNotFound, errorResponse(model.ErrCompanyNotExists))
-		case errors.Is(err, model.ErrEmployeeNotExists):
-			c.AbortWithStatusJSON(http.StatusNotFound, errorResponse(model.ErrEmployeeNotExists))
-		case errors.Is(err, model.ErrAuthorization):
-			c.AbortWithStatusJSON(http.StatusForbidden, errorResponse(model.ErrAuthorization))
-		case errors.Is(err, model.ErrCoreError):
-			c.AbortWithStatusJSON(http.StatusInternalServerError, errorResponse(model.ErrCoreError))
-		default:
-			c.AbortWithStatusJSON(http.StatusInternalServerError, errorResponse(model.ErrCoreUnknown))
-		}
+		// TODO implement
 	}
 }
 
@@ -255,41 +86,6 @@ func UpdateContact(a app.App) gin.HandlerFunc {
 // @Router			/contacts/{id} [delete]
 func DeleteContact(a app.App) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		// TODO заменить header на auth и добавить поддержку 401 unauthorized
-		_, err := strconv.ParseUint(c.GetHeader("company_id"), 10, 64)
-		if err != nil {
-			c.AbortWithStatusJSON(http.StatusBadRequest, errorResponse(model.ErrInvalidInput))
-			return
-		}
-		ownerId, err := strconv.ParseUint(c.GetHeader("employee_id"), 10, 64)
-		if err != nil {
-			c.AbortWithStatusJSON(http.StatusBadRequest, errorResponse(model.ErrInvalidInput))
-			return
-		}
-
-		id, err := strconv.ParseUint(c.Param("id"), 10, 64)
-		if err != nil {
-			c.AbortWithStatusJSON(http.StatusBadRequest, errorResponse(model.ErrInvalidInput))
-			return
-		}
-
-		err = a.DeleteContact(c, uint(ownerId), uint(id))
-		switch {
-		case err == nil:
-			c.JSON(http.StatusOK, contactResponse{
-				Data: nil,
-				Err:  nil,
-			})
-		case errors.Is(err, model.ErrCompanyNotExists):
-			c.AbortWithStatusJSON(http.StatusNotFound, errorResponse(model.ErrCompanyNotExists))
-		case errors.Is(err, model.ErrEmployeeNotExists):
-			c.AbortWithStatusJSON(http.StatusNotFound, errorResponse(model.ErrEmployeeNotExists))
-		case errors.Is(err, model.ErrAuthorization):
-			c.AbortWithStatusJSON(http.StatusForbidden, errorResponse(model.ErrAuthorization))
-		case errors.Is(err, model.ErrCoreError):
-			c.AbortWithStatusJSON(http.StatusInternalServerError, errorResponse(model.ErrCoreError))
-		default:
-			c.AbortWithStatusJSON(http.StatusInternalServerError, errorResponse(model.ErrCoreUnknown))
-		}
+		// TODO implement
 	}
 }
