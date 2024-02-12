@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"errors"
+	"flag"
 	"fmt"
 	"github.com/spf13/viper"
 	"log"
@@ -16,6 +17,11 @@ import (
 	"transport-api/internal/ports/httpserver"
 )
 
+const (
+	dockerConfigFile = "config/config-docker.yml"
+	localConfigFile  = "config/config-local.yml"
+)
+
 //	@title			BRM API
 //	@version		1.0
 //	@description	Swagger документация к API
@@ -25,7 +31,16 @@ import (
 func main() {
 	ctx := context.Background()
 
-	viper.SetConfigFile("config/config.yml")
+	isDocker := flag.Bool("docker", false, "flag if this project is running in docker container")
+	flag.Parse()
+	var configPath string
+	if *isDocker {
+		configPath = dockerConfigFile
+	} else {
+		configPath = localConfigFile
+	}
+
+	viper.SetConfigFile(configPath)
 	if err := viper.ReadInConfig(); err != nil {
 		log.Fatalf("reading config: %s", err.Error())
 	}
