@@ -15,5 +15,25 @@ services:
       - ./back/brm-core/migrations/:/docker-entrypoint-initdb.d/
       - core-data:/var/lib/postgresql/data
 
+  brm-core:
+    build:
+      context: back/brm-core
+      dockerfile: Dockerfile
+    command: ./brm-core-app
+    ports:
+      - "50000:50000"
+    depends_on:
+      - postgres-core
+
+  transport-api:
+    build:
+      context: back/transport-api
+      dockerfile: Dockerfile
+    command: ./transport-api-app
+    ports:
+      - "8090:8090"
+    depends_on:
+      - brm-core
+
 volumes:
   core-data:
