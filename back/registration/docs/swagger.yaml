@@ -1,0 +1,110 @@
+basePath: /registration
+definitions:
+  httpserver.addCompanyAndOwnerData:
+    properties:
+      company_data:
+        $ref: '#/definitions/httpserver.companyData'
+      owner_data:
+        $ref: '#/definitions/httpserver.ownerData'
+    type: object
+  httpserver.addCompanyAndOwnerResponse:
+    properties:
+      data:
+        $ref: '#/definitions/httpserver.addCompanyAndOwnerData'
+      error:
+        type: string
+    type: object
+  httpserver.addCompanyRequest:
+    properties:
+      industry:
+        type: integer
+      title:
+        type: string
+    type: object
+  httpserver.addCompanyWithOwnerRequest:
+    properties:
+      company_data:
+        $ref: '#/definitions/httpserver.addCompanyRequest'
+      owner_data:
+        $ref: '#/definitions/httpserver.addOwnerRequest'
+    type: object
+  httpserver.addOwnerRequest:
+    properties:
+      department:
+        type: string
+      first_name:
+        type: string
+      job_title:
+        type: string
+      login:
+        type: string
+      password:
+        type: string
+      second_name:
+        type: string
+    type: object
+  httpserver.companyData:
+    properties:
+      created_at:
+        type: integer
+      industry:
+        type: string
+      owner_id:
+        type: integer
+      title:
+        type: string
+    type: object
+  httpserver.ownerData:
+    properties:
+      company_id:
+        type: integer
+      creation_date:
+        type: integer
+      department:
+        type: string
+      employee_id:
+        type: integer
+      first_name:
+        type: string
+      job_title:
+        type: string
+      second_name:
+        type: string
+    type: object
+host: localhost:8081
+info:
+  contact: {}
+  description: Swagger документация к API регистрации
+  title: BRM API
+  version: "1.0"
+paths:
+  /registration:
+    post:
+      consumes:
+      - application/json
+      description: Добавляет новую компанию и её владельца, который является её первым
+        сотрудником, одним запросом
+      parameters:
+      - description: Информация о компании и её владельце
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/httpserver.addCompanyWithOwnerRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Успешное добавление компании с владельцем
+          schema:
+            $ref: '#/definitions/httpserver.addCompanyAndOwnerResponse'
+        "400":
+          description: Неверный формат входных данных
+          schema:
+            $ref: '#/definitions/httpserver.addCompanyAndOwnerResponse'
+        "500":
+          description: Проблемы на стороне сервера
+          schema:
+            $ref: '#/definitions/httpserver.addCompanyAndOwnerResponse'
+      summary: Добавление новой компании и владельца
+swagger: "2.0"
