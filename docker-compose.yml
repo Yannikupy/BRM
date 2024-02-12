@@ -19,7 +19,7 @@ services:
     build:
       context: back/brm-core
       dockerfile: Dockerfile
-    command: ./brm-core-app
+    command: ./brm-core-app --docker
     profiles: ["dev_front"]
     ports:
       - "50000:50000"
@@ -30,7 +30,7 @@ services:
     build:
       context: back/transport-api
       dockerfile: Dockerfile
-    command: ./transport-api-app
+    command: ./transport-api-app --docker
     profiles: ["dev_front"]
     ports:
       - "8090:8090"
