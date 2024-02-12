@@ -1,7 +1,7 @@
 "postgres-core":
   "username": "root"
   "host": "postgres-core"
-  "port": 6000
+  "port": 5432
   "dbname": "core-db"
   "sslmode": "disable"
 
