@@ -6,8 +6,8 @@ import (
 	"github.com/spf13/viper"
 )
 
-func SetConfigs() error {
-	viper.SetConfigFile("config/config.yml")
+func SetConfigs(configPath string) error {
+	viper.SetConfigFile(configPath)
 	if err := viper.ReadInConfig(); err != nil {
 		return fmt.Errorf("cannot read config file %w", err)
 	}
