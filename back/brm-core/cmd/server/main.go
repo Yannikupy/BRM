@@ -6,15 +6,31 @@ import (
 	"brm-core/internal/ports/grpcserver"
 	"brm-core/internal/repo"
 	"context"
+	"flag"
 	"log"
 	"os"
 	"os/signal"
 	"syscall"
 )
 
+const (
+	dockerConfigFile = "config/config-docker.yml"
+	localConfigFile  = "config/config-local.yml"
+)
+
 func main() {
 	ctx := context.Background()
-	if err := factory.SetConfigs(); err != nil {
+
+	isDocker := flag.Bool("docker", false, "flag if this project is running in docker container")
+	flag.Parse()
+	var configPath string
+	if *isDocker {
+		configPath = dockerConfigFile
+	} else {
+		configPath = localConfigFile
+	}
+
+	if err := factory.SetConfigs(configPath); err != nil {
 		log.Fatal(err.Error())
 	}
 
