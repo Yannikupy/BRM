@@ -25,9 +25,9 @@ import (
 func main() {
 	ctx := context.Background()
 
-	viper.SetConfigFile("configs/config.yml")
+	viper.SetConfigFile("config/config.yml")
 	if err := viper.ReadInConfig(); err != nil {
-		log.Fatalf("reading configs: %s", err.Error())
+		log.Fatalf("reading config: %s", err.Error())
 	}
 
 	coreClient, err := grpccore.NewCoreClient(ctx, fmt.Sprintf("%s:%d",
