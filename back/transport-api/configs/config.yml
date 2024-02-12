@@ -1,7 +1,7 @@
 "grpc-core-client":
-  "host": "localhost"
+  "host": "brm-core"
   "port": 50000
 
 "http-server":
-  "host": "localhost"
+  "host": "transport-api"
   "port": 8090
