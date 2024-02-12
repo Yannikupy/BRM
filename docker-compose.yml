@@ -8,9 +8,9 @@ services:
       POSTGRES_DB: core-db
       POSTGRES_USER: root
       POSTGRES_PASSWORD: root
-#    profiles: ["dev_front", "dev_back"]
+    profiles: ["dev_front", "dev_back"]
     ports:
-      - "6000:6000"
+      - "5432:5432"
     volumes:
       - ./back/brm-core/migrations/:/docker-entrypoint-initdb.d/
       - core-data:/var/lib/postgresql/data
@@ -20,6 +20,7 @@ services:
       context: back/brm-core
       dockerfile: Dockerfile
     command: ./brm-core-app
+    profiles: ["dev_front"]
     ports:
       - "50000:50000"
     depends_on:
@@ -30,6 +31,7 @@ services:
       context: back/transport-api
       dockerfile: Dockerfile
     command: ./transport-api-app
+    profiles: ["dev_front"]
     ports:
       - "8090:8090"
     depends_on:
