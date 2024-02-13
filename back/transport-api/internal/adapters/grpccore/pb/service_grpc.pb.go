@@ -24,7 +24,6 @@ const _ = grpc.SupportPackageIsVersion7
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type CoreServiceClient interface {
 	GetCompany(ctx context.Context, in *GetCompanyRequest, opts ...grpc.CallOption) (*GetCompanyResponse, error)
-	CreateCompanyAndOwner(ctx context.Context, in *CreateCompanyAndOwnerRequest, opts ...grpc.CallOption) (*CreateCompanyAndOwnerResponse, error)
 	UpdateCompany(ctx context.Context, in *UpdateCompanyRequest, opts ...grpc.CallOption) (*UpdateCompanyResponse, error)
 	DeleteCompany(ctx context.Context, in *DeleteCompanyRequest, opts ...grpc.CallOption) (*empty.Empty, error)
 	CreateEmployee(ctx context.Context, in *CreateEmployeeRequest, opts ...grpc.CallOption) (*CreateEmployeeResponse, error)
@@ -51,15 +50,6 @@ func NewCoreServiceClient(cc grpc.ClientConnInterface) CoreServiceClient {
 func (c *coreServiceClient) GetCompany(ctx context.Context, in *GetCompanyRequest, opts ...grpc.CallOption) (*GetCompanyResponse, error) {
 	out := new(GetCompanyResponse)
 	err := c.cc.Invoke(ctx, "/core.CoreService/GetCompany", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *coreServiceClient) CreateCompanyAndOwner(ctx context.Context, in *CreateCompanyAndOwnerRequest, opts ...grpc.CallOption) (*CreateCompanyAndOwnerResponse, error) {
-	out := new(CreateCompanyAndOwnerResponse)
-	err := c.cc.Invoke(ctx, "/core.CoreService/CreateCompanyAndOwner", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -188,7 +178,6 @@ func (c *coreServiceClient) GetContactById(ctx context.Context, in *GetContactBy
 // for forward compatibility
 type CoreServiceServer interface {
 	GetCompany(context.Context, *GetCompanyRequest) (*GetCompanyResponse, error)
-	CreateCompanyAndOwner(context.Context, *CreateCompanyAndOwnerRequest) (*CreateCompanyAndOwnerResponse, error)
 	UpdateCompany(context.Context, *UpdateCompanyRequest) (*UpdateCompanyResponse, error)
 	DeleteCompany(context.Context, *DeleteCompanyRequest) (*empty.Empty, error)
 	CreateEmployee(context.Context, *CreateEmployeeRequest) (*CreateEmployeeResponse, error)
@@ -210,9 +199,6 @@ type UnimplementedCoreServiceServer struct {
 
 func (UnimplementedCoreServiceServer) GetCompany(context.Context, *GetCompanyRequest) (*GetCompanyResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetCompany not implemented")
-}
-func (UnimplementedCoreServiceServer) CreateCompanyAndOwner(context.Context, *CreateCompanyAndOwnerRequest) (*CreateCompanyAndOwnerResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method CreateCompanyAndOwner not implemented")
 }
 func (UnimplementedCoreServiceServer) UpdateCompany(context.Context, *UpdateCompanyRequest) (*UpdateCompanyResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdateCompany not implemented")
@@ -279,24 +265,6 @@ func _CoreService_GetCompany_Handler(srv interface{}, ctx context.Context, dec f
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(CoreServiceServer).GetCompany(ctx, req.(*GetCompanyRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _CoreService_CreateCompanyAndOwner_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(CreateCompanyAndOwnerRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(CoreServiceServer).CreateCompanyAndOwner(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/core.CoreService/CreateCompanyAndOwner",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(CoreServiceServer).CreateCompanyAndOwner(ctx, req.(*CreateCompanyAndOwnerRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -545,10 +513,6 @@ var CoreService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetCompany",
 			Handler:    _CoreService_GetCompany_Handler,
-		},
-		{
-			MethodName: "CreateCompanyAndOwner",
-			Handler:    _CoreService_CreateCompanyAndOwner_Handler,
 		},
 		{
 			MethodName: "UpdateCompany",

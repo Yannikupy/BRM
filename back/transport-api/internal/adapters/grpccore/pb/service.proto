@@ -6,7 +6,6 @@ import "google/protobuf/empty.proto";
 
 service CoreService {
   rpc GetCompany(GetCompanyRequest) returns (GetCompanyResponse) {}
-  rpc CreateCompanyAndOwner(CreateCompanyAndOwnerRequest) returns (CreateCompanyAndOwnerResponse) {}
   rpc UpdateCompany(UpdateCompanyRequest) returns (UpdateCompanyResponse) {}
   rpc DeleteCompany(DeleteCompanyRequest) returns (google.protobuf.Empty) {}
 
@@ -63,16 +62,6 @@ message GetCompanyRequest {
 
 message GetCompanyResponse {
   Company company = 1;
-}
-
-message CreateCompanyAndOwnerRequest {
-  Company company = 1;
-  Employee owner = 2;
-}
-
-message CreateCompanyAndOwnerResponse {
-  Company company = 1;
-  Employee owner = 2;
 }
 
 message UpdateCompanyRequest {

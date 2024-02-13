@@ -15,7 +15,6 @@ type App interface {
 
 type CoreCompany interface {
 	GetCompany(ctx context.Context, id uint) (core.Company, error)
-	CreateCompanyAndOwner(ctx context.Context, company core.Company, owner core.Employee) (core.Company, core.Employee, error)
 	UpdateCompany(ctx context.Context, companyId uint, ownerId uint, upd core.UpdateCompany) (core.Company, error)
 	DeleteCompany(ctx context.Context, companyId uint, ownerId uint) error
 }
