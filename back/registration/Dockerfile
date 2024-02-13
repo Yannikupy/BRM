@@ -2,7 +2,7 @@ FROM golang:1.21.6
 
 ENV GOPATH=/
 
-WORKDIR /go/src/transport-api
+WORKDIR /go/src/registration
 COPY . .
 
 RUN go mod download
