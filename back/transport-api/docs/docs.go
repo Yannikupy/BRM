@@ -270,49 +270,6 @@ const docTemplate = `{
                 }
             }
         },
-        "/companies": {
-            "post": {
-                "description": "Возвращает созданную компанию и её владельца",
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "core/companies"
-                ],
-                "summary": "Создание компании и её владельца",
-                "parameters": [
-                    {
-                        "description": "Информация о новой компании и её владельце",
-                        "name": "input",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/companies.addCompanyAndOwnerRequest"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Успешное создание компании и владельца",
-                        "schema": {
-                            "$ref": "#/definitions/companies.companyAndOwnerResponse"
-                        }
-                    },
-                    "400": {
-                        "description": "Неверный формат входных данных",
-                        "schema": {
-                            "$ref": "#/definitions/companies.companyAndOwnerResponse"
-                        }
-                    },
-                    "500": {
-                        "description": "Проблемы на стороне сервера",
-                        "schema": {
-                            "$ref": "#/definitions/companies.companyAndOwnerResponse"
-                        }
-                    }
-                }
-            }
-        },
         "/companies/industries": {
             "get": {
                 "description": "Возвращает словарь из отраслей и их id",
@@ -1705,73 +1662,6 @@ const docTemplate = `{
                 }
             }
         },
-        "companies.addCompanyAndOwnerRequest": {
-            "type": "object",
-            "properties": {
-                "company": {
-                    "$ref": "#/definitions/companies.addCompanyData"
-                },
-                "owner": {
-                    "$ref": "#/definitions/companies.addOwnerData"
-                }
-            }
-        },
-        "companies.addCompanyData": {
-            "type": "object",
-            "properties": {
-                "description": {
-                    "type": "string"
-                },
-                "industry": {
-                    "type": "integer"
-                },
-                "name": {
-                    "type": "string"
-                }
-            }
-        },
-        "companies.addOwnerData": {
-            "type": "object",
-            "properties": {
-                "department": {
-                    "type": "string"
-                },
-                "email": {
-                    "type": "string"
-                },
-                "first_name": {
-                    "type": "string"
-                },
-                "job_title": {
-                    "type": "string"
-                },
-                "second_name": {
-                    "type": "string"
-                }
-            }
-        },
-        "companies.companyAndOwnerData": {
-            "type": "object",
-            "properties": {
-                "company": {
-                    "$ref": "#/definitions/companies.companyData"
-                },
-                "owner": {
-                    "$ref": "#/definitions/companies.ownerData"
-                }
-            }
-        },
-        "companies.companyAndOwnerResponse": {
-            "type": "object",
-            "properties": {
-                "data": {
-                    "$ref": "#/definitions/companies.companyAndOwnerData"
-                },
-                "err": {
-                    "type": "string"
-                }
-            }
-        },
         "companies.companyData": {
             "type": "object",
             "properties": {
@@ -1871,38 +1761,6 @@ const docTemplate = `{
                 },
                 "total_leads_amount": {
                     "type": "integer"
-                }
-            }
-        },
-        "companies.ownerData": {
-            "type": "object",
-            "properties": {
-                "company_id": {
-                    "type": "integer"
-                },
-                "creation_date": {
-                    "type": "integer"
-                },
-                "department": {
-                    "type": "string"
-                },
-                "email": {
-                    "type": "string"
-                },
-                "first_name": {
-                    "type": "string"
-                },
-                "id": {
-                    "type": "integer"
-                },
-                "is_deleted": {
-                    "type": "boolean"
-                },
-                "job_title": {
-                    "type": "string"
-                },
-                "second_name": {
-                    "type": "string"
                 }
             }
         },

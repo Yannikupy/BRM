@@ -26,42 +26,6 @@ func companyToCompanyData(company core.Company) companyData {
 	}
 }
 
-func ownerToOwnerData(owner core.Employee) ownerData {
-	return ownerData{
-		Id:           owner.Id,
-		CompanyId:    owner.CompanyId,
-		FirstName:    owner.FirstName,
-		SecondName:   owner.SecondName,
-		Email:        owner.Email,
-		JobTitle:     owner.JobTitle,
-		Department:   owner.Department,
-		CreationDate: owner.CreationDate,
-		IsDeleted:    owner.IsDeleted,
-	}
-}
-
-type companyAndOwnerResponse struct {
-	Data *companyAndOwnerData `json:"data"`
-	Err  *string              `json:"err"`
-}
-
-type companyAndOwnerData struct {
-	Company companyData `json:"company"`
-	Owner   ownerData   `json:"owner"`
-}
-
-type ownerData struct {
-	Id           uint   `json:"id"`
-	CompanyId    uint   `json:"company_id"`
-	FirstName    string `json:"first_name"`
-	SecondName   string `json:"second_name"`
-	Email        string `json:"email"`
-	JobTitle     string `json:"job_title"`
-	Department   string `json:"department"`
-	CreationDate int64  `json:"creation_date"`
-	IsDeleted    bool   `json:"is_deleted"`
-}
-
 type companyResponse struct {
 	Data *companyData `json:"data"`
 	Err  *string      `json:"error"`

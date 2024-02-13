@@ -10,64 +10,6 @@ import (
 	"transport-api/internal/model/core"
 )
 
-// @Summary		Создание компании и её владельца
-// @Description	Возвращает созданную компанию и её владельца
-// @Tags			core/companies
-// @Produce		json
-// @Param input body addCompanyAndOwnerRequest true "Информация о новой компании и её владельце"
-// @Success		200	{object}	companyAndOwnerResponse	"Успешное создание компании и владельца"
-// @Failure		500	{object}	companyAndOwnerResponse	"Проблемы на стороне сервера"
-// @Failure		400	{object}	companyAndOwnerResponse	"Неверный формат входных данных"
-// @Router			/companies [post]
-func AddCompanyAndOwner(a app.App) gin.HandlerFunc {
-	return func(c *gin.Context) {
-		var req addCompanyAndOwnerRequest
-		if err := c.BindJSON(&req); err != nil {
-			c.AbortWithStatusJSON(http.StatusBadRequest, errorResponse(model.ErrInvalidInput))
-			return
-		}
-
-		company, owner, err := a.CreateCompanyAndOwner(c,
-			core.Company{
-				Id:           0,
-				Name:         req.Company.Name,
-				Description:  req.Company.Description,
-				Industry:     req.Company.Industry,
-				OwnerId:      0,
-				Rating:       0,
-				CreationDate: 0,
-				IsDeleted:    false,
-			},
-			core.Employee{
-				Id:           0,
-				CompanyId:    0,
-				FirstName:    req.Owner.FirstName,
-				SecondName:   req.Owner.SecondName,
-				Email:        req.Owner.Email,
-				JobTitle:     req.Owner.JobTitle,
-				Department:   req.Owner.Department,
-				CreationDate: 0,
-				IsDeleted:    false,
-			},
-		)
-
-		switch {
-		case err == nil:
-			c.JSON(http.StatusOK, companyAndOwnerResponse{
-				Data: &companyAndOwnerData{
-					Company: companyToCompanyData(company),
-					Owner:   ownerToOwnerData(owner),
-				},
-				Err: nil,
-			})
-		case errors.Is(err, model.ErrCoreError):
-			c.AbortWithStatusJSON(http.StatusInternalServerError, errorResponse(model.ErrCoreError))
-		default:
-			c.AbortWithStatusJSON(http.StatusInternalServerError, errorResponse(model.ErrCoreUnknown))
-		}
-	}
-}
-
 // @Summary		Получение информации о компании
 // @Description	Возвращает название и статистику компании для главной страницы
 // @Tags			core/companies

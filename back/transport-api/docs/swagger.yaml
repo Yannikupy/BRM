@@ -55,49 +55,6 @@ definitions:
       text:
         type: string
     type: object
-  companies.addCompanyAndOwnerRequest:
-    properties:
-      company:
-        $ref: '#/definitions/companies.addCompanyData'
-      owner:
-        $ref: '#/definitions/companies.addOwnerData'
-    type: object
-  companies.addCompanyData:
-    properties:
-      description:
-        type: string
-      industry:
-        type: integer
-      name:
-        type: string
-    type: object
-  companies.addOwnerData:
-    properties:
-      department:
-        type: string
-      email:
-        type: string
-      first_name:
-        type: string
-      job_title:
-        type: string
-      second_name:
-        type: string
-    type: object
-  companies.companyAndOwnerData:
-    properties:
-      company:
-        $ref: '#/definitions/companies.companyData'
-      owner:
-        $ref: '#/definitions/companies.ownerData'
-    type: object
-  companies.companyAndOwnerResponse:
-    properties:
-      data:
-        $ref: '#/definitions/companies.companyAndOwnerData'
-      err:
-        type: string
-    type: object
   companies.companyData:
     properties:
       creation_date:
@@ -163,27 +120,6 @@ definitions:
         type: number
       total_leads_amount:
         type: integer
-    type: object
-  companies.ownerData:
-    properties:
-      company_id:
-        type: integer
-      creation_date:
-        type: integer
-      department:
-        type: string
-      email:
-        type: string
-      first_name:
-        type: string
-      id:
-        type: integer
-      is_deleted:
-        type: boolean
-      job_title:
-        type: string
-      second_name:
-        type: string
     type: object
   companies.updateCompanyRequest:
     properties:
@@ -636,34 +572,6 @@ paths:
       summary: Редактирование объявления
       tags:
       - ads
-  /companies:
-    post:
-      description: Возвращает созданную компанию и её владельца
-      parameters:
-      - description: Информация о новой компании и её владельце
-        in: body
-        name: input
-        required: true
-        schema:
-          $ref: '#/definitions/companies.addCompanyAndOwnerRequest'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: Успешное создание компании и владельца
-          schema:
-            $ref: '#/definitions/companies.companyAndOwnerResponse'
-        "400":
-          description: Неверный формат входных данных
-          schema:
-            $ref: '#/definitions/companies.companyAndOwnerResponse'
-        "500":
-          description: Проблемы на стороне сервера
-          schema:
-            $ref: '#/definitions/companies.companyAndOwnerResponse'
-      summary: Создание компании и её владельца
-      tags:
-      - core/companies
   /companies/{id}:
     delete:
       description: Безвозвратно удаляет компанию и всё, что с этой компанией связано

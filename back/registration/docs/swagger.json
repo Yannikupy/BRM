@@ -1,15 +1,15 @@
 {
     "swagger": "2.0",
     "info": {
-        "description": "Swagger документация к API регистрации",
+        "description": "Swagger документация к API",
         "title": "BRM API",
         "contact": {},
         "version": "1.0"
     },
-    "host": "localhost:8081",
-    "basePath": "/registration",
+    "host": "localhost:8091",
+    "basePath": "/api/v1",
     "paths": {
-        "/registration": {
+        "/register": {
             "post": {
                 "description": "Добавляет новую компанию и её владельца, который является её первым сотрудником, одним запросом",
                 "consumes": [
@@ -26,7 +26,7 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/httpserver.addCompanyWithOwnerRequest"
+                            "$ref": "#/definitions/httpserver.addCompanyAndOwnerRequest"
                         }
                     }
                 ],
@@ -34,19 +34,19 @@
                     "200": {
                         "description": "Успешное добавление компании с владельцем",
                         "schema": {
-                            "$ref": "#/definitions/httpserver.addCompanyAndOwnerResponse"
+                            "$ref": "#/definitions/httpserver.companyAndOwnerResponse"
                         }
                     },
                     "400": {
                         "description": "Неверный формат входных данных",
                         "schema": {
-                            "$ref": "#/definitions/httpserver.addCompanyAndOwnerResponse"
+                            "$ref": "#/definitions/httpserver.companyAndOwnerResponse"
                         }
                     },
                     "500": {
                         "description": "Проблемы на стороне сервера",
                         "schema": {
-                            "$ref": "#/definitions/httpserver.addCompanyAndOwnerResponse"
+                            "$ref": "#/definitions/httpserver.companyAndOwnerResponse"
                         }
                     }
                 }
@@ -54,54 +54,38 @@
         }
     },
     "definitions": {
-        "httpserver.addCompanyAndOwnerData": {
+        "httpserver.addCompanyAndOwnerRequest": {
             "type": "object",
             "properties": {
-                "company_data": {
-                    "$ref": "#/definitions/httpserver.companyData"
+                "company": {
+                    "$ref": "#/definitions/httpserver.addCompanyData"
                 },
-                "owner_data": {
-                    "$ref": "#/definitions/httpserver.ownerData"
+                "owner": {
+                    "$ref": "#/definitions/httpserver.addOwnerData"
                 }
             }
         },
-        "httpserver.addCompanyAndOwnerResponse": {
+        "httpserver.addCompanyData": {
             "type": "object",
             "properties": {
-                "data": {
-                    "$ref": "#/definitions/httpserver.addCompanyAndOwnerData"
-                },
-                "error": {
+                "description": {
                     "type": "string"
-                }
-            }
-        },
-        "httpserver.addCompanyRequest": {
-            "type": "object",
-            "properties": {
+                },
                 "industry": {
                     "type": "integer"
                 },
-                "title": {
+                "name": {
                     "type": "string"
                 }
             }
         },
-        "httpserver.addCompanyWithOwnerRequest": {
-            "type": "object",
-            "properties": {
-                "company_data": {
-                    "$ref": "#/definitions/httpserver.addCompanyRequest"
-                },
-                "owner_data": {
-                    "$ref": "#/definitions/httpserver.addOwnerRequest"
-                }
-            }
-        },
-        "httpserver.addOwnerRequest": {
+        "httpserver.addOwnerData": {
             "type": "object",
             "properties": {
                 "department": {
+                    "type": "string"
+                },
+                "email": {
                     "type": "string"
                 },
                 "first_name": {
@@ -110,13 +94,29 @@
                 "job_title": {
                     "type": "string"
                 },
-                "login": {
-                    "type": "string"
-                },
-                "password": {
-                    "type": "string"
-                },
                 "second_name": {
+                    "type": "string"
+                }
+            }
+        },
+        "httpserver.companyAndOwnerData": {
+            "type": "object",
+            "properties": {
+                "company": {
+                    "$ref": "#/definitions/httpserver.companyData"
+                },
+                "owner": {
+                    "$ref": "#/definitions/httpserver.ownerData"
+                }
+            }
+        },
+        "httpserver.companyAndOwnerResponse": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "$ref": "#/definitions/httpserver.companyAndOwnerData"
+                },
+                "err": {
                     "type": "string"
                 }
             }
@@ -124,17 +124,29 @@
         "httpserver.companyData": {
             "type": "object",
             "properties": {
-                "created_at": {
+                "creation_date": {
+                    "type": "integer"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "id": {
                     "type": "integer"
                 },
                 "industry": {
+                    "type": "integer"
+                },
+                "is_deleted": {
+                    "type": "boolean"
+                },
+                "name": {
                     "type": "string"
                 },
                 "owner_id": {
                     "type": "integer"
                 },
-                "title": {
-                    "type": "string"
+                "rating": {
+                    "type": "number"
                 }
             }
         },
@@ -150,11 +162,17 @@
                 "department": {
                     "type": "string"
                 },
-                "employee_id": {
-                    "type": "integer"
+                "email": {
+                    "type": "string"
                 },
                 "first_name": {
                     "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "is_deleted": {
+                    "type": "boolean"
                 },
                 "job_title": {
                     "type": "string"

@@ -1,14 +1,80 @@
 package main
 
-import "registration/internal/ports/httpserver"
+import (
+	"context"
+	"errors"
+	"flag"
+	"fmt"
+	"github.com/spf13/viper"
+	"log"
+	"net/http"
+	"os"
+	"os/signal"
+	"registration/internal/adapters/grpccore"
+	"registration/internal/app"
+	"registration/internal/ports/httpserver"
+	"syscall"
+	"time"
+)
+
+const (
+	dockerConfigFile = "config/config-docker.yml"
+	localConfigFile  = "config/config-local.yml"
+)
 
 //	@title			BRM API
 //	@version		1.0
-//	@description	Swagger документация к API регистрации
-//	@host			localhost:8081
-//	@BasePath		/registration
+//	@description	Swagger документация к API
+//	@host			localhost:8091
+//	@BasePath		/api/v1
 
 func main() {
-	srv := httpserver.New("localhost:8081", nil)
-	_ = srv.ListenAndServe()
+	ctx := context.Background()
+
+	isDocker := flag.Bool("docker", false, "flag if this project is running in docker container")
+	flag.Parse()
+	var configPath string
+	if *isDocker {
+		configPath = dockerConfigFile
+	} else {
+		configPath = localConfigFile
+	}
+
+	viper.SetConfigFile(configPath)
+	if err := viper.ReadInConfig(); err != nil {
+		log.Fatalf("reading config: %s", err.Error())
+	}
+
+	coreClient, err := grpccore.NewCoreClient(ctx, fmt.Sprintf("%s:%d",
+		viper.GetString("grpc-core-client.host"),
+		viper.GetInt("grpc-core-client.port")))
+	if err != nil {
+		log.Fatal("create grpc core client: ", err.Error())
+	}
+
+	a := app.NewApp(coreClient)
+
+	srv := httpserver.New(fmt.Sprintf("%s:%d",
+		viper.GetString("http-server.host"),
+		viper.GetInt("http-server.port")),
+		a)
+
+	go func() {
+		if err = srv.ListenAndServe(); err != nil && !errors.Is(err, http.ErrServerClosed) {
+			log.Fatal("listening server: ", err.Error())
+		}
+	}()
+
+	// preparing graceful shutdown
+	osSignals := make(chan os.Signal, 1)
+	signal.Notify(osSignals, os.Interrupt, syscall.SIGTERM)
+	signal.Notify(osSignals, os.Interrupt, syscall.SIGINT)
+
+	// waiting for Ctrl+C
+	<-osSignals
+
+	shutdownCtx, cancel := context.WithTimeout(ctx, 30*time.Second) // 30s timeout to finish all active connections
+	defer cancel()
+
+	_ = srv.Shutdown(shutdownCtx)
 }

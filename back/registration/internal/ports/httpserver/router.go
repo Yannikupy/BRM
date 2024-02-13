@@ -12,5 +12,5 @@ import (
 func appRouter(r *gin.RouterGroup, a app.App) {
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
-	r.POST("", addCompanyWithOwner(a))
+	r.POST("register", addCompanyWithOwner(a))
 }

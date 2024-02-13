@@ -1,20 +1,20 @@
 package httpserver
 
-type addCompanyRequest struct {
-	Title    string `json:"title"`
-	Industry int    `json:"industry"`
+type addCompanyAndOwnerRequest struct {
+	Company addCompanyData `json:"company"`
+	Owner   addOwnerData   `json:"owner"`
 }
 
-type addOwnerRequest struct {
+type addCompanyData struct {
+	Name        string `json:"name"`
+	Description string `json:"description"`
+	Industry    uint   `json:"industry"`
+}
+
+type addOwnerData struct {
 	FirstName  string `json:"first_name"`
 	SecondName string `json:"second_name"`
+	Email      string `json:"email"`
 	JobTitle   string `json:"job_title"`
 	Department string `json:"department"`
-	Login      string `json:"login"`
-	Password   string `json:"password"`
-}
-
-type addCompanyWithOwnerRequest struct {
-	CompanyData *addCompanyRequest `json:"company_data"`
-	OwnerData   *addOwnerRequest   `json:"owner_data"`
 }

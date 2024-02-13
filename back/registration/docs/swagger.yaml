@@ -1,58 +1,66 @@
-basePath: /registration
+basePath: /api/v1
 definitions:
-  httpserver.addCompanyAndOwnerData:
+  httpserver.addCompanyAndOwnerRequest:
     properties:
-      company_data:
-        $ref: '#/definitions/httpserver.companyData'
-      owner_data:
-        $ref: '#/definitions/httpserver.ownerData'
+      company:
+        $ref: '#/definitions/httpserver.addCompanyData'
+      owner:
+        $ref: '#/definitions/httpserver.addOwnerData'
     type: object
-  httpserver.addCompanyAndOwnerResponse:
+  httpserver.addCompanyData:
     properties:
-      data:
-        $ref: '#/definitions/httpserver.addCompanyAndOwnerData'
-      error:
+      description:
         type: string
-    type: object
-  httpserver.addCompanyRequest:
-    properties:
       industry:
         type: integer
-      title:
+      name:
         type: string
     type: object
-  httpserver.addCompanyWithOwnerRequest:
-    properties:
-      company_data:
-        $ref: '#/definitions/httpserver.addCompanyRequest'
-      owner_data:
-        $ref: '#/definitions/httpserver.addOwnerRequest'
-    type: object
-  httpserver.addOwnerRequest:
+  httpserver.addOwnerData:
     properties:
       department:
+        type: string
+      email:
         type: string
       first_name:
         type: string
       job_title:
         type: string
-      login:
-        type: string
-      password:
-        type: string
       second_name:
+        type: string
+    type: object
+  httpserver.companyAndOwnerData:
+    properties:
+      company:
+        $ref: '#/definitions/httpserver.companyData'
+      owner:
+        $ref: '#/definitions/httpserver.ownerData'
+    type: object
+  httpserver.companyAndOwnerResponse:
+    properties:
+      data:
+        $ref: '#/definitions/httpserver.companyAndOwnerData'
+      err:
         type: string
     type: object
   httpserver.companyData:
     properties:
-      created_at:
+      creation_date:
+        type: integer
+      description:
+        type: string
+      id:
         type: integer
       industry:
+        type: integer
+      is_deleted:
+        type: boolean
+      name:
         type: string
       owner_id:
         type: integer
-      title:
-        type: string
+      rating:
+        type: number
     type: object
   httpserver.ownerData:
     properties:
@@ -62,23 +70,27 @@ definitions:
         type: integer
       department:
         type: string
-      employee_id:
-        type: integer
+      email:
+        type: string
       first_name:
         type: string
+      id:
+        type: integer
+      is_deleted:
+        type: boolean
       job_title:
         type: string
       second_name:
         type: string
     type: object
-host: localhost:8081
+host: localhost:8091
 info:
   contact: {}
-  description: Swagger документация к API регистрации
+  description: Swagger документация к API
   title: BRM API
   version: "1.0"
 paths:
-  /registration:
+  /register:
     post:
       consumes:
       - application/json
@@ -90,21 +102,21 @@ paths:
         name: input
         required: true
         schema:
-          $ref: '#/definitions/httpserver.addCompanyWithOwnerRequest'
+          $ref: '#/definitions/httpserver.addCompanyAndOwnerRequest'
       produces:
       - application/json
       responses:
         "200":
           description: Успешное добавление компании с владельцем
           schema:
-            $ref: '#/definitions/httpserver.addCompanyAndOwnerResponse'
+            $ref: '#/definitions/httpserver.companyAndOwnerResponse'
         "400":
           description: Неверный формат входных данных
           schema:
-            $ref: '#/definitions/httpserver.addCompanyAndOwnerResponse'
+            $ref: '#/definitions/httpserver.companyAndOwnerResponse'
         "500":
           description: Проблемы на стороне сервера
           schema:
-            $ref: '#/definitions/httpserver.addCompanyAndOwnerResponse'
+            $ref: '#/definitions/httpserver.companyAndOwnerResponse'
       summary: Добавление новой компании и владельца
 swagger: "2.0"

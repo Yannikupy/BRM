@@ -15,7 +15,6 @@ func appRouter(r *gin.RouterGroup, a app.App) {
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
 	r.GET("/companies/:id", companies.GetCompany(a))
-	r.POST("/companies", companies.AddCompanyAndOwner(a))
 	r.GET("/companies/:id/mainpage", companies.GetCompanyMainPage(a))
 	r.PUT("/companies/:id", companies.UpdateCompany(a))
 	r.DELETE("/companies/:id", companies.DeleteCompany(a))

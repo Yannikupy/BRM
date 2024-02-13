@@ -25,7 +25,7 @@ const (
 //	@title			BRM API
 //	@version		1.0
 //	@description	Swagger документация к API
-//	@host			localhost:8080
+//	@host			localhost:8090
 //	@BasePath		/api/v1
 
 func main() {
