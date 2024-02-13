@@ -37,5 +37,16 @@ services:
     depends_on:
       - brm-core
 
+  registration:
+    build:
+      context: back/registration
+      dockerfile: Dockerfile
+    command: ./registration-app --docker
+    profiles: ["dev_front"]
+    ports:
+      - "8091:8091"
+    depends_on:
+      - brm-core
+
 volumes:
   core-data:
