@@ -41,33 +41,6 @@ func (c *coreClientImpl) GetCompany(ctx context.Context, id uint) (core.Company,
 	return respToCompany(resp.Company), nil
 }
 
-func (c *coreClientImpl) CreateCompanyAndOwner(ctx context.Context, company core.Company, owner core.Employee) (core.Company, core.Employee, error) {
-	resp, err := c.cli.CreateCompanyAndOwner(ctx, &pb.CreateCompanyAndOwnerRequest{
-		Company: &pb.Company{
-			Id:           uint64(company.Id),
-			Name:         company.Name,
-			Description:  company.Description,
-			Industry:     uint64(company.Industry),
-			OwnerId:      uint64(company.OwnerId),
-			Rating:       company.Rating,
-			CreationDate: company.CreationDate,
-			IsDeleted:    company.IsDeleted,
-		},
-		Owner: employeeToRequest(owner),
-	})
-	if err != nil {
-		code := status.Code(err)
-		switch code {
-		case codes.ResourceExhausted:
-			return core.Company{}, core.Employee{}, model.ErrCoreError
-		default:
-			return core.Company{}, core.Employee{}, model.ErrCoreUnknown
-		}
-	}
-
-	return respToCompany(resp.Company), respToEmployee(resp.Owner), nil
-}
-
 func (c *coreClientImpl) UpdateCompany(ctx context.Context, companyId uint, ownerId uint, upd core.UpdateCompany) (core.Company, error) {
 	resp, err := c.cli.UpdateCompany(ctx, &pb.UpdateCompanyRequest{
 		CompanyId: uint64(companyId),
