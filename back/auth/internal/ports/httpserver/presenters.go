@@ -6,7 +6,7 @@ type refreshRequest struct {
 }
 
 type loginRequest struct {
-	Login    string `json:"login"`
+	Email    string `json:"email"`
 	Password string `json:"password"`
 }
 
