@@ -1,0 +1,19 @@
+"postgres-passwords":
+  "username": "root"
+  "host": "postgres-passwords"
+  "port": 5433
+  "dbname": "passwords-db"
+  "sslmode": "disable"
+
+"redis-tokens":
+  "host": "redis-tokens"
+  "port": 6000
+  "db": 0
+
+"grpc-server":
+  "network": "tcp"
+  "port": 50001
+
+"http-server":
+  "network": "auth"
+  "port": 8082
