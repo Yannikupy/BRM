@@ -18,6 +18,7 @@ func employeeToModelEmployee(employee *pb.Employee) model.Employee {
 		FirstName:    employee.FirstName,
 		SecondName:   employee.SecondName,
 		Email:        employee.Email,
+		Password:     employee.Password,
 		JobTitle:     employee.JobTitle,
 		Department:   employee.Department,
 		CreationDate: time.Unix(employee.CreationDate, 0),
@@ -35,6 +36,7 @@ func modelEmployeeToEmployee(employee model.Employee) *pb.Employee {
 		FirstName:    employee.FirstName,
 		SecondName:   employee.SecondName,
 		Email:        employee.Email,
+		Password:     employee.Password,
 		JobTitle:     employee.JobTitle,
 		Department:   employee.Department,
 		CreationDate: employee.CreationDate.UTC().Unix(),
@@ -64,7 +66,6 @@ func (s *Server) UpdateEmployee(ctx context.Context, req *pb.UpdateEmployeeReque
 		model.UpdateEmployee{
 			FirstName:  req.Upd.FirstName,
 			SecondName: req.Upd.SecondName,
-			Email:      req.Upd.Email,
 			JobTitle:   req.Upd.JobTitle,
 			Department: req.Upd.Department,
 		},

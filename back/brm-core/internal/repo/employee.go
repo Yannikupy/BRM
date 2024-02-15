@@ -17,9 +17,8 @@ const (
 		UPDATE "employees"
 		SET "first_name" = $2,
 		    "second_name" = $3,
-		    "email" = $4,
-		    "job_title" = $5,
-		    "department" = $6
+		    "job_title" = $4,
+		    "department" = $5
 		WHERE "id" = $1 AND (NOT "is_deleted");`
 
 	deleteEmployeeQuery = `
@@ -45,6 +44,8 @@ const (
 )
 
 func (c *coreRepoImpl) CreateEmployee(ctx context.Context, employee model.Employee) (model.Employee, error) {
+	// TODO добавить обработку ошибки unique email
+
 	var employeeId uint
 	if err := c.QueryRow(ctx, createEmployeeQuery,
 		employee.CompanyId,
@@ -68,7 +69,6 @@ func (c *coreRepoImpl) UpdateEmployee(ctx context.Context, employeeId uint, upd 
 		employeeId,
 		upd.FirstName,
 		upd.SecondName,
-		upd.Email,
 		upd.JobTitle,
 		upd.Department,
 	); err != nil {

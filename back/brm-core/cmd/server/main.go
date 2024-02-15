@@ -2,11 +2,14 @@ package main
 
 import (
 	"brm-core/cmd/server/factory"
+	"brm-core/internal/adapters/grpcauth"
 	"brm-core/internal/app"
 	"brm-core/internal/ports/grpcserver"
 	"brm-core/internal/repo"
 	"context"
 	"flag"
+	"fmt"
+	"github.com/spf13/viper"
 	"log"
 	"os"
 	"os/signal"
@@ -39,7 +42,11 @@ func main() {
 		log.Fatal(err.Error())
 	}
 
-	a := app.New(repo.New(coreRepo))
+	authClient, err := grpcauth.NewAuthClient(ctx, fmt.Sprintf("%s:%d",
+		viper.GetString("grpc-auth-client.host"),
+		viper.GetInt("grpc-auth-client.port")))
+
+	a := app.New(repo.New(coreRepo), authClient)
 
 	srv := grpcserver.New(a)
 	lis, err := factory.PrepareListener()

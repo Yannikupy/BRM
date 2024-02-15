@@ -29,6 +29,9 @@ func mapErrors(err error) error {
 	case errors.Is(err, model.ErrDatabaseError):
 		c = codes.ResourceExhausted
 		resErr = model.ErrDatabaseError
+	case errors.Is(err, model.ErrAuthServiceError):
+		c = codes.ResourceExhausted
+		resErr = model.ErrAuthServiceError
 	default:
 		c = codes.Unknown
 		resErr = model.ErrServiceError
