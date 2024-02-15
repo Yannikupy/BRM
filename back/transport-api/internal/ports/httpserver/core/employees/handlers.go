@@ -8,6 +8,7 @@ import (
 	"transport-api/internal/app"
 	"transport-api/internal/model"
 	"transport-api/internal/model/core"
+	"transport-api/internal/ports/httpserver"
 )
 
 // @Summary		Добавление нового сотрудника
@@ -22,20 +23,14 @@ import (
 // @Router			/employees [post]
 func AddEmployee(a app.App) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		// TODO заменить header на auth и добавить поддержку 401 unauthorized
-		companyId, err := strconv.ParseUint(c.GetHeader("company_id"), 10, 64)
-		if err != nil {
-			c.AbortWithStatusJSON(http.StatusBadRequest, errorResponse(model.ErrInvalidInput))
-			return
-		}
-		ownerId, err := strconv.ParseUint(c.GetHeader("employee_id"), 10, 64)
-		if err != nil {
-			c.AbortWithStatusJSON(http.StatusBadRequest, errorResponse(model.ErrInvalidInput))
+		ownerId, companyId, ok := httpserver.GetAuthData(c)
+		if !ok {
+			c.AbortWithStatusJSON(http.StatusUnauthorized, errorResponse(model.ErrUnauthorized))
 			return
 		}
 
 		var req addEmployeeRequest
-		if err = c.BindJSON(&req); err != nil {
+		if err := c.BindJSON(&req); err != nil {
 			c.AbortWithStatusJSON(http.StatusBadRequest, errorResponse(model.ErrInvalidInput))
 			return
 		}
@@ -63,8 +58,8 @@ func AddEmployee(a app.App) gin.HandlerFunc {
 			c.AbortWithStatusJSON(http.StatusNotFound, errorResponse(model.ErrCompanyNotExists))
 		case errors.Is(err, model.ErrEmployeeNotExists):
 			c.AbortWithStatusJSON(http.StatusNotFound, errorResponse(model.ErrEmployeeNotExists))
-		case errors.Is(err, model.ErrAuthorization):
-			c.AbortWithStatusJSON(http.StatusForbidden, errorResponse(model.ErrAuthorization))
+		case errors.Is(err, model.ErrPermissionDenied):
+			c.AbortWithStatusJSON(http.StatusForbidden, errorResponse(model.ErrPermissionDenied))
 		case errors.Is(err, model.ErrCoreError):
 			c.AbortWithStatusJSON(http.StatusInternalServerError, errorResponse(model.ErrCoreError))
 		default:
@@ -88,15 +83,9 @@ func AddEmployee(a app.App) gin.HandlerFunc {
 // @Router			/employees [get]
 func GetEmployeesList(a app.App) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		// TODO заменить header на auth и добавить поддержку 401 unauthorized
-		companyId, err := strconv.ParseUint(c.GetHeader("company_id"), 10, 64)
-		if err != nil {
-			c.AbortWithStatusJSON(http.StatusBadRequest, errorResponse(model.ErrInvalidInput))
-			return
-		}
-		employeeId, err := strconv.ParseUint(c.GetHeader("employee_id"), 10, 64)
-		if err != nil {
-			c.AbortWithStatusJSON(http.StatusBadRequest, errorResponse(model.ErrInvalidInput))
+		employeeId, companyId, ok := httpserver.GetAuthData(c)
+		if !ok {
+			c.AbortWithStatusJSON(http.StatusUnauthorized, errorResponse(model.ErrUnauthorized))
 			return
 		}
 
@@ -115,8 +104,8 @@ func GetEmployeesList(a app.App) gin.HandlerFunc {
 
 		if pattern, byName := c.GetQuery("name"); byName {
 			employees, err = a.GetEmployeeByName(c,
-				uint(companyId),
-				uint(employeeId),
+				companyId,
+				employeeId,
 				core.EmployeeByName{
 					Pattern: pattern,
 					Limit:   limit,
@@ -130,8 +119,8 @@ func GetEmployeesList(a app.App) gin.HandlerFunc {
 			filter.JobTitle, filter.ByJobTitle = c.GetQuery("jobtitle")
 			filter.Department, filter.ByDepartment = c.GetQuery("department")
 			employees, err = a.GetCompanyEmployees(c,
-				uint(companyId),
-				uint(employeeId),
+				companyId,
+				employeeId,
 				filter)
 		}
 
@@ -145,8 +134,8 @@ func GetEmployeesList(a app.App) gin.HandlerFunc {
 			c.AbortWithStatusJSON(http.StatusNotFound, errorResponse(model.ErrCompanyNotExists))
 		case errors.Is(err, model.ErrEmployeeNotExists):
 			c.AbortWithStatusJSON(http.StatusNotFound, errorResponse(model.ErrEmployeeNotExists))
-		case errors.Is(err, model.ErrAuthorization):
-			c.AbortWithStatusJSON(http.StatusForbidden, errorResponse(model.ErrAuthorization))
+		case errors.Is(err, model.ErrPermissionDenied):
+			c.AbortWithStatusJSON(http.StatusForbidden, errorResponse(model.ErrPermissionDenied))
 		case errors.Is(err, model.ErrCoreError):
 			c.AbortWithStatusJSON(http.StatusInternalServerError, errorResponse(model.ErrCoreError))
 		default:
@@ -167,15 +156,9 @@ func GetEmployeesList(a app.App) gin.HandlerFunc {
 // @Router			/employees/{id} [get]
 func GetEmployee(a app.App) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		// TODO заменить header на auth и добавить поддержку 401 unauthorized
-		companyId, err := strconv.ParseUint(c.GetHeader("company_id"), 10, 64)
-		if err != nil {
-			c.AbortWithStatusJSON(http.StatusBadRequest, errorResponse(model.ErrInvalidInput))
-			return
-		}
-		employeeId, err := strconv.ParseUint(c.GetHeader("employee_id"), 10, 64)
-		if err != nil {
-			c.AbortWithStatusJSON(http.StatusBadRequest, errorResponse(model.ErrInvalidInput))
+		employeeId, companyId, ok := httpserver.GetAuthData(c)
+		if !ok {
+			c.AbortWithStatusJSON(http.StatusUnauthorized, errorResponse(model.ErrUnauthorized))
 			return
 		}
 
@@ -186,8 +169,8 @@ func GetEmployee(a app.App) gin.HandlerFunc {
 		}
 
 		employee, err := a.GetEmployeeById(c,
-			uint(companyId),
-			uint(employeeId),
+			companyId,
+			employeeId,
 			uint(id))
 
 		switch {
@@ -201,8 +184,8 @@ func GetEmployee(a app.App) gin.HandlerFunc {
 			c.AbortWithStatusJSON(http.StatusNotFound, errorResponse(model.ErrCompanyNotExists))
 		case errors.Is(err, model.ErrEmployeeNotExists):
 			c.AbortWithStatusJSON(http.StatusNotFound, errorResponse(model.ErrEmployeeNotExists))
-		case errors.Is(err, model.ErrAuthorization):
-			c.AbortWithStatusJSON(http.StatusForbidden, errorResponse(model.ErrAuthorization))
+		case errors.Is(err, model.ErrPermissionDenied):
+			c.AbortWithStatusJSON(http.StatusForbidden, errorResponse(model.ErrPermissionDenied))
 		case errors.Is(err, model.ErrCoreError):
 			c.AbortWithStatusJSON(http.StatusInternalServerError, errorResponse(model.ErrCoreError))
 		default:
@@ -225,15 +208,9 @@ func GetEmployee(a app.App) gin.HandlerFunc {
 // @Router			/employees/{id} [put]
 func UpdateEmployee(a app.App) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		// TODO заменить header на auth и добавить поддержку 401 unauthorized
-		companyId, err := strconv.ParseUint(c.GetHeader("company_id"), 10, 64)
-		if err != nil {
-			c.AbortWithStatusJSON(http.StatusBadRequest, errorResponse(model.ErrInvalidInput))
-			return
-		}
-		ownerId, err := strconv.ParseUint(c.GetHeader("employee_id"), 10, 64)
-		if err != nil {
-			c.AbortWithStatusJSON(http.StatusBadRequest, errorResponse(model.ErrInvalidInput))
+		ownerId, companyId, ok := httpserver.GetAuthData(c)
+		if !ok {
+			c.AbortWithStatusJSON(http.StatusUnauthorized, errorResponse(model.ErrUnauthorized))
 			return
 		}
 
@@ -250,8 +227,8 @@ func UpdateEmployee(a app.App) gin.HandlerFunc {
 		}
 
 		employee, err := a.UpdateEmployee(c,
-			uint(companyId),
-			uint(ownerId),
+			companyId,
+			ownerId,
 			uint(id),
 			core.UpdateEmployee{
 				FirstName:  req.FirstName,
@@ -272,8 +249,8 @@ func UpdateEmployee(a app.App) gin.HandlerFunc {
 			c.AbortWithStatusJSON(http.StatusNotFound, errorResponse(model.ErrCompanyNotExists))
 		case errors.Is(err, model.ErrEmployeeNotExists):
 			c.AbortWithStatusJSON(http.StatusNotFound, errorResponse(model.ErrEmployeeNotExists))
-		case errors.Is(err, model.ErrAuthorization):
-			c.AbortWithStatusJSON(http.StatusForbidden, errorResponse(model.ErrAuthorization))
+		case errors.Is(err, model.ErrPermissionDenied):
+			c.AbortWithStatusJSON(http.StatusForbidden, errorResponse(model.ErrPermissionDenied))
 		case errors.Is(err, model.ErrCoreError):
 			c.AbortWithStatusJSON(http.StatusInternalServerError, errorResponse(model.ErrCoreError))
 		default:
@@ -294,15 +271,9 @@ func UpdateEmployee(a app.App) gin.HandlerFunc {
 // @Router			/employees/{id} [delete]
 func DeleteEmployee(a app.App) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		// TODO заменить header на auth и добавить поддержку 401 unauthorized
-		companyId, err := strconv.ParseUint(c.GetHeader("company_id"), 10, 64)
-		if err != nil {
-			c.AbortWithStatusJSON(http.StatusBadRequest, errorResponse(model.ErrInvalidInput))
-			return
-		}
-		ownerId, err := strconv.ParseUint(c.GetHeader("employee_id"), 10, 64)
-		if err != nil {
-			c.AbortWithStatusJSON(http.StatusBadRequest, errorResponse(model.ErrInvalidInput))
+		ownerId, companyId, ok := httpserver.GetAuthData(c)
+		if !ok {
+			c.AbortWithStatusJSON(http.StatusUnauthorized, errorResponse(model.ErrUnauthorized))
 			return
 		}
 
@@ -313,8 +284,8 @@ func DeleteEmployee(a app.App) gin.HandlerFunc {
 		}
 
 		err = a.DeleteEmployee(c,
-			uint(companyId),
-			uint(ownerId),
+			companyId,
+			ownerId,
 			uint(id))
 		switch {
 		case err == nil:
@@ -326,8 +297,8 @@ func DeleteEmployee(a app.App) gin.HandlerFunc {
 			c.AbortWithStatusJSON(http.StatusNotFound, errorResponse(model.ErrCompanyNotExists))
 		case errors.Is(err, model.ErrEmployeeNotExists):
 			c.AbortWithStatusJSON(http.StatusNotFound, errorResponse(model.ErrEmployeeNotExists))
-		case errors.Is(err, model.ErrAuthorization):
-			c.AbortWithStatusJSON(http.StatusForbidden, errorResponse(model.ErrAuthorization))
+		case errors.Is(err, model.ErrPermissionDenied):
+			c.AbortWithStatusJSON(http.StatusForbidden, errorResponse(model.ErrPermissionDenied))
 		case errors.Is(err, model.ErrCoreError):
 			c.AbortWithStatusJSON(http.StatusInternalServerError, errorResponse(model.ErrCoreError))
 		default:

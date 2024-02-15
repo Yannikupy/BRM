@@ -2,17 +2,16 @@ package httpserver
 
 import (
 	"github.com/gin-gonic/gin"
-	swaggerFiles "github.com/swaggo/files"
-	ginSwagger "github.com/swaggo/gin-swagger"
 	_ "transport-api/docs"
 	"transport-api/internal/app"
 	"transport-api/internal/ports/httpserver/core/companies"
 	"transport-api/internal/ports/httpserver/core/contacts"
 	"transport-api/internal/ports/httpserver/core/employees"
+	"transport-api/pkg/tokenizer"
 )
 
-func appRouter(r *gin.RouterGroup, a app.App) {
-	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
+func appRouter(r *gin.RouterGroup, a app.App, tkn tokenizer.Tokenizer) {
+	r.Use(authMiddleware(tkn))
 
 	r.GET("/companies/:id", companies.GetCompany(a))
 	r.GET("/companies/:id/mainpage", companies.GetCompanyMainPage(a))

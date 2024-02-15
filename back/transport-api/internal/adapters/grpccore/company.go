@@ -58,7 +58,7 @@ func (c *coreClientImpl) UpdateCompany(ctx context.Context, companyId uint, owne
 		case codes.NotFound:
 			return core.Company{}, model.ErrCompanyNotExists
 		case codes.PermissionDenied:
-			return core.Company{}, model.ErrAuthorization
+			return core.Company{}, model.ErrPermissionDenied
 		case codes.ResourceExhausted:
 			return core.Company{}, model.ErrCoreError
 		default:
@@ -79,7 +79,7 @@ func (c *coreClientImpl) DeleteCompany(ctx context.Context, companyId uint, owne
 		case codes.NotFound:
 			return model.ErrCompanyNotExists
 		case codes.PermissionDenied:
-			return model.ErrAuthorization
+			return model.ErrPermissionDenied
 		case codes.ResourceExhausted:
 			return model.ErrCoreError
 		default:
