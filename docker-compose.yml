@@ -24,10 +24,10 @@ services:
       POSTGRES_PASSWORD: root
     profiles: ["dev_front", "dev_back"]
     ports:
-      - "5433:5433"
+      - "5500:5432"
     volumes:
       - ./back/auth/migrations/:/docker-entrypoint-initdb.d/
-      - auth-data:/var/lib/postgresql/data
+      - passwords-data:/var/lib/postgresql/data
 
   redis-tokens:
     image: redis:7
@@ -93,3 +93,5 @@ services:
 
 volumes:
   core-data:
+  passwords-data:
+  tokens-data:
