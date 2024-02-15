@@ -12,6 +12,7 @@ var (
 	ErrPermissionDenied = errors.New("no rights to make this operation")
 	ErrUnauthorized     = errors.New("this operation requires authorization")
 
+	ErrAuthError   = errors.New("something wrong with the auth service")
 	ErrCoreError   = errors.New("something wrong with the brm-core server")
 	ErrCoreUnknown = errors.New("unknown error from brm-core")
 )

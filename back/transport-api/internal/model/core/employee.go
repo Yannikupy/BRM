@@ -6,6 +6,7 @@ type Employee struct {
 	FirstName    string
 	SecondName   string
 	Email        string
+	Passport     string
 	JobTitle     string
 	Department   string
 	CreationDate int64
@@ -15,7 +16,6 @@ type Employee struct {
 type UpdateEmployee struct {
 	FirstName  string
 	SecondName string
-	Email      string
 	JobTitle   string
 	Department string
 }

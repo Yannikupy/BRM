@@ -19,6 +19,7 @@ func respToEmployee(employee *pb.Employee) core.Employee {
 		FirstName:    employee.FirstName,
 		SecondName:   employee.SecondName,
 		Email:        employee.Email,
+		Passport:     employee.Password,
 		JobTitle:     employee.JobTitle,
 		Department:   employee.Department,
 		CreationDate: employee.CreationDate,
@@ -33,6 +34,7 @@ func employeeToRequest(employee core.Employee) *pb.Employee {
 		FirstName:    employee.FirstName,
 		SecondName:   employee.SecondName,
 		Email:        employee.Email,
+		Password:     employee.Passport,
 		JobTitle:     employee.JobTitle,
 		Department:   employee.Department,
 		CreationDate: employee.CreationDate,
@@ -68,7 +70,6 @@ func (c *coreClientImpl) UpdateEmployee(ctx context.Context, companyId uint, own
 		Upd: &pb.UpdateEmployeeFields{
 			FirstName:  upd.FirstName,
 			SecondName: upd.SecondName,
-			Email:      upd.Email,
 			JobTitle:   upd.JobTitle,
 			Department: upd.Department,
 		},
