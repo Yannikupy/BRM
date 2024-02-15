@@ -10,7 +10,7 @@ services:
       POSTGRES_PASSWORD: root
     profiles: ["dev_front", "dev_back"]
     ports:
-      - "5432:5432"
+      - "5500:5432"
     volumes:
       - ./back/brm-core/migrations/:/docker-entrypoint-initdb.d/
       - core-data:/var/lib/postgresql/data
@@ -24,7 +24,7 @@ services:
       POSTGRES_PASSWORD: root
     profiles: ["dev_front", "dev_back"]
     ports:
-      - "5500:5432"
+      - "5501:5432"
     volumes:
       - ./back/auth/migrations/:/docker-entrypoint-initdb.d/
       - passwords-data:/var/lib/postgresql/data
@@ -34,11 +34,10 @@ services:
     container_name: redis-tokens
     environment:
       REDIS_PASSWORD: root
-      REDIS_PORT: 6000
       REDIS_DATABASES: 1
     profiles: ["dev_front", "dev_back"]
     ports:
-      - "6000:6000"
+      - "6000:6379"
     volumes:
       - tokens-data:/root/redis
 
@@ -52,7 +51,6 @@ services:
       - "50000:50000"
     depends_on:
       - postgres-core
-      - auth
 
   transport-api:
     build:
@@ -85,7 +83,7 @@ services:
     profiles: ["dev_front"]
     ports:
       - "50001:50001"
-      - "8082:8082"
+      - "8092:8092"
     depends_on:
       - postgres-passwords
       - redis-tokens
