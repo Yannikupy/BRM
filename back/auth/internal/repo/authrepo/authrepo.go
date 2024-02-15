@@ -10,7 +10,7 @@ import (
 
 type authRepoImpl struct {
 	refreshExpiration time.Duration
-	redis.Client
+	*redis.Client
 }
 
 func (a *authRepoImpl) SetTokens(ctx context.Context, tokens model.TokensPair) error {
