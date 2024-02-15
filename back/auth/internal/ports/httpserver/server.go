@@ -10,7 +10,7 @@ import (
 func New(addr string, a app.App) *http.Server {
 	gin.SetMode(gin.DebugMode)
 	router := gin.Default()
-	api := router.Group("auth/v1")
+	api := router.Group("api/v1/auth")
 	appRouter(api, a)
 	return &http.Server{
 		Addr:    addr,
