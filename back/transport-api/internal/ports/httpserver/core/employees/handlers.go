@@ -62,6 +62,8 @@ func AddEmployee(a app.App) gin.HandlerFunc {
 			c.AbortWithStatusJSON(http.StatusForbidden, errorResponse(model.ErrPermissionDenied))
 		case errors.Is(err, model.ErrCoreError):
 			c.AbortWithStatusJSON(http.StatusInternalServerError, errorResponse(model.ErrCoreError))
+		case errors.Is(err, model.ErrAuthError):
+			c.AbortWithStatusJSON(http.StatusInternalServerError, errorResponse(model.ErrAuthError))
 		default:
 			c.AbortWithStatusJSON(http.StatusInternalServerError, errorResponse(model.ErrCoreUnknown))
 		}
@@ -233,7 +235,6 @@ func UpdateEmployee(a app.App) gin.HandlerFunc {
 			core.UpdateEmployee{
 				FirstName:  req.FirstName,
 				SecondName: req.SecondName,
-				Email:      req.Email,
 				JobTitle:   req.JobTitle,
 				Department: req.Department,
 			},
