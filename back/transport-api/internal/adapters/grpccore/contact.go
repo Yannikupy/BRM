@@ -56,7 +56,7 @@ func (c *coreClientImpl) UpdateContact(ctx context.Context, ownerId uint, contac
 		case codes.NotFound:
 			return core.Contact{}, model.ErrContactNotExists
 		case codes.PermissionDenied:
-			return core.Contact{}, model.ErrAuthorization
+			return core.Contact{}, model.ErrPermissionDenied
 		case codes.ResourceExhausted:
 			return core.Contact{}, model.ErrCoreError
 		default:
@@ -77,7 +77,7 @@ func (c *coreClientImpl) DeleteContact(ctx context.Context, ownerId uint, contac
 		case codes.NotFound:
 			return model.ErrContactNotExists
 		case codes.PermissionDenied:
-			return model.ErrAuthorization
+			return model.ErrPermissionDenied
 		case codes.ResourceExhausted:
 			return model.ErrCoreError
 		default:
@@ -101,7 +101,7 @@ func (c *coreClientImpl) GetContacts(ctx context.Context, ownerId uint, paginati
 		case codes.NotFound:
 			return []core.Contact{}, model.ErrEmployeeNotExists
 		case codes.PermissionDenied:
-			return []core.Contact{}, model.ErrAuthorization
+			return []core.Contact{}, model.ErrPermissionDenied
 		case codes.ResourceExhausted:
 			return []core.Contact{}, model.ErrCoreError
 		default:
@@ -131,7 +131,7 @@ func (c *coreClientImpl) GetContactById(ctx context.Context, ownerId uint, conta
 				return core.Contact{}, model.ErrEmployeeNotExists
 			}
 		case codes.PermissionDenied:
-			return core.Contact{}, model.ErrAuthorization
+			return core.Contact{}, model.ErrPermissionDenied
 		case codes.ResourceExhausted:
 			return core.Contact{}, model.ErrCoreError
 		default:

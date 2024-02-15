@@ -8,6 +8,7 @@ import (
 	"transport-api/internal/app"
 	"transport-api/internal/model"
 	"transport-api/internal/model/core"
+	"transport-api/internal/ports/httpserver"
 )
 
 // @Summary		Получение информации о компании
@@ -58,6 +59,11 @@ func GetCompany(a app.App) gin.HandlerFunc {
 			c.AbortWithStatusJSON(http.StatusBadRequest, errorResponse(model.ErrInvalidInput))
 			return
 		}
+		_, _, ok := httpserver.GetAuthData(c)
+		if !ok {
+			c.AbortWithStatusJSON(http.StatusUnauthorized, errorResponse(model.ErrUnauthorized))
+			return
+		}
 
 		company, err := a.GetCompany(c, uint(id))
 		switch {
@@ -95,11 +101,9 @@ func UpdateCompany(a app.App) gin.HandlerFunc {
 			c.AbortWithStatusJSON(http.StatusBadRequest, errorResponse(model.ErrInvalidInput))
 			return
 		}
-
-		// TODO заменить header на auth и добавить поддержку 401 unauthorized
-		ownerId, err := strconv.ParseUint(c.GetHeader("employee_id"), 10, 64)
-		if err != nil {
-			c.AbortWithStatusJSON(http.StatusBadRequest, errorResponse(model.ErrInvalidInput))
+		ownerId, _, ok := httpserver.GetAuthData(c)
+		if !ok {
+			c.AbortWithStatusJSON(http.StatusUnauthorized, errorResponse(model.ErrUnauthorized))
 			return
 		}
 
@@ -125,8 +129,8 @@ func UpdateCompany(a app.App) gin.HandlerFunc {
 			})
 		case errors.Is(err, model.ErrCompanyNotExists):
 			c.AbortWithStatusJSON(http.StatusNotFound, errorResponse(model.ErrCompanyNotExists))
-		case errors.Is(err, model.ErrAuthorization):
-			c.AbortWithStatusJSON(http.StatusForbidden, errorResponse(model.ErrAuthorization))
+		case errors.Is(err, model.ErrPermissionDenied):
+			c.AbortWithStatusJSON(http.StatusForbidden, errorResponse(model.ErrPermissionDenied))
 		case errors.Is(err, model.ErrCoreError):
 			c.AbortWithStatusJSON(http.StatusInternalServerError, errorResponse(model.ErrCoreError))
 		default:
@@ -152,11 +156,9 @@ func DeleteCompany(a app.App) gin.HandlerFunc {
 			c.AbortWithStatusJSON(http.StatusBadRequest, errorResponse(model.ErrInvalidInput))
 			return
 		}
-
-		// TODO заменить header на auth и добавить поддержку 401 unauthorized
-		ownerId, err := strconv.ParseUint(c.GetHeader("employee_id"), 10, 64)
-		if err != nil {
-			c.AbortWithStatusJSON(http.StatusBadRequest, errorResponse(model.ErrInvalidInput))
+		ownerId, _, ok := httpserver.GetAuthData(c)
+		if !ok {
+			c.AbortWithStatusJSON(http.StatusUnauthorized, errorResponse(model.ErrUnauthorized))
 			return
 		}
 
@@ -169,8 +171,8 @@ func DeleteCompany(a app.App) gin.HandlerFunc {
 			})
 		case errors.Is(err, model.ErrCompanyNotExists):
 			c.AbortWithStatusJSON(http.StatusNotFound, errorResponse(model.ErrCompanyNotExists))
-		case errors.Is(err, model.ErrAuthorization):
-			c.AbortWithStatusJSON(http.StatusForbidden, errorResponse(model.ErrAuthorization))
+		case errors.Is(err, model.ErrPermissionDenied):
+			c.AbortWithStatusJSON(http.StatusForbidden, errorResponse(model.ErrPermissionDenied))
 		case errors.Is(err, model.ErrCoreError):
 			c.AbortWithStatusJSON(http.StatusInternalServerError, errorResponse(model.ErrCoreError))
 		default:

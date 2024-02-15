@@ -50,7 +50,7 @@ func (c *coreClientImpl) CreateEmployee(ctx context.Context, companyId uint, own
 		code := status.Code(err)
 		switch code {
 		case codes.PermissionDenied:
-			return core.Employee{}, model.ErrAuthorization
+			return core.Employee{}, model.ErrPermissionDenied
 		case codes.ResourceExhausted:
 			return core.Employee{}, model.ErrCoreError
 		default:
@@ -79,7 +79,7 @@ func (c *coreClientImpl) UpdateEmployee(ctx context.Context, companyId uint, own
 		case codes.NotFound:
 			return core.Employee{}, model.ErrEmployeeNotExists
 		case codes.PermissionDenied:
-			return core.Employee{}, model.ErrAuthorization
+			return core.Employee{}, model.ErrPermissionDenied
 		case codes.ResourceExhausted:
 			return core.Employee{}, model.ErrCoreError
 		default:
@@ -101,7 +101,7 @@ func (c *coreClientImpl) DeleteEmployee(ctx context.Context, companyId uint, own
 		case codes.NotFound:
 			return model.ErrEmployeeNotExists
 		case codes.PermissionDenied:
-			return model.ErrAuthorization
+			return model.ErrPermissionDenied
 		case codes.ResourceExhausted:
 			return model.ErrCoreError
 		default:
@@ -130,7 +130,7 @@ func (c *coreClientImpl) GetCompanyEmployees(ctx context.Context, companyId uint
 		case codes.NotFound:
 			return []core.Employee{}, model.ErrEmployeeNotExists
 		case codes.PermissionDenied:
-			return []core.Employee{}, model.ErrAuthorization
+			return []core.Employee{}, model.ErrPermissionDenied
 		case codes.ResourceExhausted:
 			return []core.Employee{}, model.ErrCoreError
 		default:
@@ -160,7 +160,7 @@ func (c *coreClientImpl) GetEmployeeByName(ctx context.Context, companyId uint, 
 		case codes.NotFound:
 			return []core.Employee{}, model.ErrEmployeeNotExists
 		case codes.PermissionDenied:
-			return []core.Employee{}, model.ErrAuthorization
+			return []core.Employee{}, model.ErrPermissionDenied
 		case codes.ResourceExhausted:
 			return []core.Employee{}, model.ErrCoreError
 		default:
@@ -186,7 +186,7 @@ func (c *coreClientImpl) GetEmployeeById(ctx context.Context, companyId uint, em
 		case codes.NotFound:
 			return core.Employee{}, model.ErrEmployeeNotExists
 		case codes.PermissionDenied:
-			return core.Employee{}, model.ErrAuthorization
+			return core.Employee{}, model.ErrPermissionDenied
 		case codes.ResourceExhausted:
 			return core.Employee{}, model.ErrCoreError
 		default:

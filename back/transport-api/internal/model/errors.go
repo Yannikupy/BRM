@@ -9,7 +9,8 @@ var (
 	ErrEmployeeNotExists = errors.New("employee with required id does not exist")
 	ErrContactNotExists  = errors.New("contact with required id does not exist")
 
-	ErrAuthorization = errors.New("no rights to make operation: ownerId mismatched")
+	ErrPermissionDenied = errors.New("no rights to make this operation")
+	ErrUnauthorized     = errors.New("this operation requires authorization")
 
 	ErrCoreError   = errors.New("something wrong with the brm-core server")
 	ErrCoreUnknown = errors.New("unknown error from brm-core")
