@@ -8,3 +8,7 @@
 "grpc-server":
   "network": "tcp"
   "port": 50000
+
+"grpc-auth-client":
+  "host": "auth"
+  "port": 50001

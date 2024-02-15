@@ -1,6 +1,7 @@
 package app
 
 import (
+	"brm-core/internal/adapters/grpcauth"
 	"brm-core/internal/model"
 	"brm-core/internal/repo"
 	"context"
@@ -12,9 +13,10 @@ type App interface {
 	ContactApp
 }
 
-func New(coreRepo repo.CoreRepo) App {
+func New(coreRepo repo.CoreRepo, authCli grpcauth.AuthClient) App {
 	return &appImpl{
 		coreRepo: coreRepo,
+		auth:     authCli,
 	}
 }
 
