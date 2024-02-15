@@ -19,7 +19,7 @@ CREATE TABLE employees (
     "company_id" INTEGER,
     "first_name" VARCHAR(100),
     "second_name" VARCHAR(100),
-    "email" VARCHAR(100),
+    "email" VARCHAR(100) UNIQUE,
     "job_title" VARCHAR(100),
     "department" VARCHAR(100),
     "creation_date" DATE,

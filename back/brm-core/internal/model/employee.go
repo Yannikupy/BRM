@@ -8,6 +8,7 @@ type Employee struct {
 	FirstName    string
 	SecondName   string
 	Email        string
+	Password     string
 	JobTitle     string
 	Department   string
 	CreationDate time.Time
@@ -17,7 +18,6 @@ type Employee struct {
 type UpdateEmployee struct {
 	FirstName  string
 	SecondName string
-	Email      string
 	JobTitle   string
 	Department string
 }
@@ -38,4 +38,11 @@ type EmployeeByName struct {
 
 	Limit  int
 	Offset int
+}
+
+type EmployeeCredentials struct {
+	Email      string
+	Password   string
+	EmployeeId uint
+	CompanyId  uint
 }

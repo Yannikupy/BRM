@@ -10,3 +10,4 @@ var ErrAuthorization = errors.New("no rights to make operation: ownerId mismatch
 
 var ErrDatabaseError = errors.New("something wrong with the database")
 var ErrServiceError = errors.New("something wrong with the server")
+var ErrAuthServiceError = errors.New("something wrong with auth service")

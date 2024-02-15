@@ -1,6 +1,7 @@
 package app
 
 import (
+	"brm-core/internal/adapters/grpcauth"
 	"brm-core/internal/model"
 	"brm-core/internal/repo"
 	"context"
@@ -9,6 +10,7 @@ import (
 
 type appImpl struct {
 	coreRepo repo.CoreRepo
+	auth     grpcauth.AuthClient
 }
 
 func (a *appImpl) GetCompany(ctx context.Context, id uint) (model.Company, error) {
@@ -29,7 +31,21 @@ func (a *appImpl) CreateCompanyAndOwner(ctx context.Context, company model.Compa
 	owner.CreationDate = time.Now().UTC()
 	owner.IsDeleted = false
 
-	return a.coreRepo.CreateCompanyAndOwner(ctx, company, owner)
+	newCompany, newOwner, err := a.coreRepo.CreateCompanyAndOwner(ctx, company, owner)
+	if err != nil {
+		return model.Company{}, model.Employee{}, err
+	}
+
+	if err = a.auth.RegisterEmployee(ctx, model.EmployeeCredentials{
+		Email:      newOwner.Email,
+		Password:   newOwner.Password,
+		EmployeeId: newOwner.Id,
+		CompanyId:  newOwner.CompanyId,
+	}); err != nil {
+		return model.Company{}, model.Employee{}, err
+	}
+
+	return newCompany, newOwner, nil
 }
 
 func (a *appImpl) UpdateCompany(ctx context.Context, companyId uint, ownerId uint, upd model.UpdateCompany) (model.Company, error) {
@@ -71,7 +87,22 @@ func (a *appImpl) CreateEmployee(ctx context.Context, companyId uint, ownerId ui
 	employee.CreationDate = time.Now().UTC()
 	employee.IsDeleted = false
 
-	return a.coreRepo.CreateEmployee(ctx, employee)
+	newEmployee, err := a.coreRepo.CreateEmployee(ctx, employee)
+	if err != nil {
+		return model.Employee{}, err
+	}
+
+	err = a.auth.RegisterEmployee(ctx, model.EmployeeCredentials{
+		Email:      newEmployee.Email,
+		Password:   newEmployee.Password,
+		EmployeeId: newEmployee.Id,
+		CompanyId:  newEmployee.CompanyId,
+	})
+	if err != nil {
+		return model.Employee{}, err
+	}
+
+	return newEmployee, nil
 }
 
 func (a *appImpl) UpdateEmployee(ctx context.Context, companyId uint, ownerId uint, employeeId uint, upd model.UpdateEmployee) (model.Employee, error) {
@@ -107,7 +138,11 @@ func (a *appImpl) DeleteEmployee(ctx context.Context, companyId uint, ownerId ui
 		return model.ErrAuthorization
 	}
 
-	return a.coreRepo.DeleteEmployee(ctx, employeeId)
+	err = a.coreRepo.DeleteEmployee(ctx, employeeId)
+	if err != nil {
+		return err
+	}
+	return a.auth.DeleteEmployee(ctx, employee.Email)
 }
 
 func (a *appImpl) GetCompanyEmployees(ctx context.Context, companyId uint, employeeId uint, filter model.FilterEmployee) ([]model.Employee, error) {
