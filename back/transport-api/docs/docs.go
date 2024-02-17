@@ -334,6 +334,18 @@ const docTemplate = `{
                             "$ref": "#/definitions/companies.mainPageResponse"
                         }
                     },
+                    "401": {
+                        "description": "Ошибка авторизации",
+                        "schema": {
+                            "$ref": "#/definitions/companies.mainPageResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Нет прав для выполнения операции",
+                        "schema": {
+                            "$ref": "#/definitions/companies.mainPageResponse"
+                        }
+                    },
                     "404": {
                         "description": "Компания не найдена",
                         "schema": {
@@ -351,6 +363,11 @@ const docTemplate = `{
         },
         "/companies/{id}": {
             "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "Возвращает поля компании для страницы редактирования",
                 "produces": [
                     "application/json"
@@ -381,6 +398,18 @@ const docTemplate = `{
                             "$ref": "#/definitions/companies.companyResponse"
                         }
                     },
+                    "401": {
+                        "description": "Ошибка авторизации",
+                        "schema": {
+                            "$ref": "#/definitions/companies.companyResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Нет прав для выполнения операции",
+                        "schema": {
+                            "$ref": "#/definitions/companies.companyResponse"
+                        }
+                    },
                     "404": {
                         "description": "Компания не найдена",
                         "schema": {
@@ -396,6 +425,11 @@ const docTemplate = `{
                 }
             },
             "put": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "Изменяет одно или несколько полей компании",
                 "produces": [
                     "application/json"
@@ -435,6 +469,18 @@ const docTemplate = `{
                             "$ref": "#/definitions/companies.companyResponse"
                         }
                     },
+                    "401": {
+                        "description": "Ошибка авторизации",
+                        "schema": {
+                            "$ref": "#/definitions/companies.companyResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Нет прав для выполнения операции",
+                        "schema": {
+                            "$ref": "#/definitions/companies.companyResponse"
+                        }
+                    },
                     "404": {
                         "description": "Компания не найдена",
                         "schema": {
@@ -450,6 +496,11 @@ const docTemplate = `{
                 }
             },
             "delete": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "Безвозвратно удаляет компанию и всё, что с этой компанией связано",
                 "produces": [
                     "application/json"
@@ -480,6 +531,18 @@ const docTemplate = `{
                             "$ref": "#/definitions/companies.companyResponse"
                         }
                     },
+                    "401": {
+                        "description": "Ошибка авторизации",
+                        "schema": {
+                            "$ref": "#/definitions/companies.companyResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Нет прав для выполнения операции",
+                        "schema": {
+                            "$ref": "#/definitions/companies.companyResponse"
+                        }
+                    },
                     "404": {
                         "description": "Компания не найдена",
                         "schema": {
@@ -497,6 +560,11 @@ const docTemplate = `{
         },
         "/contacts": {
             "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "Получает список контактов сотрудника с использованием фильтрации и пагинации",
                 "produces": [
                     "application/json"
@@ -534,6 +602,18 @@ const docTemplate = `{
                             "$ref": "#/definitions/contacts.contactResponse"
                         }
                     },
+                    "401": {
+                        "description": "Ошибка авторизации",
+                        "schema": {
+                            "$ref": "#/definitions/contacts.contactResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Нет прав для выполнения операции",
+                        "schema": {
+                            "$ref": "#/definitions/contacts.contactResponse"
+                        }
+                    },
                     "500": {
                         "description": "Проблемы на стороне сервера",
                         "schema": {
@@ -543,6 +623,11 @@ const docTemplate = `{
                 }
             },
             "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "Добавляет новый контакт в список контактов сотрудника",
                 "consumes": [
                     "application/json"
@@ -578,6 +663,18 @@ const docTemplate = `{
                             "$ref": "#/definitions/contacts.contactResponse"
                         }
                     },
+                    "401": {
+                        "description": "Ошибка авторизации",
+                        "schema": {
+                            "$ref": "#/definitions/contacts.contactResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Нет прав для выполнения операции",
+                        "schema": {
+                            "$ref": "#/definitions/contacts.contactResponse"
+                        }
+                    },
                     "404": {
                         "description": "Добавляемый сотрудник не найден",
                         "schema": {
@@ -595,6 +692,11 @@ const docTemplate = `{
         },
         "/contacts/{id}": {
             "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "Получает контакт по id",
                 "produces": [
                     "application/json"
@@ -625,6 +727,18 @@ const docTemplate = `{
                             "$ref": "#/definitions/contacts.contactResponse"
                         }
                     },
+                    "401": {
+                        "description": "Ошибка авторизации",
+                        "schema": {
+                            "$ref": "#/definitions/contacts.contactResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Нет прав для выполнения операции",
+                        "schema": {
+                            "$ref": "#/definitions/contacts.contactResponse"
+                        }
+                    },
                     "404": {
                         "description": "Контакт не найден",
                         "schema": {
@@ -640,6 +754,11 @@ const docTemplate = `{
                 }
             },
             "put": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "Изменяет одно или несколько полей контакта",
                 "consumes": [
                     "application/json"
@@ -682,6 +801,18 @@ const docTemplate = `{
                             "$ref": "#/definitions/contacts.contactResponse"
                         }
                     },
+                    "401": {
+                        "description": "Ошибка авторизации",
+                        "schema": {
+                            "$ref": "#/definitions/contacts.contactResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Нет прав для выполнения операции",
+                        "schema": {
+                            "$ref": "#/definitions/contacts.contactResponse"
+                        }
+                    },
                     "404": {
                         "description": "Контакт не найден",
                         "schema": {
@@ -697,6 +828,11 @@ const docTemplate = `{
                 }
             },
             "delete": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "Безвозвратно удаляет контакт и все его поля",
                 "produces": [
                     "application/json"
@@ -727,6 +863,18 @@ const docTemplate = `{
                             "$ref": "#/definitions/contacts.contactResponse"
                         }
                     },
+                    "401": {
+                        "description": "Ошибка авторизации",
+                        "schema": {
+                            "$ref": "#/definitions/contacts.contactResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Нет прав для выполнения операции",
+                        "schema": {
+                            "$ref": "#/definitions/contacts.contactResponse"
+                        }
+                    },
                     "404": {
                         "description": "Контакт не найден",
                         "schema": {
@@ -744,6 +892,11 @@ const docTemplate = `{
         },
         "/employees": {
             "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "Получает список сотрудников компании с использованием фильтрации и пагинации",
                 "produces": [
                     "application/json"
@@ -799,6 +952,18 @@ const docTemplate = `{
                             "$ref": "#/definitions/employees.employeeListResponse"
                         }
                     },
+                    "401": {
+                        "description": "Ошибка авторизации",
+                        "schema": {
+                            "$ref": "#/definitions/employees.employeeResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Нет прав для выполнения операции",
+                        "schema": {
+                            "$ref": "#/definitions/employees.employeeResponse"
+                        }
+                    },
                     "500": {
                         "description": "Проблемы на стороне сервера",
                         "schema": {
@@ -808,6 +973,11 @@ const docTemplate = `{
                 }
             },
             "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "Добавляет нового сотрудника в компанию",
                 "consumes": [
                     "application/json"
@@ -843,6 +1013,18 @@ const docTemplate = `{
                             "$ref": "#/definitions/employees.employeeResponse"
                         }
                     },
+                    "401": {
+                        "description": "Ошибка авторизации",
+                        "schema": {
+                            "$ref": "#/definitions/employees.employeeResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Нет прав для выполнения операции",
+                        "schema": {
+                            "$ref": "#/definitions/employees.employeeResponse"
+                        }
+                    },
                     "500": {
                         "description": "Проблемы на стороне сервера",
                         "schema": {
@@ -854,6 +1036,11 @@ const docTemplate = `{
         },
         "/employees/{id}": {
             "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "Получает сотрудника по id",
                 "produces": [
                     "application/json"
@@ -884,6 +1071,18 @@ const docTemplate = `{
                             "$ref": "#/definitions/employees.employeeResponse"
                         }
                     },
+                    "401": {
+                        "description": "Ошибка авторизации",
+                        "schema": {
+                            "$ref": "#/definitions/employees.employeeResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Нет прав для выполнения операции",
+                        "schema": {
+                            "$ref": "#/definitions/employees.employeeResponse"
+                        }
+                    },
                     "404": {
                         "description": "Сотрудник не найден",
                         "schema": {
@@ -899,6 +1098,11 @@ const docTemplate = `{
                 }
             },
             "put": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "Изменяет одно или несколько полей сотрудника",
                 "consumes": [
                     "application/json"
@@ -941,8 +1145,20 @@ const docTemplate = `{
                             "$ref": "#/definitions/employees.employeeResponse"
                         }
                     },
+                    "401": {
+                        "description": "Ошибка авторизации",
+                        "schema": {
+                            "$ref": "#/definitions/employees.employeeResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Нет прав для выполнения операции",
+                        "schema": {
+                            "$ref": "#/definitions/employees.employeeResponse"
+                        }
+                    },
                     "404": {
-                        "description": "Контакт не найден",
+                        "description": "Сотрудник не найден",
                         "schema": {
                             "$ref": "#/definitions/employees.employeeResponse"
                         }
@@ -956,6 +1172,11 @@ const docTemplate = `{
                 }
             },
             "delete": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "Безвозвратно удаляет сотрудника и все его поля",
                 "produces": [
                     "application/json"
@@ -986,8 +1207,20 @@ const docTemplate = `{
                             "$ref": "#/definitions/employees.employeeResponse"
                         }
                     },
+                    "401": {
+                        "description": "Ошибка авторизации",
+                        "schema": {
+                            "$ref": "#/definitions/employees.employeeResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Нет прав для выполнения операции",
+                        "schema": {
+                            "$ref": "#/definitions/employees.employeeResponse"
+                        }
+                    },
                     "404": {
-                        "description": "Контакт не найден",
+                        "description": "Сотрудник не найден",
                         "schema": {
                             "$ref": "#/definitions/employees.employeeResponse"
                         }
@@ -1885,6 +2118,9 @@ const docTemplate = `{
                 "job_title": {
                     "type": "string"
                 },
+                "password": {
+                    "type": "string"
+                },
                 "second_name": {
                     "type": "string"
                 }
@@ -1951,9 +2187,6 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "department": {
-                    "type": "string"
-                },
-                "email": {
                     "type": "string"
                 },
                 "first_name": {
@@ -2186,13 +2419,20 @@ const docTemplate = `{
                 }
             }
         }
+    },
+    "securityDefinitions": {
+        "ApiKeyAuth": {
+            "type": "apiKey",
+            "name": "Authorization",
+            "in": "header"
+        }
     }
 }`
 
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = &swag.Spec{
 	Version:          "1.0",
-	Host:             "localhost:8080",
+	Host:             "localhost:8090",
 	BasePath:         "/api/v1",
 	Schemes:          []string{},
 	Title:            "BRM API",

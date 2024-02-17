@@ -8,12 +8,15 @@ import (
 	"transport-api/internal/app"
 	"transport-api/internal/model"
 	"transport-api/internal/model/core"
-	"transport-api/internal/ports/httpserver"
+	"transport-api/internal/ports/httpserver/middleware"
 )
 
 // @Summary		Добавление нового контакта
 // @Description	Добавляет новый контакт в список контактов сотрудника
 // @Tags			core/contacts
+//
+// @Security		ApiKeyAuth
+//
 // @Accept			json
 // @Produce		json
 // @Param			input	body		addContactRequest	true	"id сотрудника, которого добавляют в контакты"
@@ -21,10 +24,12 @@ import (
 // @Failure		500		{object}	contactResponse		"Проблемы на стороне сервера"
 // @Failure		400		{object}	contactResponse		"Неверный формат входных данных"
 // @Failure		404		{object}	contactResponse		"Добавляемый сотрудник не найден"
+// @Failure		401		{object}	contactResponse		"Ошибка авторизации"
+// @Failure		403		{object}	contactResponse		"Нет прав для выполнения операции"
 // @Router			/contacts [post]
 func AddContact(a app.App) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		ownerId, _, ok := httpserver.GetAuthData(c)
+		ownerId, _, ok := middleware.GetAuthData(c)
 		if !ok {
 			c.AbortWithStatusJSON(http.StatusUnauthorized, errorResponse(model.ErrUnauthorized))
 			return
@@ -62,16 +67,21 @@ func AddContact(a app.App) gin.HandlerFunc {
 // @Summary		Получение списка контактов
 // @Description	Получает список контактов сотрудника с использованием фильтрации и пагинации
 // @Tags			core/contacts
+//
+// @Security		ApiKeyAuth
+//
 // @Produce		json
 // @Param			limit	query		int				true	"Limit"
 // @Param			offset	query		int				true	"Offset"
 // @Success		200		{object}	contactResponse	"Успешное получение контактов"
 // @Failure		500		{object}	contactResponse	"Проблемы на стороне сервера"
 // @Failure		400		{object}	contactResponse	"Неверный формат входных данных"
+// @Failure		401		{object}	contactResponse	"Ошибка авторизации"
+// @Failure		403		{object}	contactResponse	"Нет прав для выполнения операции"
 // @Router			/contacts [get]
 func GetContactsList(a app.App) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		ownerId, _, ok := httpserver.GetAuthData(c)
+		ownerId, _, ok := middleware.GetAuthData(c)
 		if !ok {
 			c.AbortWithStatusJSON(http.StatusUnauthorized, errorResponse(model.ErrUnauthorized))
 			return
@@ -118,16 +128,21 @@ func GetContactsList(a app.App) gin.HandlerFunc {
 // @Summary		Получение контакта
 // @Description	Получает контакт по id
 // @Tags			core/contacts
+//
+// @Security		ApiKeyAuth
+//
 // @Produce		json
 // @Param			id	path		int				true	"id контакта"
 // @Success		200	{object}	contactResponse	"Успешное получение контакта"
 // @Failure		500	{object}	contactResponse	"Проблемы на стороне сервера"
 // @Failure		400	{object}	contactResponse	"Неверный формат входных данных"
 // @Failure		404	{object}	contactResponse	"Контакт не найден"
+// @Failure		401	{object}	contactResponse	"Ошибка авторизации"
+// @Failure		403	{object}	contactResponse	"Нет прав для выполнения операции"
 // @Router			/contacts/{id} [get]
 func GetContact(a app.App) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		ownerId, _, ok := httpserver.GetAuthData(c)
+		ownerId, _, ok := middleware.GetAuthData(c)
 		if !ok {
 			c.AbortWithStatusJSON(http.StatusUnauthorized, errorResponse(model.ErrUnauthorized))
 			return
@@ -164,6 +179,9 @@ func GetContact(a app.App) gin.HandlerFunc {
 // @Summary		Редактирование контакта
 // @Description	Изменяет одно или несколько полей контакта
 // @Tags			core/contacts
+//
+// @Security		ApiKeyAuth
+//
 // @Accept			json
 // @Produce		json
 // @Param			id		path		int						true	"id контакта"
@@ -172,10 +190,12 @@ func GetContact(a app.App) gin.HandlerFunc {
 // @Failure		500		{object}	contactResponse			"Проблемы на стороне сервера"
 // @Failure		400		{object}	contactResponse			"Неверный формат входных данных"
 // @Failure		404		{object}	contactResponse			"Контакт не найден"
+// @Failure		401		{object}	contactResponse			"Ошибка авторизации"
+// @Failure		403		{object}	contactResponse			"Нет прав для выполнения операции"
 // @Router			/contacts/{id} [put]
 func UpdateContact(a app.App) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		ownerId, _, ok := httpserver.GetAuthData(c)
+		ownerId, _, ok := middleware.GetAuthData(c)
 		if !ok {
 			c.AbortWithStatusJSON(http.StatusUnauthorized, errorResponse(model.ErrUnauthorized))
 			return
@@ -223,16 +243,21 @@ func UpdateContact(a app.App) gin.HandlerFunc {
 // @Summary		Удаление контакта
 // @Description	Безвозвратно удаляет контакт и все его поля
 // @Tags			core/contacts
+//
+// @Security		ApiKeyAuth
+//
 // @Produce		json
 // @Param			id	path		int				true	"id контакта"
 // @Success		200	{object}	contactResponse	"Успешное удаление контакта"
 // @Failure		500	{object}	contactResponse	"Проблемы на стороне сервера"
 // @Failure		400	{object}	contactResponse	"Неверный формат входных данных"
 // @Failure		404	{object}	contactResponse	"Контакт не найден"
+// @Failure		401	{object}	contactResponse	"Ошибка авторизации"
+// @Failure		403	{object}	contactResponse	"Нет прав для выполнения операции"
 // @Router			/contacts/{id} [delete]
 func DeleteContact(a app.App) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		ownerId, _, ok := httpserver.GetAuthData(c)
+		ownerId, _, ok := middleware.GetAuthData(c)
 		if !ok {
 			c.AbortWithStatusJSON(http.StatusUnauthorized, errorResponse(model.ErrUnauthorized))
 			return

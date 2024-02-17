@@ -24,7 +24,7 @@ import (
 //	@title			BRM API
 //	@version		1.0
 //	@description	Swagger документация к API авторизации
-//	@host			localhost:8082
+//	@host			localhost:8092
 //	@BasePath		/api/v1/auth
 
 const (
@@ -112,6 +112,8 @@ func main() {
 			log.Fatal("listening server: ", err.Error())
 		}
 	}()
+
+	log.Println("service auth successfully started")
 
 	// preparing graceful shutdown
 	osSignals := make(chan os.Signal, 1)

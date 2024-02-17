@@ -24,11 +24,14 @@ const (
 	localConfigFile  = "config/config-local.yml"
 )
 
-//	@title			BRM API
-//	@version		1.0
-//	@description	Swagger документация к API
-//	@host			localhost:8090
-//	@BasePath		/api/v1
+//	@title						BRM API
+//	@version					1.0
+//	@description				Swagger документация к API
+//	@host						localhost:8090
+//	@BasePath					/api/v1
+//	@SecurityDefinitions.apikey	ApiKeyAuth
+//	@in							header
+//	@name						Authorization
 
 func main() {
 	ctx := context.Background()
@@ -70,6 +73,8 @@ func main() {
 			log.Fatal("listening server: ", err.Error())
 		}
 	}()
+
+	log.Println("service transport-api successfully started")
 
 	// preparing graceful shutdown
 	osSignals := make(chan os.Signal, 1)

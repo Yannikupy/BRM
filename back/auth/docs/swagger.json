@@ -6,8 +6,8 @@
         "contact": {},
         "version": "1.0"
     },
-    "host": "localhost:8082",
-    "basePath": "/auth/v1",
+    "host": "localhost:8092",
+    "basePath": "/api/v1/auth",
     "paths": {
         "/login": {
             "post": {
@@ -39,6 +39,18 @@
                     },
                     "400": {
                         "description": "Неверный формат входных данных",
+                        "schema": {
+                            "$ref": "#/definitions/httpserver.tokensResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Неверный пароль",
+                        "schema": {
+                            "$ref": "#/definitions/httpserver.tokensResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Пользователь с запрашиваемым email не найден",
                         "schema": {
                             "$ref": "#/definitions/httpserver.tokensResponse"
                         }
@@ -129,6 +141,12 @@
                             "$ref": "#/definitions/httpserver.tokensResponse"
                         }
                     },
+                    "404": {
+                        "description": "Пара токенов не найдена (refresh-токен истёк)",
+                        "schema": {
+                            "$ref": "#/definitions/httpserver.tokensResponse"
+                        }
+                    },
                     "500": {
                         "description": "Проблемы на стороне сервера",
                         "schema": {
@@ -143,7 +161,7 @@
         "httpserver.loginRequest": {
             "type": "object",
             "properties": {
-                "login": {
+                "email": {
                     "type": "string"
                 },
                 "password": {

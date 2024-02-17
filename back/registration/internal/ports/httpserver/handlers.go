@@ -13,9 +13,9 @@ import (
 // @Accept			json
 // @Produce		json
 // @Param			input	body		addCompanyAndOwnerRequest	true	"Информация о компании и её владельце"
-// @Success		200		{object}	companyAndOwnerResponse	"Успешное добавление компании с владельцем"
-// @Failure		500		{object}	companyAndOwnerResponse	"Проблемы на стороне сервера"
-// @Failure		400		{object}	companyAndOwnerResponse	"Неверный формат входных данных"
+// @Success		200		{object}	companyAndOwnerResponse		"Успешное добавление компании с владельцем"
+// @Failure		500		{object}	companyAndOwnerResponse		"Проблемы на стороне сервера"
+// @Failure		400		{object}	companyAndOwnerResponse		"Неверный формат входных данных"
 // @Router			/register [post]
 func addCompanyWithOwner(a app.App) gin.HandlerFunc {
 	return func(c *gin.Context) {
@@ -42,6 +42,7 @@ func addCompanyWithOwner(a app.App) gin.HandlerFunc {
 				FirstName:    req.Owner.FirstName,
 				SecondName:   req.Owner.SecondName,
 				Email:        req.Owner.Email,
+				Password:     req.Owner.Password,
 				JobTitle:     req.Owner.JobTitle,
 				Department:   req.Owner.Department,
 				CreationDate: 0,

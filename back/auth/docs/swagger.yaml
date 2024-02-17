@@ -1,8 +1,8 @@
-basePath: /auth/v1
+basePath: /api/v1/auth
 definitions:
   httpserver.loginRequest:
     properties:
-      login:
+      email:
         type: string
       password:
         type: string
@@ -35,7 +35,7 @@ definitions:
       error:
         type: string
     type: object
-host: localhost:8082
+host: localhost:8092
 info:
   contact: {}
   description: Swagger документация к API авторизации
@@ -64,6 +64,14 @@ paths:
             $ref: '#/definitions/httpserver.tokensResponse'
         "400":
           description: Неверный формат входных данных
+          schema:
+            $ref: '#/definitions/httpserver.tokensResponse'
+        "403":
+          description: Неверный пароль
+          schema:
+            $ref: '#/definitions/httpserver.tokensResponse'
+        "404":
+          description: Пользователь с запрашиваемым email не найден
           schema:
             $ref: '#/definitions/httpserver.tokensResponse'
         "500":
@@ -120,6 +128,10 @@ paths:
             $ref: '#/definitions/httpserver.tokensResponse'
         "400":
           description: Неверный формат входных данных
+          schema:
+            $ref: '#/definitions/httpserver.tokensResponse'
+        "404":
+          description: Пара токенов не найдена (refresh-токен истёк)
           schema:
             $ref: '#/definitions/httpserver.tokensResponse'
         "500":

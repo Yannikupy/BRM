@@ -16,7 +16,7 @@ import (
 // @Param			input	body		refreshRequest	true	"Пара токенов"
 // @Success		200		{object}	tokensResponse	"Успешное обновление токенов"
 // @Failure		500		{object}	tokensResponse	"Проблемы на стороне сервера"
-// @Failure 404 {object} tokensResponse "Пара токенов не найдена (refresh-токен истёк)"
+// @Failure		404		{object}	tokensResponse	"Пара токенов не найдена (refresh-токен истёк)"
 // @Failure		400		{object}	tokensResponse	"Неверный формат входных данных"
 // @Router			/refresh [post]
 func refresh(a app.App) gin.HandlerFunc {
@@ -66,8 +66,8 @@ func refresh(a app.App) gin.HandlerFunc {
 // @Success		200		{object}	tokensResponse	"Успешное получение токенов"
 // @Failure		500		{object}	tokensResponse	"Проблемы на стороне сервера"
 // @Failure		400		{object}	tokensResponse	"Неверный формат входных данных"
-// @Failure 403 {object} tokensResponse "Неверный пароль"
-// @Failure 404 {object} tokensResponse "Пользователь с запрашиваемым email не найден"
+// @Failure		403		{object}	tokensResponse	"Неверный пароль"
+// @Failure		404		{object}	tokensResponse	"Пользователь с запрашиваемым email не найден"
 // @Router			/login [post]
 func login(a app.App) gin.HandlerFunc {
 	return func(c *gin.Context) {

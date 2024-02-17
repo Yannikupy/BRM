@@ -200,6 +200,8 @@ definitions:
         type: string
       job_title:
         type: string
+      password:
+        type: string
       second_name:
         type: string
     type: object
@@ -243,8 +245,6 @@ definitions:
   employees.updateEmployeeRequest:
     properties:
       department:
-        type: string
-      email:
         type: string
       first_name:
         type: string
@@ -395,7 +395,7 @@ definitions:
       text:
         type: string
     type: object
-host: localhost:8080
+host: localhost:8090
 info:
   contact: {}
   description: Swagger документация к API
@@ -592,6 +592,14 @@ paths:
           description: Неверный формат входных данных
           schema:
             $ref: '#/definitions/companies.companyResponse'
+        "401":
+          description: Ошибка авторизации
+          schema:
+            $ref: '#/definitions/companies.companyResponse'
+        "403":
+          description: Нет прав для выполнения операции
+          schema:
+            $ref: '#/definitions/companies.companyResponse'
         "404":
           description: Компания не найдена
           schema:
@@ -600,6 +608,8 @@ paths:
           description: Проблемы на стороне сервера
           schema:
             $ref: '#/definitions/companies.companyResponse'
+      security:
+      - ApiKeyAuth: []
       summary: Удаление компании
       tags:
       - core/companies
@@ -622,6 +632,14 @@ paths:
           description: Неверный формат входных данных
           schema:
             $ref: '#/definitions/companies.companyResponse'
+        "401":
+          description: Ошибка авторизации
+          schema:
+            $ref: '#/definitions/companies.companyResponse'
+        "403":
+          description: Нет прав для выполнения операции
+          schema:
+            $ref: '#/definitions/companies.companyResponse'
         "404":
           description: Компания не найдена
           schema:
@@ -630,6 +648,8 @@ paths:
           description: Проблемы на стороне сервера
           schema:
             $ref: '#/definitions/companies.companyResponse'
+      security:
+      - ApiKeyAuth: []
       summary: Получение информации о компании
       tags:
       - core/companies
@@ -658,6 +678,14 @@ paths:
           description: Неверный формат входных данных
           schema:
             $ref: '#/definitions/companies.companyResponse'
+        "401":
+          description: Ошибка авторизации
+          schema:
+            $ref: '#/definitions/companies.companyResponse'
+        "403":
+          description: Нет прав для выполнения операции
+          schema:
+            $ref: '#/definitions/companies.companyResponse'
         "404":
           description: Компания не найдена
           schema:
@@ -666,6 +694,8 @@ paths:
           description: Проблемы на стороне сервера
           schema:
             $ref: '#/definitions/companies.companyResponse'
+      security:
+      - ApiKeyAuth: []
       summary: Редактирование полей компании
       tags:
       - core/companies
@@ -710,6 +740,14 @@ paths:
           description: Неверный формат входных данных
           schema:
             $ref: '#/definitions/companies.mainPageResponse'
+        "401":
+          description: Ошибка авторизации
+          schema:
+            $ref: '#/definitions/companies.mainPageResponse'
+        "403":
+          description: Нет прав для выполнения операции
+          schema:
+            $ref: '#/definitions/companies.mainPageResponse'
         "404":
           description: Компания не найдена
           schema:
@@ -747,10 +785,20 @@ paths:
           description: Неверный формат входных данных
           schema:
             $ref: '#/definitions/contacts.contactResponse'
+        "401":
+          description: Ошибка авторизации
+          schema:
+            $ref: '#/definitions/contacts.contactResponse'
+        "403":
+          description: Нет прав для выполнения операции
+          schema:
+            $ref: '#/definitions/contacts.contactResponse'
         "500":
           description: Проблемы на стороне сервера
           schema:
             $ref: '#/definitions/contacts.contactResponse'
+      security:
+      - ApiKeyAuth: []
       summary: Получение списка контактов
       tags:
       - core/contacts
@@ -776,6 +824,14 @@ paths:
           description: Неверный формат входных данных
           schema:
             $ref: '#/definitions/contacts.contactResponse'
+        "401":
+          description: Ошибка авторизации
+          schema:
+            $ref: '#/definitions/contacts.contactResponse'
+        "403":
+          description: Нет прав для выполнения операции
+          schema:
+            $ref: '#/definitions/contacts.contactResponse'
         "404":
           description: Добавляемый сотрудник не найден
           schema:
@@ -784,6 +840,8 @@ paths:
           description: Проблемы на стороне сервера
           schema:
             $ref: '#/definitions/contacts.contactResponse'
+      security:
+      - ApiKeyAuth: []
       summary: Добавление нового контакта
       tags:
       - core/contacts
@@ -807,6 +865,14 @@ paths:
           description: Неверный формат входных данных
           schema:
             $ref: '#/definitions/contacts.contactResponse'
+        "401":
+          description: Ошибка авторизации
+          schema:
+            $ref: '#/definitions/contacts.contactResponse'
+        "403":
+          description: Нет прав для выполнения операции
+          schema:
+            $ref: '#/definitions/contacts.contactResponse'
         "404":
           description: Контакт не найден
           schema:
@@ -815,6 +881,8 @@ paths:
           description: Проблемы на стороне сервера
           schema:
             $ref: '#/definitions/contacts.contactResponse'
+      security:
+      - ApiKeyAuth: []
       summary: Удаление контакта
       tags:
       - core/contacts
@@ -837,6 +905,14 @@ paths:
           description: Неверный формат входных данных
           schema:
             $ref: '#/definitions/contacts.contactResponse'
+        "401":
+          description: Ошибка авторизации
+          schema:
+            $ref: '#/definitions/contacts.contactResponse'
+        "403":
+          description: Нет прав для выполнения операции
+          schema:
+            $ref: '#/definitions/contacts.contactResponse'
         "404":
           description: Контакт не найден
           schema:
@@ -845,6 +921,8 @@ paths:
           description: Проблемы на стороне сервера
           schema:
             $ref: '#/definitions/contacts.contactResponse'
+      security:
+      - ApiKeyAuth: []
       summary: Получение контакта
       tags:
       - core/contacts
@@ -875,6 +953,14 @@ paths:
           description: Неверный формат входных данных
           schema:
             $ref: '#/definitions/contacts.contactResponse'
+        "401":
+          description: Ошибка авторизации
+          schema:
+            $ref: '#/definitions/contacts.contactResponse'
+        "403":
+          description: Нет прав для выполнения операции
+          schema:
+            $ref: '#/definitions/contacts.contactResponse'
         "404":
           description: Контакт не найден
           schema:
@@ -883,6 +969,8 @@ paths:
           description: Проблемы на стороне сервера
           schema:
             $ref: '#/definitions/contacts.contactResponse'
+      security:
+      - ApiKeyAuth: []
       summary: Редактирование контакта
       tags:
       - core/contacts
@@ -924,10 +1012,20 @@ paths:
           description: Неверный формат входных данных
           schema:
             $ref: '#/definitions/employees.employeeListResponse'
+        "401":
+          description: Ошибка авторизации
+          schema:
+            $ref: '#/definitions/employees.employeeResponse'
+        "403":
+          description: Нет прав для выполнения операции
+          schema:
+            $ref: '#/definitions/employees.employeeResponse'
         "500":
           description: Проблемы на стороне сервера
           schema:
             $ref: '#/definitions/employees.employeeListResponse'
+      security:
+      - ApiKeyAuth: []
       summary: Получение списка сотрудников
       tags:
       - core/employees
@@ -953,10 +1051,20 @@ paths:
           description: Неверный формат входных данных
           schema:
             $ref: '#/definitions/employees.employeeResponse'
+        "401":
+          description: Ошибка авторизации
+          schema:
+            $ref: '#/definitions/employees.employeeResponse'
+        "403":
+          description: Нет прав для выполнения операции
+          schema:
+            $ref: '#/definitions/employees.employeeResponse'
         "500":
           description: Проблемы на стороне сервера
           schema:
             $ref: '#/definitions/employees.employeeResponse'
+      security:
+      - ApiKeyAuth: []
       summary: Добавление нового сотрудника
       tags:
       - core/employees
@@ -980,14 +1088,24 @@ paths:
           description: Неверный формат входных данных
           schema:
             $ref: '#/definitions/employees.employeeResponse'
+        "401":
+          description: Ошибка авторизации
+          schema:
+            $ref: '#/definitions/employees.employeeResponse'
+        "403":
+          description: Нет прав для выполнения операции
+          schema:
+            $ref: '#/definitions/employees.employeeResponse'
         "404":
-          description: Контакт не найден
+          description: Сотрудник не найден
           schema:
             $ref: '#/definitions/employees.employeeResponse'
         "500":
           description: Проблемы на стороне сервера
           schema:
             $ref: '#/definitions/employees.employeeResponse'
+      security:
+      - ApiKeyAuth: []
       summary: Удаление сотрудника
       tags:
       - core/employees
@@ -1010,6 +1128,14 @@ paths:
           description: Неверный формат входных данных
           schema:
             $ref: '#/definitions/employees.employeeResponse'
+        "401":
+          description: Ошибка авторизации
+          schema:
+            $ref: '#/definitions/employees.employeeResponse'
+        "403":
+          description: Нет прав для выполнения операции
+          schema:
+            $ref: '#/definitions/employees.employeeResponse'
         "404":
           description: Сотрудник не найден
           schema:
@@ -1018,6 +1144,8 @@ paths:
           description: Проблемы на стороне сервера
           schema:
             $ref: '#/definitions/employees.employeeResponse'
+      security:
+      - ApiKeyAuth: []
       summary: Получение сотрудника
       tags:
       - core/employees
@@ -1048,14 +1176,24 @@ paths:
           description: Неверный формат входных данных
           schema:
             $ref: '#/definitions/employees.employeeResponse'
+        "401":
+          description: Ошибка авторизации
+          schema:
+            $ref: '#/definitions/employees.employeeResponse'
+        "403":
+          description: Нет прав для выполнения операции
+          schema:
+            $ref: '#/definitions/employees.employeeResponse'
         "404":
-          description: Контакт не найден
+          description: Сотрудник не найден
           schema:
             $ref: '#/definitions/employees.employeeResponse'
         "500":
           description: Проблемы на стороне сервера
           schema:
             $ref: '#/definitions/employees.employeeResponse'
+      security:
+      - ApiKeyAuth: []
       summary: Редактирование сотрудника
       tags:
       - core/employees
@@ -1441,4 +1579,9 @@ paths:
       summary: Получение этапов задачи
       tags:
       - tasks
+securityDefinitions:
+  ApiKeyAuth:
+    in: header
+    name: Authorization
+    type: apiKey
 swagger: "2.0"

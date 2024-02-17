@@ -8,7 +8,8 @@ import (
 	"transport-api/internal/app"
 	"transport-api/internal/model"
 	"transport-api/internal/model/core"
-	"transport-api/internal/ports/httpserver"
+	"transport-api/internal/ports/httpserver/middleware"
+	//"transport-api/internal/ports/httpserver"
 )
 
 // @Summary		Получение информации о компании
@@ -20,6 +21,8 @@ import (
 // @Failure		500	{object}	mainPageResponse	"Проблемы на стороне сервера"
 // @Failure		400	{object}	mainPageResponse	"Неверный формат входных данных"
 // @Failure		404	{object}	mainPageResponse	"Компания не найдена"
+// @Failure		401	{object}	mainPageResponse	"Ошибка авторизации"
+// @Failure		403	{object}	mainPageResponse	"Нет прав для выполнения операции"
 // @Router			/companies/mainpage/{id} [get]
 func GetCompanyMainPage(a app.App) gin.HandlerFunc {
 	return func(c *gin.Context) {
@@ -45,12 +48,17 @@ func GetCompanyMainPage(a app.App) gin.HandlerFunc {
 // @Summary		Получение информации о компании
 // @Description	Возвращает поля компании для страницы редактирования
 // @Tags			core/companies
+//
+// @Security		ApiKeyAuth
+//
 // @Produce		json
 // @Param			id	path		int				true	"id компании"
 // @Success		200	{object}	companyResponse	"Успешное получение данных"
 // @Failure		500	{object}	companyResponse	"Проблемы на стороне сервера"
 // @Failure		400	{object}	companyResponse	"Неверный формат входных данных"
 // @Failure		404	{object}	companyResponse	"Компания не найдена"
+// @Failure		401	{object}	companyResponse	"Ошибка авторизации"
+// @Failure		403	{object}	companyResponse	"Нет прав для выполнения операции"
 // @Router			/companies/{id} [get]
 func GetCompany(a app.App) gin.HandlerFunc {
 	return func(c *gin.Context) {
@@ -59,7 +67,7 @@ func GetCompany(a app.App) gin.HandlerFunc {
 			c.AbortWithStatusJSON(http.StatusBadRequest, errorResponse(model.ErrInvalidInput))
 			return
 		}
-		_, _, ok := httpserver.GetAuthData(c)
+		_, _, ok := middleware.GetAuthData(c)
 		if !ok {
 			c.AbortWithStatusJSON(http.StatusUnauthorized, errorResponse(model.ErrUnauthorized))
 			return
@@ -86,6 +94,9 @@ func GetCompany(a app.App) gin.HandlerFunc {
 // @Summary		Редактирование полей компании
 // @Description	Изменяет одно или несколько полей компании
 // @Tags			core/companies
+//
+// @Security		ApiKeyAuth
+//
 // @Produce		json
 // @Param			id		path		int						true	"id компании"
 // @Param			input	body		updateCompanyRequest	true	"Новые поля"
@@ -93,6 +104,8 @@ func GetCompany(a app.App) gin.HandlerFunc {
 // @Failure		500		{object}	companyResponse			"Проблемы на стороне сервера"
 // @Failure		400		{object}	companyResponse			"Неверный формат входных данных"
 // @Failure		404		{object}	companyResponse			"Компания не найдена"
+// @Failure		401		{object}	companyResponse			"Ошибка авторизации"
+// @Failure		403		{object}	companyResponse			"Нет прав для выполнения операции"
 // @Router			/companies/{id} [put]
 func UpdateCompany(a app.App) gin.HandlerFunc {
 	return func(c *gin.Context) {
@@ -101,7 +114,7 @@ func UpdateCompany(a app.App) gin.HandlerFunc {
 			c.AbortWithStatusJSON(http.StatusBadRequest, errorResponse(model.ErrInvalidInput))
 			return
 		}
-		ownerId, _, ok := httpserver.GetAuthData(c)
+		ownerId, _, ok := middleware.GetAuthData(c)
 		if !ok {
 			c.AbortWithStatusJSON(http.StatusUnauthorized, errorResponse(model.ErrUnauthorized))
 			return
@@ -113,7 +126,7 @@ func UpdateCompany(a app.App) gin.HandlerFunc {
 			return
 		}
 
-		company, err := a.UpdateCompany(c, uint(companyId), uint(ownerId), core.UpdateCompany{
+		company, err := a.UpdateCompany(c, uint(companyId), ownerId, core.UpdateCompany{
 			Name:        req.Name,
 			Description: req.Description,
 			Industry:    req.Industry,
@@ -142,12 +155,17 @@ func UpdateCompany(a app.App) gin.HandlerFunc {
 // @Summary		Удаление компании
 // @Description	Безвозвратно удаляет компанию и всё, что с этой компанией связано
 // @Tags			core/companies
+//
+// @Security		ApiKeyAuth
+//
 // @Produce		json
 // @Param			id	path		int				true	"id компании"
 // @Success		200	{object}	companyResponse	"Успешное удаление компании"
 // @Failure		500	{object}	companyResponse	"Проблемы на стороне сервера"
 // @Failure		400	{object}	companyResponse	"Неверный формат входных данных"
 // @Failure		404	{object}	companyResponse	"Компания не найдена"
+// @Failure		401	{object}	companyResponse	"Ошибка авторизации"
+// @Failure		403	{object}	companyResponse	"Нет прав для выполнения операции"
 // @Router			/companies/{id} [delete]
 func DeleteCompany(a app.App) gin.HandlerFunc {
 	return func(c *gin.Context) {
@@ -156,13 +174,13 @@ func DeleteCompany(a app.App) gin.HandlerFunc {
 			c.AbortWithStatusJSON(http.StatusBadRequest, errorResponse(model.ErrInvalidInput))
 			return
 		}
-		ownerId, _, ok := httpserver.GetAuthData(c)
+		ownerId, _, ok := middleware.GetAuthData(c)
 		if !ok {
 			c.AbortWithStatusJSON(http.StatusUnauthorized, errorResponse(model.ErrUnauthorized))
 			return
 		}
 
-		err = a.DeleteCompany(c, uint(companyId), uint(ownerId))
+		err = a.DeleteCompany(c, uint(companyId), ownerId)
 		switch {
 		case err == nil:
 			c.JSON(http.StatusOK, companyResponse{

@@ -14,7 +14,7 @@ type authRepoImpl struct {
 }
 
 func (a *authRepoImpl) SetTokens(ctx context.Context, tokens model.TokensPair) error {
-	if err := a.Set(ctx, tokens.Access, tokens.Refresh, a.refreshExpiration); err != nil {
+	if err := a.Set(ctx, tokens.Access, tokens.Refresh, a.refreshExpiration).Err(); err != nil {
 		return model.ErrAuthRepoError
 	}
 	return nil

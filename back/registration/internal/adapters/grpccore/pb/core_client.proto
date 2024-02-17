@@ -24,10 +24,11 @@ message Employee {
   string first_name = 3;
   string second_name = 4;
   string email = 5;
-  string job_title = 6;
-  string department = 7;
-  int64 creation_date = 8;
-  bool is_deleted = 9;
+  string password = 6;
+  string job_title = 7;
+  string department = 8;
+  int64 creation_date = 9;
+  bool is_deleted = 10;
 }
 
 message CreateCompanyAndOwnerRequest {

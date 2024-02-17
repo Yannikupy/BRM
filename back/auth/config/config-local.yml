@@ -1,7 +1,7 @@
 "postgres-passwords":
   "username": "root"
   "host": "localhost"
-  "port": 5500
+  "port": 5501
   "dbname": "passwords-db"
   "sslmode": "disable"
 
@@ -16,7 +16,7 @@
 
 "http-server":
   "host": "localhost"
-  "port": 8082
+  "port": 8092
 
 "app":
   "refresh-token-length": 32

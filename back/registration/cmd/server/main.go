@@ -65,6 +65,8 @@ func main() {
 		}
 	}()
 
+	log.Println("service registration successfully started")
+
 	// preparing graceful shutdown
 	osSignals := make(chan os.Signal, 1)
 	signal.Notify(osSignals, os.Interrupt, syscall.SIGTERM)

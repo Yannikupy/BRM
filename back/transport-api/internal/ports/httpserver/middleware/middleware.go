@@ -1,4 +1,4 @@
-package httpserver
+package middleware
 
 import (
 	"github.com/gin-gonic/gin"
@@ -7,9 +7,9 @@ import (
 	"transport-api/pkg/tokenizer"
 )
 
-func authMiddleware(tkn tokenizer.Tokenizer) gin.HandlerFunc {
+func AuthMiddleware(tkn tokenizer.Tokenizer) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		headerValue := c.GetHeader("Auth")
+		headerValue := c.GetHeader("Authorization")
 		token := getTokenFromHeader(headerValue)
 		if token == "" {
 			c.Next()
@@ -27,7 +27,7 @@ func authMiddleware(tkn tokenizer.Tokenizer) gin.HandlerFunc {
 
 func getTokenFromHeader(headerValue string) string {
 	header := strings.Split(headerValue, " ")
-	if len(header) < 2 || header[0] != "bearer" {
+	if len(header) < 2 || header[0] != "Bearer" {
 		return ""
 	}
 	return header[1]

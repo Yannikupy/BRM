@@ -46,11 +46,19 @@ func (t *tokenizerImpl) DecryptToken(tokenStr string) (TokenData, error) {
 		return TokenData{}, ErrParsingToken
 	}
 
-	expTime := time.Unix(int64(claims["exp"].(float64)), 0)
+	expTimeStr, ok := claims["exp"].(string)
+	if !ok {
+		return TokenData{}, ErrParsingToken
+	}
+
+	expTimeInt, err := strconv.ParseUint(expTimeStr, 10, 64)
+	if err != nil {
+		return TokenData{}, ErrParsingToken
+	}
 
 	return TokenData{
 		EmployeeId: uint(employeeId),
 		CompanyId:  uint(companyId),
-		IsExpired:  time.Now().UTC().After(expTime),
+		IsExpired:  time.Now().UTC().After(time.Unix(int64(expTimeInt), 0)),
 	}, nil
 }

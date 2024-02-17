@@ -94,6 +94,9 @@
                 "job_title": {
                     "type": "string"
                 },
+                "password": {
+                    "type": "string"
+                },
                 "second_name": {
                     "type": "string"
                 }

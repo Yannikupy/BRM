@@ -15,15 +15,15 @@ func (s *Server) RegisterEmployee(ctx context.Context, req *pb.RegisterEmployeeR
 		CompanyId:  uint(req.CompanyId),
 	})
 	if err != nil {
-		return nil, mapErrors(err)
+		return &empty.Empty{}, mapErrors(err)
 	}
-	return nil, nil
+	return &empty.Empty{}, nil
 }
 
 func (s *Server) DeleteEmployee(ctx context.Context, req *pb.DeleteEmployeeRequest) (*empty.Empty, error) {
 	err := s.App.DeleteEmployee(ctx, req.Email)
 	if err != nil {
-		return nil, mapErrors(err)
+		return &empty.Empty{}, mapErrors(err)
 	}
-	return nil, nil
+	return &empty.Empty{}, nil
 }

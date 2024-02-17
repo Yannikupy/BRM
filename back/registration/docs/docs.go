@@ -100,6 +100,9 @@ const docTemplate = `{
                 "job_title": {
                     "type": "string"
                 },
+                "password": {
+                    "type": "string"
+                },
                 "second_name": {
                     "type": "string"
                 }
@@ -201,6 +204,8 @@ var SwaggerInfo = &swag.Spec{
 	Description:      "Swagger документация к API",
 	InfoInstanceName: "swagger",
 	SwaggerTemplate:  docTemplate,
+	LeftDelim:        "{{",
+	RightDelim:       "}}",
 }
 
 func init() {

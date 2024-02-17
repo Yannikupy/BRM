@@ -16,7 +16,7 @@ func (t *tokenizerImpl) CreateToken(employeeId uint, companyId uint) (string, er
 	claims := jwt.MapClaims{
 		"employee-id": strconv.FormatUint(uint64(employeeId), 10),
 		"company-id":  strconv.FormatUint(uint64(companyId), 10),
-		"exp":         time.Now().UTC().Add(t.accessExpiration),
+		"exp":         strconv.FormatInt(time.Now().UTC().Add(t.accessExpiration).Unix(), 10),
 	}
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)

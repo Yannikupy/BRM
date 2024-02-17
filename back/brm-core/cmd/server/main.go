@@ -65,6 +65,7 @@ func main() {
 		}
 	}()
 
+	log.Println("service brm-core successfully started")
 	<-osSignals
 	srv.GracefulStop()
 }

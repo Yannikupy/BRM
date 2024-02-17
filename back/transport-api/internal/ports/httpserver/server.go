@@ -10,13 +10,14 @@ import (
 )
 
 func New(addr string, a app.App, tkn tokenizer.Tokenizer) *http.Server {
-	gin.SetMode(gin.DebugMode)
+	gin.SetMode(gin.ReleaseMode)
 	router := gin.Default()
 
 	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
 	api := router.Group("api/v1")
 	appRouter(api, a, tkn)
+
 	return &http.Server{
 		Addr:    addr,
 		Handler: router,

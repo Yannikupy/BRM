@@ -7,11 +7,12 @@ import (
 	"transport-api/internal/ports/httpserver/core/companies"
 	"transport-api/internal/ports/httpserver/core/contacts"
 	"transport-api/internal/ports/httpserver/core/employees"
+	"transport-api/internal/ports/httpserver/middleware"
 	"transport-api/pkg/tokenizer"
 )
 
 func appRouter(r *gin.RouterGroup, a app.App, tkn tokenizer.Tokenizer) {
-	r.Use(authMiddleware(tkn))
+	r.Use(middleware.AuthMiddleware(tkn))
 
 	r.GET("/companies/:id", companies.GetCompany(a))
 	r.GET("/companies/:id/mainpage", companies.GetCompanyMainPage(a))
