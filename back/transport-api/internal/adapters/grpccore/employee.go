@@ -53,6 +53,8 @@ func (c *coreClientImpl) CreateEmployee(ctx context.Context, companyId uint, own
 		switch code {
 		case codes.PermissionDenied:
 			return core.Employee{}, model.ErrPermissionDenied
+		case codes.AlreadyExists:
+			return core.Employee{}, model.ErrEmailRegistered
 		case codes.ResourceExhausted:
 			return core.Employee{}, model.ErrCoreError
 		default:

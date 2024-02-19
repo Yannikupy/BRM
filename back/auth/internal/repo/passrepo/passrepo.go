@@ -5,6 +5,7 @@ import (
 	"context"
 	"errors"
 	"github.com/jackc/pgx/v5"
+	"github.com/jackc/pgx/v5/pgconn"
 )
 
 type passRepoImpl struct {
@@ -26,12 +27,20 @@ const (
 )
 
 func (p *passRepoImpl) CreateEmployee(ctx context.Context, employee model.Employee) error {
+	var pgErr *pgconn.PgError
 	if _, err := p.Exec(ctx, createEmployeeQuery,
 		employee.Email,
 		employee.Password,
 		employee.EmployeeId,
 		employee.CompanyId,
-	); err != nil {
+	); errors.As(err, &pgErr) {
+		switch pgErr.Code {
+		case "23505": // duplicate primary key error
+			return model.ErrEmailRegistered
+		default:
+			return model.ErrServiceError
+		}
+	} else if err != nil {
 		return errors.Join(model.ErrPassRepoError, err)
 	} else {
 		return nil

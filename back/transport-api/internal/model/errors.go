@@ -11,6 +11,7 @@ var (
 
 	ErrPermissionDenied = errors.New("no rights to make this operation")
 	ErrUnauthorized     = errors.New("this operation requires authorization")
+	ErrEmailRegistered  = errors.New("employee with this email is already registered")
 
 	ErrAuthError   = errors.New("something wrong with the auth service")
 	ErrCoreError   = errors.New("something wrong with the brm-core server")

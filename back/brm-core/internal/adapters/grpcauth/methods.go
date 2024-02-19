@@ -28,6 +28,8 @@ func (a *authClientImpl) DeleteEmployee(ctx context.Context, email string) error
 		switch code {
 		case codes.NotFound:
 			return model.ErrEmployeeNotExists
+		case codes.AlreadyExists:
+			return model.ErrEmailRegistered
 		case codes.ResourceExhausted:
 			return model.ErrAuthServiceError
 		default:

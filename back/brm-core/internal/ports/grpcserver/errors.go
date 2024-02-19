@@ -26,6 +26,9 @@ func mapErrors(err error) error {
 	case errors.Is(err, model.ErrAuthorization):
 		c = codes.PermissionDenied
 		resErr = model.ErrAuthorization
+	case errors.Is(err, model.ErrEmailRegistered):
+		c = codes.AlreadyExists
+		resErr = model.ErrEmailRegistered
 	case errors.Is(err, model.ErrDatabaseError):
 		c = codes.ResourceExhausted
 		resErr = model.ErrDatabaseError

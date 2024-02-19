@@ -5,6 +5,7 @@ import (
 	"context"
 	"errors"
 	"github.com/jackc/pgx/v5"
+	"github.com/jackc/pgx/v5/pgconn"
 )
 
 const (
@@ -44,9 +45,8 @@ const (
 )
 
 func (c *coreRepoImpl) CreateEmployee(ctx context.Context, employee model.Employee) (model.Employee, error) {
-	// TODO добавить обработку ошибки unique email
-
 	var employeeId uint
+	var pgErr *pgconn.PgError
 	if err := c.QueryRow(ctx, createEmployeeQuery,
 		employee.CompanyId,
 		employee.FirstName,
@@ -56,7 +56,14 @@ func (c *coreRepoImpl) CreateEmployee(ctx context.Context, employee model.Employ
 		employee.Department,
 		employee.CreationDate,
 		employee.IsDeleted,
-	).Scan(&employeeId); err != nil {
+	).Scan(&employeeId); errors.As(err, &pgErr) {
+		switch pgErr.Code {
+		case "23505": // duplicate primary key error
+			return model.Employee{}, model.ErrEmailRegistered
+		default:
+			return model.Employee{}, model.ErrServiceError
+		}
+	} else if err != nil {
 		return model.Employee{}, errors.Join(model.ErrDatabaseError, err)
 	} else {
 		employee.Id = employeeId
