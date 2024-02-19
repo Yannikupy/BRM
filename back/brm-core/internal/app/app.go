@@ -56,6 +56,18 @@ func (a *appImpl) UpdateCompany(ctx context.Context, companyId uint, ownerId uin
 		return model.Company{}, model.ErrAuthorization
 	}
 
+	if company.OwnerId != upd.OwnerId {
+		var newOwner model.Employee
+		newOwner, err = a.coreRepo.GetEmployeeById(ctx, upd.OwnerId)
+		if err != nil {
+			return model.Company{}, err
+		}
+
+		if newOwner.CompanyId != companyId {
+			return model.Company{}, model.ErrEmployeeNotExists
+		}
+	}
+
 	return a.coreRepo.UpdateCompany(ctx, companyId, upd)
 }
 
