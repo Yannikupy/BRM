@@ -28,18 +28,18 @@ func NewCoreClient(ctx context.Context, addr string) (CoreClient, error) {
 func (c *coreClientImpl) CreateCompanyAndOwner(ctx context.Context, company model.Company, owner model.Employee) (model.Company, model.Employee, error) {
 	resp, err := c.cli.CreateCompanyAndOwner(ctx, &pb.CreateCompanyAndOwnerRequest{
 		Company: &pb.Company{
-			Id:           uint64(company.Id),
+			Id:           company.Id,
 			Name:         company.Name,
 			Description:  company.Description,
-			Industry:     uint64(company.Industry),
-			OwnerId:      uint64(company.OwnerId),
+			Industry:     company.Industry,
+			OwnerId:      company.OwnerId,
 			Rating:       company.Rating,
 			CreationDate: company.CreationDate,
 			IsDeleted:    company.IsDeleted,
 		},
 		Owner: &pb.Employee{
-			Id:           uint64(owner.Id),
-			CompanyId:    uint64(owner.CompanyId),
+			Id:           owner.Id,
+			CompanyId:    owner.CompanyId,
 			FirstName:    owner.FirstName,
 			SecondName:   owner.SecondName,
 			Email:        owner.Email,
@@ -62,18 +62,18 @@ func (c *coreClientImpl) CreateCompanyAndOwner(ctx context.Context, company mode
 	}
 
 	return model.Company{
-			Id:           uint(resp.Company.Id),
+			Id:           resp.Company.Id,
 			Name:         resp.Company.Name,
 			Description:  resp.Company.Description,
-			Industry:     uint(resp.Company.Industry),
-			OwnerId:      uint(resp.Company.OwnerId),
+			Industry:     resp.Company.Industry,
+			OwnerId:      resp.Company.OwnerId,
 			Rating:       resp.Company.Rating,
 			CreationDate: resp.Company.CreationDate,
 			IsDeleted:    resp.Company.IsDeleted,
 		},
 		model.Employee{
-			Id:           uint(resp.Owner.Id),
-			CompanyId:    uint(resp.Owner.CompanyId),
+			Id:           resp.Owner.Id,
+			CompanyId:    resp.Owner.CompanyId,
 			FirstName:    resp.Owner.FirstName,
 			SecondName:   resp.Owner.SecondName,
 			Email:        resp.Owner.Email,

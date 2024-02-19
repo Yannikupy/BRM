@@ -13,8 +13,8 @@ func employeeToModelEmployee(employee *pb.Employee) model.Employee {
 		return model.Employee{}
 	}
 	return model.Employee{
-		Id:           uint(employee.Id),
-		CompanyId:    uint(employee.CompanyId),
+		Id:           employee.Id,
+		CompanyId:    employee.CompanyId,
 		FirstName:    employee.FirstName,
 		SecondName:   employee.SecondName,
 		Email:        employee.Email,
@@ -31,8 +31,8 @@ func modelEmployeeToEmployee(employee model.Employee) *pb.Employee {
 		return nil
 	}
 	return &pb.Employee{
-		Id:           uint64(employee.Id),
-		CompanyId:    uint64(employee.CompanyId),
+		Id:           employee.Id,
+		CompanyId:    employee.CompanyId,
 		FirstName:    employee.FirstName,
 		SecondName:   employee.SecondName,
 		Email:        employee.Email,
@@ -46,8 +46,8 @@ func modelEmployeeToEmployee(employee model.Employee) *pb.Employee {
 
 func (s *Server) CreateEmployee(ctx context.Context, req *pb.CreateEmployeeRequest) (*pb.CreateEmployeeResponse, error) {
 	employee, err := s.App.CreateEmployee(ctx,
-		uint(req.CompanyId),
-		uint(req.OwnerId),
+		req.CompanyId,
+		req.OwnerId,
 		employeeToModelEmployee(req.Employee),
 	)
 	if err != nil {
@@ -60,9 +60,9 @@ func (s *Server) CreateEmployee(ctx context.Context, req *pb.CreateEmployeeReque
 
 func (s *Server) UpdateEmployee(ctx context.Context, req *pb.UpdateEmployeeRequest) (*pb.UpdateEmployeeResponse, error) {
 	employee, err := s.App.UpdateEmployee(ctx,
-		uint(req.CompanyId),
-		uint(req.OwnerId),
-		uint(req.EmployeeId),
+		req.CompanyId,
+		req.OwnerId,
+		req.EmployeeId,
 		model.UpdateEmployee{
 			FirstName:  req.Upd.FirstName,
 			SecondName: req.Upd.SecondName,
@@ -80,9 +80,9 @@ func (s *Server) UpdateEmployee(ctx context.Context, req *pb.UpdateEmployeeReque
 
 func (s *Server) DeleteEmployee(ctx context.Context, req *pb.DeleteEmployeeRequest) (*empty.Empty, error) {
 	if err := s.App.DeleteEmployee(ctx,
-		uint(req.CompanyId),
-		uint(req.OwnerId),
-		uint(req.EmployeeId),
+		req.CompanyId,
+		req.OwnerId,
+		req.EmployeeId,
 	); err != nil {
 		return nil, mapErrors(err)
 	}
@@ -92,15 +92,15 @@ func (s *Server) DeleteEmployee(ctx context.Context, req *pb.DeleteEmployeeReque
 func (s *Server) GetCompanyEmployees(ctx context.Context, req *pb.GetCompanyEmployeesRequest) (*pb.GetCompanyEmployeesResponse, error) {
 	employees, err := s.App.GetCompanyEmployees(
 		ctx,
-		uint(req.CompanyId),
-		uint(req.EmployeeId),
+		req.CompanyId,
+		req.EmployeeId,
 		model.FilterEmployee{
 			ByJobTitle:   req.Filter.ByJobTitle,
 			JobTitle:     req.Filter.JobTitle,
 			ByDepartment: req.Filter.ByDepartment,
 			Department:   req.Filter.Department,
-			Limit:        int(req.Filter.Limit),
-			Offset:       int(req.Filter.Offset),
+			Limit:        uint(req.Filter.Limit),
+			Offset:       uint(req.Filter.Offset),
 		})
 	if err != nil {
 		return nil, mapErrors(err)
@@ -118,12 +118,12 @@ func (s *Server) GetCompanyEmployees(ctx context.Context, req *pb.GetCompanyEmpl
 func (s *Server) GetEmployeeByName(ctx context.Context, req *pb.GetEmployeeByNameRequest) (*pb.GetEmployeeByNameResponse, error) {
 	employees, err := s.App.GetEmployeeByName(
 		ctx,
-		uint(req.CompanyId),
-		uint(req.EmployeeId),
+		req.CompanyId,
+		req.EmployeeId,
 		model.EmployeeByName{
 			Pattern: req.Ebn.Pattern,
-			Limit:   int(req.Ebn.Limit),
-			Offset:  int(req.Ebn.Offset),
+			Limit:   uint(req.Ebn.Limit),
+			Offset:  uint(req.Ebn.Offset),
 		})
 	if err != nil {
 		return nil, mapErrors(err)
@@ -141,9 +141,9 @@ func (s *Server) GetEmployeeByName(ctx context.Context, req *pb.GetEmployeeByNam
 func (s *Server) GetEmployeeById(ctx context.Context, req *pb.GetEmployeeByIdRequest) (*pb.GetEmployeeByIdResponse, error) {
 	employee, err := s.App.GetEmployeeById(
 		ctx,
-		uint(req.CompanyId),
-		uint(req.EmployeeId),
-		uint(req.EmployeeIdToFind),
+		req.CompanyId,
+		req.EmployeeId,
+		req.EmployeeIdToFind,
 	)
 	if err != nil {
 		return nil, mapErrors(err)

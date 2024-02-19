@@ -23,6 +23,7 @@ const (
 		SET "is_deleted" = true
 		WHERE "id" = $2 AND (NOT "is_deleted");`
 
+	// TODO оптимизировать, добавить inner join
 	getContactsQuery = `
 		SELECT * FROM $1
 		WHERE "owner_id" = $2 AND (NOT "is_deleted")
@@ -34,7 +35,7 @@ const (
 )
 
 func (c *coreRepoImpl) CreateContact(ctx context.Context, contact model.Contact) (model.Contact, error) {
-	var contactId uint
+	var contactId uint64
 	if err := c.QueryRow(ctx, createContactQuery,
 		getShardName(contact.OwnerId),
 		contact.OwnerId,
@@ -57,7 +58,7 @@ func (c *coreRepoImpl) CreateContact(ctx context.Context, contact model.Contact)
 	return contact, nil
 }
 
-func (c *coreRepoImpl) UpdateContact(ctx context.Context, ownerId uint, contactId uint, upd model.UpdateContact) (model.Contact, error) {
+func (c *coreRepoImpl) UpdateContact(ctx context.Context, ownerId uint64, contactId uint64, upd model.UpdateContact) (model.Contact, error) {
 	if e, err := c.Exec(ctx, updateContactQuery,
 		getShardName(ownerId),
 		contactId,
@@ -71,7 +72,7 @@ func (c *coreRepoImpl) UpdateContact(ctx context.Context, ownerId uint, contactI
 	return c.GetContactById(ctx, ownerId, contactId)
 }
 
-func (c *coreRepoImpl) DeleteContact(ctx context.Context, ownerId uint, contactId uint) error {
+func (c *coreRepoImpl) DeleteContact(ctx context.Context, ownerId uint64, contactId uint64) error {
 	if e, err := c.Exec(ctx, deleteContactQuery,
 		getShardName(ownerId),
 		contactId,
@@ -84,7 +85,7 @@ func (c *coreRepoImpl) DeleteContact(ctx context.Context, ownerId uint, contactI
 	}
 }
 
-func (c *coreRepoImpl) GetContacts(ctx context.Context, ownerId uint, pagination model.GetContacts) ([]model.Contact, error) {
+func (c *coreRepoImpl) GetContacts(ctx context.Context, ownerId uint64, pagination model.GetContacts) ([]model.Contact, error) {
 	rows, err := c.Query(ctx, getContactsQuery,
 		getShardName(ownerId),
 		ownerId,
@@ -107,6 +108,8 @@ func (c *coreRepoImpl) GetContacts(ctx context.Context, ownerId uint, pagination
 			&contact.CreationDate,
 			&contact.IsDeleted,
 		)
+
+		// TODO оптимизировать, добавить inner join
 		empl, err := c.GetEmployeeById(ctx, contact.EmployeeId)
 		if err != nil {
 			return []model.Contact{}, err
@@ -118,7 +121,7 @@ func (c *coreRepoImpl) GetContacts(ctx context.Context, ownerId uint, pagination
 	return contacts, nil
 }
 
-func (c *coreRepoImpl) GetContactById(ctx context.Context, ownerId uint, contactId uint) (model.Contact, error) {
+func (c *coreRepoImpl) GetContactById(ctx context.Context, ownerId uint64, contactId uint64) (model.Contact, error) {
 	row := c.QueryRow(ctx, getContactByIdQuery,
 		getShardName(ownerId),
 		contactId,
@@ -146,7 +149,7 @@ func (c *coreRepoImpl) GetContactById(ctx context.Context, ownerId uint, contact
 	return contact, nil
 }
 
-func getShardName(ownerId uint) string {
+func getShardName(ownerId uint64) string {
 	switch ownerId % 4 {
 	case 0:
 		return "contact_shard01"

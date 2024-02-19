@@ -12,10 +12,10 @@ type tokenizerImpl struct {
 	signKey          []byte
 }
 
-func (t *tokenizerImpl) CreateToken(employeeId uint, companyId uint) (string, error) {
+func (t *tokenizerImpl) CreateToken(employeeId uint64, companyId uint64) (string, error) {
 	claims := jwt.MapClaims{
-		"employee-id": strconv.FormatUint(uint64(employeeId), 10),
-		"company-id":  strconv.FormatUint(uint64(companyId), 10),
+		"employee-id": strconv.FormatUint(employeeId, 10),
+		"company-id":  strconv.FormatUint(companyId, 10),
 		"exp":         strconv.FormatInt(time.Now().UTC().Add(t.accessExpiration).Unix(), 10),
 	}
 
@@ -48,7 +48,7 @@ func (t *tokenizerImpl) CheckExpiration(tokenStr string) (bool, error) {
 	return time.Now().UTC().Before(expTime), nil
 }
 
-func (t *tokenizerImpl) DecryptToken(tokenStr string) (uint, uint, error) {
+func (t *tokenizerImpl) DecryptToken(tokenStr string) (uint64, uint64, error) {
 	token, err := jwt.Parse(tokenStr, func(token *jwt.Token) (interface{}, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, model.ErrParsingAccessToken
@@ -84,5 +84,5 @@ func (t *tokenizerImpl) DecryptToken(tokenStr string) (uint, uint, error) {
 		return 0, 0, model.ErrParsingAccessToken
 	}
 
-	return uint(employeeId), uint(companyId), nil
+	return employeeId, companyId, nil
 }

@@ -73,7 +73,7 @@ func GetCompany(a app.App) gin.HandlerFunc {
 			return
 		}
 
-		company, err := a.GetCompany(c, uint(id))
+		company, err := a.GetCompany(c, id)
 		switch {
 		case err == nil:
 			data := companyToCompanyData(company)
@@ -126,7 +126,7 @@ func UpdateCompany(a app.App) gin.HandlerFunc {
 			return
 		}
 
-		company, err := a.UpdateCompany(c, uint(companyId), ownerId, core.UpdateCompany{
+		company, err := a.UpdateCompany(c, companyId, ownerId, core.UpdateCompany{
 			Name:        req.Name,
 			Description: req.Description,
 			Industry:    req.Industry,
@@ -180,7 +180,7 @@ func DeleteCompany(a app.App) gin.HandlerFunc {
 			return
 		}
 
-		err = a.DeleteCompany(c, uint(companyId), ownerId)
+		err = a.DeleteCompany(c, companyId, ownerId)
 		switch {
 		case err == nil:
 			c.JSON(http.StatusOK, companyResponse{

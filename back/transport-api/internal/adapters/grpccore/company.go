@@ -14,19 +14,19 @@ func respToCompany(company *pb.Company) core.Company {
 		return core.Company{}
 	}
 	return core.Company{
-		Id:           uint(company.Id),
+		Id:           company.Id,
 		Name:         company.Name,
 		Description:  company.Description,
-		Industry:     uint(company.Industry),
-		OwnerId:      uint(company.OwnerId),
+		Industry:     company.Industry,
+		OwnerId:      company.OwnerId,
 		Rating:       company.Rating,
 		CreationDate: company.CreationDate,
 		IsDeleted:    company.IsDeleted,
 	}
 }
 
-func (c *coreClientImpl) GetCompany(ctx context.Context, id uint) (core.Company, error) {
-	resp, err := c.cli.GetCompany(ctx, &pb.GetCompanyRequest{Id: uint64(id)})
+func (c *coreClientImpl) GetCompany(ctx context.Context, id uint64) (core.Company, error) {
+	resp, err := c.cli.GetCompany(ctx, &pb.GetCompanyRequest{Id: id})
 	if err != nil {
 		code := status.Code(err)
 		switch code {
@@ -41,15 +41,15 @@ func (c *coreClientImpl) GetCompany(ctx context.Context, id uint) (core.Company,
 	return respToCompany(resp.Company), nil
 }
 
-func (c *coreClientImpl) UpdateCompany(ctx context.Context, companyId uint, ownerId uint, upd core.UpdateCompany) (core.Company, error) {
+func (c *coreClientImpl) UpdateCompany(ctx context.Context, companyId uint64, ownerId uint64, upd core.UpdateCompany) (core.Company, error) {
 	resp, err := c.cli.UpdateCompany(ctx, &pb.UpdateCompanyRequest{
-		CompanyId: uint64(companyId),
-		OwnerId:   uint64(ownerId),
+		CompanyId: companyId,
+		OwnerId:   ownerId,
 		Upd: &pb.UpdateCompanyFields{
 			Name:        upd.Name,
 			Description: upd.Description,
 			Industry:    int64(upd.Industry),
-			OwnerId:     uint64(upd.OwnerId),
+			OwnerId:     upd.OwnerId,
 		},
 	})
 	if err != nil {
@@ -68,10 +68,10 @@ func (c *coreClientImpl) UpdateCompany(ctx context.Context, companyId uint, owne
 	return respToCompany(resp.Company), nil
 }
 
-func (c *coreClientImpl) DeleteCompany(ctx context.Context, companyId uint, ownerId uint) error {
+func (c *coreClientImpl) DeleteCompany(ctx context.Context, companyId uint64, ownerId uint64) error {
 	_, err := c.cli.DeleteCompany(ctx, &pb.DeleteCompanyRequest{
-		CompanyId: uint64(companyId),
-		OwnerId:   uint64(ownerId),
+		CompanyId: companyId,
+		OwnerId:   ownerId,
 	})
 	if err != nil {
 		code := status.Code(err)

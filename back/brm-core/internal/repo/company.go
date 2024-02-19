@@ -41,7 +41,7 @@ const (
 		WHERE "id" = $1 AND (NOT "is_deleted");`
 )
 
-func (c *coreRepoImpl) GetCompany(ctx context.Context, id uint) (model.Company, error) {
+func (c *coreRepoImpl) GetCompany(ctx context.Context, id uint64) (model.Company, error) {
 	row := c.QueryRow(ctx, getCompanyQuery, id)
 	var company model.Company
 	if err := row.Scan(
@@ -63,7 +63,7 @@ func (c *coreRepoImpl) GetCompany(ctx context.Context, id uint) (model.Company, 
 }
 
 func (c *coreRepoImpl) CreateCompanyAndOwner(ctx context.Context, company model.Company, owner model.Employee) (model.Company, model.Employee, error) {
-	var companyId, ownerId uint
+	var companyId, ownerId uint64
 	if err := c.QueryRow(ctx, createCompanyQuery,
 		company.Name,
 		company.Description,
@@ -102,7 +102,7 @@ func (c *coreRepoImpl) CreateCompanyAndOwner(ctx context.Context, company model.
 	return company, owner, nil
 }
 
-func (c *coreRepoImpl) UpdateCompany(ctx context.Context, companyId uint, upd model.UpdateCompany) (model.Company, error) {
+func (c *coreRepoImpl) UpdateCompany(ctx context.Context, companyId uint64, upd model.UpdateCompany) (model.Company, error) {
 	if e, err := c.Exec(ctx, updateCompanyQuery,
 		companyId,
 		upd.Name,
@@ -118,7 +118,7 @@ func (c *coreRepoImpl) UpdateCompany(ctx context.Context, companyId uint, upd mo
 	}
 }
 
-func (c *coreRepoImpl) DeleteCompany(ctx context.Context, companyId uint) error {
+func (c *coreRepoImpl) DeleteCompany(ctx context.Context, companyId uint64) error {
 	if e, err := c.Exec(ctx, deleteCompanyQuery,
 		companyId,
 	); err != nil {

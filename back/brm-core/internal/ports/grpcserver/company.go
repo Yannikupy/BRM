@@ -13,11 +13,11 @@ func companyToModelCompany(company *pb.Company) model.Company {
 		return model.Company{}
 	}
 	return model.Company{
-		Id:           uint(company.Id),
+		Id:           company.Id,
 		Name:         company.Name,
 		Description:  company.Description,
-		Industry:     uint(company.Industry),
-		OwnerId:      uint(company.OwnerId),
+		Industry:     company.Industry,
+		OwnerId:      company.OwnerId,
 		Rating:       company.Rating,
 		CreationDate: time.Unix(company.CreationDate, 0),
 		IsDeleted:    company.IsDeleted,
@@ -29,11 +29,11 @@ func modelCompanyToCompany(company model.Company) *pb.Company {
 		return nil
 	}
 	return &pb.Company{
-		Id:           uint64(company.Id),
+		Id:           company.Id,
 		Name:         company.Name,
 		Description:  company.Description,
-		Industry:     uint64(company.Industry),
-		OwnerId:      uint64(company.OwnerId),
+		Industry:     company.Industry,
+		OwnerId:      company.OwnerId,
 		Rating:       company.Rating,
 		CreationDate: company.CreationDate.UTC().Unix(),
 		IsDeleted:    company.IsDeleted,
@@ -41,7 +41,7 @@ func modelCompanyToCompany(company model.Company) *pb.Company {
 }
 
 func (s *Server) GetCompany(ctx context.Context, req *pb.GetCompanyRequest) (*pb.GetCompanyResponse, error) {
-	company, err := s.App.GetCompany(ctx, uint(req.Id))
+	company, err := s.App.GetCompany(ctx, req.Id)
 	if err != nil {
 		return nil, mapErrors(err)
 	}
@@ -66,13 +66,13 @@ func (s *Server) CreateCompanyAndOwner(ctx context.Context, req *pb.CreateCompan
 
 func (s *Server) UpdateCompany(ctx context.Context, req *pb.UpdateCompanyRequest) (*pb.UpdateCompanyResponse, error) {
 	company, err := s.App.UpdateCompany(ctx,
-		uint(req.CompanyId),
-		uint(req.OwnerId),
+		req.CompanyId,
+		req.OwnerId,
 		model.UpdateCompany{
 			Name:        req.Upd.Name,
 			Description: req.Upd.Description,
-			Industry:    uint(req.Upd.Industry),
-			OwnerId:     uint(req.Upd.OwnerId),
+			Industry:    uint64(req.Upd.Industry),
+			OwnerId:     req.Upd.OwnerId,
 		},
 	)
 	if err != nil {
@@ -85,8 +85,8 @@ func (s *Server) UpdateCompany(ctx context.Context, req *pb.UpdateCompanyRequest
 
 func (s *Server) DeleteCompany(ctx context.Context, req *pb.DeleteCompanyRequest) (*empty.Empty, error) {
 	if err := s.App.DeleteCompany(ctx,
-		uint(req.CompanyId),
-		uint(req.OwnerId),
+		req.CompanyId,
+		req.OwnerId,
 	); err != nil {
 		return nil, mapErrors(err)
 	}
