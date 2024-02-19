@@ -8,6 +8,7 @@ import (
 	"auth/internal/ports/httpserver"
 	"auth/internal/repo/authrepo"
 	"auth/internal/repo/passrepo"
+	"auth/pkg/logger"
 	"context"
 	"errors"
 	"flag"
@@ -34,6 +35,7 @@ const (
 
 func main() {
 	ctx := context.Background()
+	logs := logger.New()
 
 	isDocker := flag.Bool("docker", false, "flag if this project is running in docker container")
 	flag.Parse()
@@ -45,12 +47,12 @@ func main() {
 	}
 
 	if err := factory.SetConfigs(configPath); err != nil {
-		log.Fatal(err.Error())
+		logs.Fatal(nil, err.Error())
 	}
 
 	passConn, err := factory.ConnectToPostgres(ctx)
 	if err != nil {
-		log.Fatal(err.Error())
+		logs.Fatal(nil, err.Error())
 	}
 	defer func() {
 		if passConn != nil {
@@ -60,7 +62,7 @@ func main() {
 
 	redisClient := factory.ConnectToRedis()
 	if redisClient == nil {
-		log.Fatal("unable to connect to redis")
+		logs.Fatal(nil, "unable to connect to redis")
 	}
 	defer func() {
 		if redisClient != nil {
@@ -72,7 +74,7 @@ func main() {
 		redisClient,
 		time.Duration(viper.GetInt("app.refresh-token-expiration")))
 	if err != nil {
-		log.Fatal(err.Error())
+		logs.Fatal(nil, err.Error())
 	}
 
 	passRepo := passrepo.New(passConn)
@@ -88,9 +90,10 @@ func main() {
 		authRepo,
 		passRepo,
 		tkn,
+		logs,
 	)
 
-	grpcsrv := grpcserver.New(a)
+	grpcsrv := grpcserver.New(a, logs)
 	lis, err := factory.PrepareListener()
 	if err != nil {
 		log.Fatal(err.Error())
@@ -105,15 +108,15 @@ func main() {
 	httpsrv := httpserver.New(fmt.Sprintf("%s:%d",
 		viper.GetString("http-server.host"),
 		viper.GetInt("http-server.port")),
-		a)
+		a, logs)
 
 	go func() {
 		if err = httpsrv.ListenAndServe(); err != nil && !errors.Is(err, http.ErrServerClosed) {
-			log.Fatal("listening server: ", err.Error())
+			logs.Fatal(nil, fmt.Sprintf("listening server: %s", err.Error()))
 		}
 	}()
 
-	log.Println("service auth successfully started")
+	logs.Info(nil, "service auth successfully started")
 
 	// preparing graceful shutdown
 	osSignals := make(chan os.Signal, 1)

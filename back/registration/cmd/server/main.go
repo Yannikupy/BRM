@@ -6,13 +6,13 @@ import (
 	"flag"
 	"fmt"
 	"github.com/spf13/viper"
-	"log"
 	"net/http"
 	"os"
 	"os/signal"
 	"registration/internal/adapters/grpccore"
 	"registration/internal/app"
 	"registration/internal/ports/httpserver"
+	"registration/pkg/logger"
 	"syscall"
 	"time"
 )
@@ -30,6 +30,7 @@ const (
 
 func main() {
 	ctx := context.Background()
+	logs := logger.New()
 
 	isDocker := flag.Bool("docker", false, "flag if this project is running in docker container")
 	flag.Parse()
@@ -42,14 +43,14 @@ func main() {
 
 	viper.SetConfigFile(configPath)
 	if err := viper.ReadInConfig(); err != nil {
-		log.Fatalf("reading config: %s", err.Error())
+		logs.Fatal(nil, fmt.Sprintf("reading config: %s", err.Error()))
 	}
 
 	coreClient, err := grpccore.NewCoreClient(ctx, fmt.Sprintf("%s:%d",
 		viper.GetString("grpc-core-client.host"),
 		viper.GetInt("grpc-core-client.port")))
 	if err != nil {
-		log.Fatal("create grpc core client: ", err.Error())
+		logs.Fatal(nil, fmt.Sprintf("create grpc core client: %s", err.Error()))
 	}
 
 	a := app.NewApp(coreClient)
@@ -57,15 +58,15 @@ func main() {
 	srv := httpserver.New(fmt.Sprintf("%s:%d",
 		viper.GetString("http-server.host"),
 		viper.GetInt("http-server.port")),
-		a)
+		a, logs)
 
 	go func() {
 		if err = srv.ListenAndServe(); err != nil && !errors.Is(err, http.ErrServerClosed) {
-			log.Fatal("listening server: ", err.Error())
+			logs.Fatal(nil, fmt.Sprintf("listening server: %s", err.Error()))
 		}
 	}()
 
-	log.Println("service registration successfully started")
+	logs.Info(nil, "service registration successfully started")
 
 	// preparing graceful shutdown
 	osSignals := make(chan os.Signal, 1)

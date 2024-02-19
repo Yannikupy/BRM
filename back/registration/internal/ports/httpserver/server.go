@@ -6,16 +6,17 @@ import (
 	ginSwagger "github.com/swaggo/gin-swagger"
 	"net/http"
 	"registration/internal/app"
+	"registration/pkg/logger"
 )
 
-func New(addr string, a app.App) *http.Server {
+func New(addr string, a app.App, logs logger.Logger) *http.Server {
 	gin.SetMode(gin.ReleaseMode)
 	router := gin.Default()
 
 	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
 	api := router.Group("api/v1")
-	appRouter(api, a)
+	appRouter(api, a, logs)
 
 	return &http.Server{
 		Addr:    addr,

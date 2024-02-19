@@ -15,8 +15,8 @@ type Server struct {
 
 func New(a app.App, logs logger.Logger) *grpc.Server {
 	chain := grpcmiddleware.ChainUnaryServer(
-		loggerInterceptor(logs),
-		panicInterceptor(logs))
+		panicInterceptor(logs),
+		loggerInterceptor(logs))
 
 	s := grpc.NewServer(grpc.UnaryInterceptor(chain))
 	pb.RegisterCoreServiceServer(s, &Server{

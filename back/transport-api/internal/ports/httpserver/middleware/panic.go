@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"net/http"
+	"transport-api/internal/model"
 	"transport-api/pkg/logger"
 )
 
@@ -16,7 +17,7 @@ func Panic(logs logger.Logger) gin.HandlerFunc {
 					"method": c.Request.Method,
 				}, fmt.Sprintf("panic: %v", r))
 
-				c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"data": nil, "error": fmt.Sprintf("%v", r)})
+				c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"data": nil, "error": model.ErrCoreError.Error()})
 			}
 		}()
 	}

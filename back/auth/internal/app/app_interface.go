@@ -5,6 +5,7 @@ import (
 	"auth/internal/model"
 	"auth/internal/repo/authrepo"
 	"auth/internal/repo/passrepo"
+	"auth/pkg/logger"
 	"context"
 )
 
@@ -23,6 +24,7 @@ func New(
 	authRepo authrepo.AuthRepo,
 	passRepo passrepo.PassRepo,
 	tokenizer tokenizer.Tokenizer,
+	logs logger.Logger,
 ) App {
 	return &appImpl{
 		passwordSalt:       passwordSalt,
@@ -30,5 +32,6 @@ func New(
 		authRepo:           authRepo,
 		passRepo:           passRepo,
 		tokenizer:          tokenizer,
+		logs:               logs,
 	}
 }
