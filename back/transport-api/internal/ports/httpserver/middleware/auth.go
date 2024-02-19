@@ -7,7 +7,7 @@ import (
 	"transport-api/pkg/tokenizer"
 )
 
-func AuthMiddleware(tkn tokenizer.Tokenizer) gin.HandlerFunc {
+func Auth(tkn tokenizer.Tokenizer) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		headerValue := c.GetHeader("Authorization")
 		token := getTokenFromHeader(headerValue)
