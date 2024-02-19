@@ -8,11 +8,14 @@ import (
 	"transport-api/internal/ports/httpserver/core/contacts"
 	"transport-api/internal/ports/httpserver/core/employees"
 	"transport-api/internal/ports/httpserver/middleware"
+	"transport-api/pkg/logger"
 	"transport-api/pkg/tokenizer"
 )
 
-func appRouter(r *gin.RouterGroup, a app.App, tkn tokenizer.Tokenizer) {
-	r.Use(middleware.AuthMiddleware(tkn))
+func appRouter(r *gin.RouterGroup, a app.App, tkn tokenizer.Tokenizer, logs logger.Logger) {
+	r.Use(middleware.Panic(logs))
+	r.Use(middleware.Log(logs))
+	r.Use(middleware.Auth(tkn))
 
 	r.GET("/companies/:id", companies.GetCompany(a))
 	r.GET("/companies/:id/mainpage", companies.GetCompanyMainPage(a))

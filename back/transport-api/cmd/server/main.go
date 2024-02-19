@@ -16,6 +16,7 @@ import (
 	"transport-api/internal/adapters/grpccore"
 	"transport-api/internal/app"
 	"transport-api/internal/ports/httpserver"
+	"transport-api/pkg/logger"
 	"transport-api/pkg/tokenizer"
 )
 
@@ -35,6 +36,7 @@ const (
 
 func main() {
 	ctx := context.Background()
+	logs := logger.New()
 
 	isDocker := flag.Bool("docker", false, "flag if this project is running in docker container")
 	flag.Parse()
@@ -47,7 +49,7 @@ func main() {
 
 	viper.SetConfigFile(configPath)
 	if err := viper.ReadInConfig(); err != nil {
-		log.Fatalf("reading config: %s", err.Error())
+		logs.Fatal(nil, fmt.Sprintf("reading config: %s", err.Error()))
 	}
 	if err := godotenv.Load("config/.env"); err != nil {
 		log.Fatalf("unable to load .env file: %s", err.Error())
@@ -57,7 +59,7 @@ func main() {
 		viper.GetString("grpc-core-client.host"),
 		viper.GetInt("grpc-core-client.port")))
 	if err != nil {
-		log.Fatal("create grpc core client: ", err.Error())
+		logs.Fatal(nil, fmt.Sprintf("create grpc core client: %s", err.Error()))
 	}
 
 	a := app.NewApp(coreClient)
@@ -66,15 +68,15 @@ func main() {
 	srv := httpserver.New(fmt.Sprintf("%s:%d",
 		viper.GetString("http-server.host"),
 		viper.GetInt("http-server.port")),
-		a, tkn)
+		a, tkn, logs)
 
 	go func() {
 		if err = srv.ListenAndServe(); err != nil && !errors.Is(err, http.ErrServerClosed) {
-			log.Fatal("listening server: ", err.Error())
+			logs.Fatal(nil, fmt.Sprintf("listening server: %s", err.Error()))
 		}
 	}()
 
-	log.Println("service transport-api successfully started")
+	logs.Info(nil, "service transport-api successfully started")
 
 	// preparing graceful shutdown
 	osSignals := make(chan os.Signal, 1)
