@@ -28,5 +28,9 @@ func (l *loggerImpl) Info(fields Fields, message string) {
 }
 
 func (l *loggerImpl) Error(fields Fields, message string) {
-	l.log.WithFields(logrus.Fields(fields)).Error(message)
+	l.log.WithFields(logrus.Fields(fields)).Errorln(message)
+}
+
+func (l *loggerImpl) Fatal(fields Fields, message string) {
+	l.log.WithFields(logrus.Fields(fields)).Fatalln(message)
 }

@@ -6,11 +6,11 @@ import (
 	"brm-core/internal/app"
 	"brm-core/internal/ports/grpcserver"
 	"brm-core/internal/repo"
+	"brm-core/pkg/logger"
 	"context"
 	"flag"
 	"fmt"
 	"github.com/spf13/viper"
-	"log"
 	"os"
 	"os/signal"
 	"syscall"
@@ -23,6 +23,7 @@ const (
 
 func main() {
 	ctx := context.Background()
+	logs := logger.New()
 
 	isDocker := flag.Bool("docker", false, "flag if this project is running in docker container")
 	flag.Parse()
@@ -34,24 +35,24 @@ func main() {
 	}
 
 	if err := factory.SetConfigs(configPath); err != nil {
-		log.Fatal(err.Error())
+		logs.Fatal(nil, err.Error())
 	}
 
 	coreRepo, err := factory.ConnectToPostgres(ctx)
 	if err != nil {
-		log.Fatal(err.Error())
+		logs.Fatal(nil, err.Error())
 	}
 
 	authClient, err := grpcauth.NewAuthClient(ctx, fmt.Sprintf("%s:%d",
 		viper.GetString("grpc-auth-client.host"),
 		viper.GetInt("grpc-auth-client.port")))
 
-	a := app.New(repo.New(coreRepo), authClient)
+	a := app.New(repo.New(coreRepo), authClient, logs)
 
-	srv := grpcserver.New(a)
+	srv := grpcserver.New(a, logs)
 	lis, err := factory.PrepareListener()
 	if err != nil {
-		log.Fatal(err.Error())
+		logs.Fatal(nil, err.Error())
 	}
 
 	// preparing graceful shutdown
@@ -61,11 +62,11 @@ func main() {
 
 	go func() {
 		if err = srv.Serve(lis); err != nil {
-			log.Fatal("starting grpc server: ", err.Error())
+			logs.Fatal(nil, fmt.Sprintf("starting grpc server: %s", err.Error()))
 		}
 	}()
 
-	log.Println("service brm-core successfully started")
+	logs.Info(nil, "service brm-core successfully started")
 	<-osSignals
 	srv.GracefulStop()
 }
