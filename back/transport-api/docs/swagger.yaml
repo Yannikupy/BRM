@@ -699,28 +699,7 @@ paths:
       summary: Редактирование полей компании
       tags:
       - core/companies
-  /companies/industries:
-    get:
-      description: Возвращает словарь из отраслей и их id
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: Успешное получение данных
-          schema:
-            $ref: '#/definitions/companies.industryResponse'
-        "400":
-          description: Неверный формат входных данных
-          schema:
-            $ref: '#/definitions/companies.industryResponse'
-        "500":
-          description: Проблемы на стороне сервера
-          schema:
-            $ref: '#/definitions/companies.industryResponse'
-      summary: Получение отраслей
-      tags:
-      - core/companies
-  /companies/mainpage/{id}:
+  /companies/{id}/mainpage:
     get:
       description: Возвращает название и статистику компании для главной страницы
       parameters:
@@ -757,6 +736,27 @@ paths:
           schema:
             $ref: '#/definitions/companies.mainPageResponse'
       summary: Получение информации о компании
+      tags:
+      - core/companies
+  /companies/industries:
+    get:
+      description: Возвращает словарь из отраслей и их id
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Успешное получение данных
+          schema:
+            $ref: '#/definitions/companies.industryResponse'
+        "400":
+          description: Неверный формат входных данных
+          schema:
+            $ref: '#/definitions/companies.industryResponse'
+        "500":
+          description: Проблемы на стороне сервера
+          schema:
+            $ref: '#/definitions/companies.industryResponse'
+      summary: Получение отраслей
       tags:
       - core/companies
   /contacts:

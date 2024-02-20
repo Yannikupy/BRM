@@ -23,7 +23,7 @@ import (
 // @Failure		404	{object}	mainPageResponse	"Компания не найдена"
 // @Failure		401	{object}	mainPageResponse	"Ошибка авторизации"
 // @Failure		403	{object}	mainPageResponse	"Нет прав для выполнения операции"
-// @Router			/companies/mainpage/{id} [get]
+// @Router			/companies/{id}/mainpage [get]
 func GetCompanyMainPage(a app.App) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		// TODO implement
