@@ -23,7 +23,7 @@ import (
 // @Failure		404	{object}	mainPageResponse	"Компания не найдена"
 // @Failure		401	{object}	mainPageResponse	"Ошибка авторизации"
 // @Failure		403	{object}	mainPageResponse	"Нет прав для выполнения операции"
-// @Router			/companies/mainpage/{id} [get]
+// @Router			/companies/{id}/mainpage [get]
 func GetCompanyMainPage(a app.App) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		// TODO implement
@@ -73,7 +73,7 @@ func GetCompany(a app.App) gin.HandlerFunc {
 			return
 		}
 
-		company, err := a.GetCompany(c, uint(id))
+		company, err := a.GetCompany(c, id)
 		switch {
 		case err == nil:
 			data := companyToCompanyData(company)
@@ -126,7 +126,7 @@ func UpdateCompany(a app.App) gin.HandlerFunc {
 			return
 		}
 
-		company, err := a.UpdateCompany(c, uint(companyId), ownerId, core.UpdateCompany{
+		company, err := a.UpdateCompany(c, companyId, ownerId, core.UpdateCompany{
 			Name:        req.Name,
 			Description: req.Description,
 			Industry:    req.Industry,
@@ -142,6 +142,8 @@ func UpdateCompany(a app.App) gin.HandlerFunc {
 			})
 		case errors.Is(err, model.ErrCompanyNotExists):
 			c.AbortWithStatusJSON(http.StatusNotFound, errorResponse(model.ErrCompanyNotExists))
+		case errors.Is(err, model.ErrEmployeeNotExists):
+			c.AbortWithStatusJSON(http.StatusNotFound, errorResponse(model.ErrEmployeeNotExists))
 		case errors.Is(err, model.ErrPermissionDenied):
 			c.AbortWithStatusJSON(http.StatusForbidden, errorResponse(model.ErrPermissionDenied))
 		case errors.Is(err, model.ErrCoreError):
@@ -180,7 +182,7 @@ func DeleteCompany(a app.App) gin.HandlerFunc {
 			return
 		}
 
-		err = a.DeleteCompany(c, uint(companyId), ownerId)
+		err = a.DeleteCompany(c, companyId, ownerId)
 		switch {
 		case err == nil:
 			c.JSON(http.StatusOK, companyResponse{

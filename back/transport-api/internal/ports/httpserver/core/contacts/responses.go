@@ -14,9 +14,9 @@ func errorResponse(err error) contactResponse {
 }
 
 type contactData struct {
-	Id           uint         `json:"id"`
-	OwnerId      uint         `json:"owner_id"`
-	EmployeeId   uint         `json:"employee_id"`
+	Id           uint64       `json:"id"`
+	OwnerId      uint64       `json:"owner_id"`
+	EmployeeId   uint64       `json:"employee_id"`
 	Notes        string       `json:"notes"`
 	CreationDate int64        `json:"creation_date"`
 	IsDeleted    bool         `json:"is_deleted"`
@@ -50,8 +50,8 @@ func employeeToEmployeeData(employee core.Employee) employeeData {
 }
 
 type employeeData struct {
-	Id           uint   `json:"id"`
-	CompanyId    uint   `json:"company_id"`
+	Id           uint64 `json:"id"`
+	CompanyId    uint64 `json:"company_id"`
 	FirstName    string `json:"first_name"`
 	SecondName   string `json:"second_name"`
 	Email        string `json:"email"`

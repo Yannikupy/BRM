@@ -40,9 +40,9 @@ func AddEmployee(a app.App) gin.HandlerFunc {
 			return
 		}
 
-		employee, err := a.CreateEmployee(c, uint(companyId), uint(ownerId), core.Employee{
+		employee, err := a.CreateEmployee(c, companyId, ownerId, core.Employee{
 			Id:           0,
-			CompanyId:    uint(req.CompanyId),
+			CompanyId:    req.CompanyId,
 			FirstName:    req.FirstName,
 			SecondName:   req.SecondName,
 			Email:        req.Email,
@@ -65,6 +65,8 @@ func AddEmployee(a app.App) gin.HandlerFunc {
 			c.AbortWithStatusJSON(http.StatusNotFound, errorResponse(model.ErrEmployeeNotExists))
 		case errors.Is(err, model.ErrPermissionDenied):
 			c.AbortWithStatusJSON(http.StatusForbidden, errorResponse(model.ErrPermissionDenied))
+		case errors.Is(err, model.ErrEmailRegistered):
+			c.AbortWithStatusJSON(http.StatusConflict, errorResponse(model.ErrEmailRegistered))
 		case errors.Is(err, model.ErrCoreError):
 			c.AbortWithStatusJSON(http.StatusInternalServerError, errorResponse(model.ErrCoreError))
 		case errors.Is(err, model.ErrAuthError):
@@ -120,14 +122,14 @@ func GetEmployeesList(a app.App) gin.HandlerFunc {
 				employeeId,
 				core.EmployeeByName{
 					Pattern: pattern,
-					Limit:   limit,
-					Offset:  offset,
+					Limit:   uint(limit),
+					Offset:  uint(offset),
 				},
 			)
 		} else {
 			var filter core.FilterEmployee
-			filter.Limit = limit
-			filter.Offset = offset
+			filter.Limit = uint(limit)
+			filter.Offset = uint(offset)
 			filter.JobTitle, filter.ByJobTitle = c.GetQuery("jobtitle")
 			filter.Department, filter.ByDepartment = c.GetQuery("department")
 			employees, err = a.GetCompanyEmployees(c,
@@ -188,7 +190,7 @@ func GetEmployee(a app.App) gin.HandlerFunc {
 		employee, err := a.GetEmployeeById(c,
 			companyId,
 			employeeId,
-			uint(id))
+			id)
 
 		switch {
 		case err == nil:
@@ -251,7 +253,7 @@ func UpdateEmployee(a app.App) gin.HandlerFunc {
 		employee, err := a.UpdateEmployee(c,
 			companyId,
 			ownerId,
-			uint(id),
+			id,
 			core.UpdateEmployee{
 				FirstName:  req.FirstName,
 				SecondName: req.SecondName,
@@ -312,7 +314,7 @@ func DeleteEmployee(a app.App) gin.HandlerFunc {
 		err = a.DeleteEmployee(c,
 			companyId,
 			ownerId,
-			uint(id))
+			id)
 		switch {
 		case err == nil:
 			c.JSON(http.StatusOK, employeeResponse{

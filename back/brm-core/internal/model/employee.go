@@ -3,8 +3,8 @@ package model
 import "time"
 
 type Employee struct {
-	Id           uint
-	CompanyId    uint
+	Id           uint64
+	CompanyId    uint64
 	FirstName    string
 	SecondName   string
 	Email        string
@@ -29,20 +29,20 @@ type FilterEmployee struct {
 	ByDepartment bool
 	Department   string
 
-	Limit  int
-	Offset int
+	Limit  uint
+	Offset uint
 }
 
 type EmployeeByName struct {
 	Pattern string
 
-	Limit  int
-	Offset int
+	Limit  uint
+	Offset uint
 }
 
 type EmployeeCredentials struct {
 	Email      string
 	Password   string
-	EmployeeId uint
-	CompanyId  uint
+	EmployeeId uint64
+	CompanyId  uint64
 }

@@ -36,8 +36,8 @@ func employeesToEmployeeDataList(employees []core.Employee) []employeeData {
 }
 
 type employeeData struct {
-	Id           uint   `json:"id"`
-	CompanyId    uint   `json:"company_id"`
+	Id           uint64 `json:"id"`
+	CompanyId    uint64 `json:"company_id"`
 	FirstName    string `json:"first_name"`
 	SecondName   string `json:"second_name"`
 	Email        string `json:"email"`

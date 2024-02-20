@@ -15,9 +15,9 @@ func respToContact(contact *pb.Contact) core.Contact {
 		return core.Contact{}
 	}
 	return core.Contact{
-		Id:           uint(contact.Id),
-		OwnerId:      uint(contact.OwnerId),
-		EmployeeId:   uint(contact.EmployeeId),
+		Id:           contact.Id,
+		OwnerId:      contact.OwnerId,
+		EmployeeId:   contact.EmployeeId,
 		Notes:        contact.Notes,
 		CreationDate: contact.CreationDate,
 		IsDeleted:    contact.IsDeleted,
@@ -25,10 +25,10 @@ func respToContact(contact *pb.Contact) core.Contact {
 	}
 }
 
-func (c *coreClientImpl) CreateContact(ctx context.Context, ownerId uint, employeeId uint) (core.Contact, error) {
+func (c *coreClientImpl) CreateContact(ctx context.Context, ownerId uint64, employeeId uint64) (core.Contact, error) {
 	resp, err := c.cli.CreateContact(ctx, &pb.CreateContactRequest{
-		OwnerId:    uint64(ownerId),
-		EmployeeId: uint64(employeeId),
+		OwnerId:    ownerId,
+		EmployeeId: employeeId,
 	})
 	if err != nil {
 		code := status.Code(err)
@@ -44,10 +44,10 @@ func (c *coreClientImpl) CreateContact(ctx context.Context, ownerId uint, employ
 	return respToContact(resp.Contact), nil
 }
 
-func (c *coreClientImpl) UpdateContact(ctx context.Context, ownerId uint, contactId uint, upd core.UpdateContact) (core.Contact, error) {
+func (c *coreClientImpl) UpdateContact(ctx context.Context, ownerId uint64, contactId uint64, upd core.UpdateContact) (core.Contact, error) {
 	resp, err := c.cli.UpdateContact(ctx, &pb.UpdateContactRequest{
-		OwnerId:   uint64(ownerId),
-		ContactId: uint64(contactId),
+		OwnerId:   ownerId,
+		ContactId: contactId,
 		Upd:       &pb.UpdateContactFields{Notes: upd.Notes},
 	})
 	if err != nil {
@@ -66,10 +66,10 @@ func (c *coreClientImpl) UpdateContact(ctx context.Context, ownerId uint, contac
 	return respToContact(resp.Contact), nil
 }
 
-func (c *coreClientImpl) DeleteContact(ctx context.Context, ownerId uint, contactId uint) error {
+func (c *coreClientImpl) DeleteContact(ctx context.Context, ownerId uint64, contactId uint64) error {
 	_, err := c.cli.DeleteContact(ctx, &pb.DeleteContactRequest{
-		OwnerId:   uint64(ownerId),
-		ContactId: uint64(contactId),
+		OwnerId:   ownerId,
+		ContactId: contactId,
 	})
 	if err != nil {
 		code := status.Code(err)
@@ -87,9 +87,9 @@ func (c *coreClientImpl) DeleteContact(ctx context.Context, ownerId uint, contac
 	return nil
 }
 
-func (c *coreClientImpl) GetContacts(ctx context.Context, ownerId uint, pagination core.GetContacts) ([]core.Contact, error) {
+func (c *coreClientImpl) GetContacts(ctx context.Context, ownerId uint64, pagination core.GetContacts) ([]core.Contact, error) {
 	resp, err := c.cli.GetContacts(ctx, &pb.GetContactsRequest{
-		OwnerId: uint64(ownerId),
+		OwnerId: ownerId,
 		Pagination: &pb.GetContactsPagination{
 			Limit:  int64(pagination.Limit),
 			Offset: int64(pagination.Offset),
@@ -115,10 +115,10 @@ func (c *coreClientImpl) GetContacts(ctx context.Context, ownerId uint, paginati
 	return contacts, nil
 }
 
-func (c *coreClientImpl) GetContactById(ctx context.Context, ownerId uint, contactId uint) (core.Contact, error) {
+func (c *coreClientImpl) GetContactById(ctx context.Context, ownerId uint64, contactId uint64) (core.Contact, error) {
 	resp, err := c.cli.GetContactById(ctx, &pb.GetContactByIdRequest{
-		OwnerId:   uint64(ownerId),
-		ContactId: uint64(contactId),
+		OwnerId:   ownerId,
+		ContactId: contactId,
 	})
 	if err != nil {
 		code := status.Code(err)

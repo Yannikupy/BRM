@@ -32,11 +32,11 @@ type companyResponse struct {
 }
 
 type companyData struct {
-	Id           uint    `json:"id"`
+	Id           uint64  `json:"id"`
 	Name         string  `json:"name"`
 	Description  string  `json:"description"`
-	Industry     uint    `json:"industry"`
-	OwnerId      uint    `json:"owner_id"`
+	Industry     uint64  `json:"industry"`
+	OwnerId      uint64  `json:"owner_id"`
 	Rating       float64 `json:"rating"`
 	CreationDate int64   `json:"creation_date"`
 	IsDeleted    bool    `json:"is_deleted"`

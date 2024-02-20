@@ -1,9 +1,9 @@
 package core
 
 type Contact struct {
-	Id           uint
-	OwnerId      uint
-	EmployeeId   uint
+	Id           uint64
+	OwnerId      uint64
+	EmployeeId   uint64
 	Notes        string
 	CreationDate int64
 	IsDeleted    bool
@@ -15,6 +15,6 @@ type UpdateContact struct {
 }
 
 type GetContacts struct {
-	Limit  int
-	Offset int
+	Limit  uint
+	Offset uint
 }

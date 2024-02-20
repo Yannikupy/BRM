@@ -14,8 +14,8 @@ func respToEmployee(employee *pb.Employee) core.Employee {
 		return core.Employee{}
 	}
 	return core.Employee{
-		Id:           uint(employee.Id),
-		CompanyId:    uint(employee.CompanyId),
+		Id:           employee.Id,
+		CompanyId:    employee.CompanyId,
 		FirstName:    employee.FirstName,
 		SecondName:   employee.SecondName,
 		Email:        employee.Email,
@@ -29,8 +29,8 @@ func respToEmployee(employee *pb.Employee) core.Employee {
 
 func employeeToRequest(employee core.Employee) *pb.Employee {
 	return &pb.Employee{
-		Id:           uint64(employee.Id),
-		CompanyId:    uint64(employee.CompanyId),
+		Id:           employee.Id,
+		CompanyId:    employee.CompanyId,
 		FirstName:    employee.FirstName,
 		SecondName:   employee.SecondName,
 		Email:        employee.Email,
@@ -42,10 +42,10 @@ func employeeToRequest(employee core.Employee) *pb.Employee {
 	}
 }
 
-func (c *coreClientImpl) CreateEmployee(ctx context.Context, companyId uint, ownerId uint, employee core.Employee) (core.Employee, error) {
+func (c *coreClientImpl) CreateEmployee(ctx context.Context, companyId uint64, ownerId uint64, employee core.Employee) (core.Employee, error) {
 	resp, err := c.cli.CreateEmployee(ctx, &pb.CreateEmployeeRequest{
-		CompanyId: uint64(companyId),
-		OwnerId:   uint64(ownerId),
+		CompanyId: companyId,
+		OwnerId:   ownerId,
 		Employee:  employeeToRequest(employee),
 	})
 	if err != nil {
@@ -53,6 +53,8 @@ func (c *coreClientImpl) CreateEmployee(ctx context.Context, companyId uint, own
 		switch code {
 		case codes.PermissionDenied:
 			return core.Employee{}, model.ErrPermissionDenied
+		case codes.AlreadyExists:
+			return core.Employee{}, model.ErrEmailRegistered
 		case codes.ResourceExhausted:
 			return core.Employee{}, model.ErrCoreError
 		default:
@@ -62,11 +64,11 @@ func (c *coreClientImpl) CreateEmployee(ctx context.Context, companyId uint, own
 	return respToEmployee(resp.Employee), nil
 }
 
-func (c *coreClientImpl) UpdateEmployee(ctx context.Context, companyId uint, ownerId uint, employeeId uint, upd core.UpdateEmployee) (core.Employee, error) {
+func (c *coreClientImpl) UpdateEmployee(ctx context.Context, companyId uint64, ownerId uint64, employeeId uint64, upd core.UpdateEmployee) (core.Employee, error) {
 	resp, err := c.cli.UpdateEmployee(ctx, &pb.UpdateEmployeeRequest{
-		CompanyId:  uint64(companyId),
-		OwnerId:    uint64(ownerId),
-		EmployeeId: uint64(employeeId),
+		CompanyId:  companyId,
+		OwnerId:    ownerId,
+		EmployeeId: employeeId,
 		Upd: &pb.UpdateEmployeeFields{
 			FirstName:  upd.FirstName,
 			SecondName: upd.SecondName,
@@ -90,11 +92,11 @@ func (c *coreClientImpl) UpdateEmployee(ctx context.Context, companyId uint, own
 	return respToEmployee(resp.Employee), nil
 }
 
-func (c *coreClientImpl) DeleteEmployee(ctx context.Context, companyId uint, ownerId uint, employeeId uint) error {
+func (c *coreClientImpl) DeleteEmployee(ctx context.Context, companyId uint64, ownerId uint64, employeeId uint64) error {
 	_, err := c.cli.DeleteEmployee(ctx, &pb.DeleteEmployeeRequest{
-		CompanyId:  uint64(companyId),
-		OwnerId:    uint64(ownerId),
-		EmployeeId: uint64(employeeId),
+		CompanyId:  companyId,
+		OwnerId:    ownerId,
+		EmployeeId: employeeId,
 	})
 	if err != nil {
 		code := status.Code(err)
@@ -112,10 +114,10 @@ func (c *coreClientImpl) DeleteEmployee(ctx context.Context, companyId uint, own
 	return nil
 }
 
-func (c *coreClientImpl) GetCompanyEmployees(ctx context.Context, companyId uint, employeeId uint, filter core.FilterEmployee) ([]core.Employee, error) {
+func (c *coreClientImpl) GetCompanyEmployees(ctx context.Context, companyId uint64, employeeId uint64, filter core.FilterEmployee) ([]core.Employee, error) {
 	resp, err := c.cli.GetCompanyEmployees(ctx, &pb.GetCompanyEmployeesRequest{
-		CompanyId:  uint64(companyId),
-		EmployeeId: uint64(employeeId),
+		CompanyId:  companyId,
+		EmployeeId: employeeId,
 		Filter: &pb.FilterEmployee{
 			ByJobTitle:   filter.ByJobTitle,
 			JobTitle:     filter.JobTitle,
@@ -145,10 +147,10 @@ func (c *coreClientImpl) GetCompanyEmployees(ctx context.Context, companyId uint
 	return employees, nil
 }
 
-func (c *coreClientImpl) GetEmployeeByName(ctx context.Context, companyId uint, employeeId uint, ebn core.EmployeeByName) ([]core.Employee, error) {
+func (c *coreClientImpl) GetEmployeeByName(ctx context.Context, companyId uint64, employeeId uint64, ebn core.EmployeeByName) ([]core.Employee, error) {
 	resp, err := c.cli.GetEmployeeByName(ctx, &pb.GetEmployeeByNameRequest{
-		CompanyId:  uint64(companyId),
-		EmployeeId: uint64(employeeId),
+		CompanyId:  companyId,
+		EmployeeId: employeeId,
 		Ebn: &pb.EmployeeByName{
 			Pattern: ebn.Pattern,
 			Limit:   int64(ebn.Limit),
@@ -175,11 +177,11 @@ func (c *coreClientImpl) GetEmployeeByName(ctx context.Context, companyId uint, 
 	return employees, nil
 }
 
-func (c *coreClientImpl) GetEmployeeById(ctx context.Context, companyId uint, employeeId uint, employeeIdToFind uint) (core.Employee, error) {
+func (c *coreClientImpl) GetEmployeeById(ctx context.Context, companyId uint64, employeeId uint64, employeeIdToFind uint64) (core.Employee, error) {
 	resp, err := c.cli.GetEmployeeById(ctx, &pb.GetEmployeeByIdRequest{
-		CompanyId:        uint64(companyId),
-		EmployeeId:       uint64(employeeId),
-		EmployeeIdToFind: uint64(employeeIdToFind),
+		CompanyId:        companyId,
+		EmployeeId:       employeeId,
+		EmployeeIdToFind: employeeIdToFind,
 	})
 	if err != nil {
 		code := status.Code(err)

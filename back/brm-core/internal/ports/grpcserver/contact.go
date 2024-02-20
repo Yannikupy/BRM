@@ -13,9 +13,9 @@ func contactToModelContact(contact *pb.Contact) model.Contact {
 		return model.Contact{}
 	}
 	return model.Contact{
-		Id:           uint(contact.Id),
-		OwnerId:      uint(contact.OwnerId),
-		EmployeeId:   uint(contact.EmployeeId),
+		Id:           contact.Id,
+		OwnerId:      contact.OwnerId,
+		EmployeeId:   contact.EmployeeId,
 		Notes:        contact.Notes,
 		CreationDate: time.Unix(contact.CreationDate, 0),
 		IsDeleted:    contact.IsDeleted,
@@ -28,9 +28,9 @@ func modelContactToContact(contact model.Contact) *pb.Contact {
 		return nil
 	}
 	return &pb.Contact{
-		Id:           uint64(contact.Id),
-		OwnerId:      uint64(contact.OwnerId),
-		EmployeeId:   uint64(contact.EmployeeId),
+		Id:           contact.Id,
+		OwnerId:      contact.OwnerId,
+		EmployeeId:   contact.EmployeeId,
 		Notes:        contact.Notes,
 		CreationDate: contact.CreationDate.UTC().Unix(),
 		IsDeleted:    contact.IsDeleted,
@@ -40,8 +40,8 @@ func modelContactToContact(contact model.Contact) *pb.Contact {
 
 func (s *Server) CreateContact(ctx context.Context, req *pb.CreateContactRequest) (*pb.CreateContactResponse, error) {
 	contact, err := s.App.CreateContact(ctx,
-		uint(req.OwnerId),
-		uint(req.EmployeeId),
+		req.OwnerId,
+		req.EmployeeId,
 	)
 	if err != nil {
 		return nil, mapErrors(err)
@@ -53,8 +53,8 @@ func (s *Server) CreateContact(ctx context.Context, req *pb.CreateContactRequest
 
 func (s *Server) UpdateContact(ctx context.Context, req *pb.UpdateContactRequest) (*pb.UpdateContactResponse, error) {
 	contact, err := s.App.UpdateContact(ctx,
-		uint(req.OwnerId),
-		uint(req.ContactId),
+		req.OwnerId,
+		req.ContactId,
 		model.UpdateContact{
 			Notes: req.Upd.Notes,
 		},
@@ -69,8 +69,8 @@ func (s *Server) UpdateContact(ctx context.Context, req *pb.UpdateContactRequest
 
 func (s *Server) DeleteContact(ctx context.Context, req *pb.DeleteContactRequest) (*empty.Empty, error) {
 	if err := s.App.DeleteContact(ctx,
-		uint(req.OwnerId),
-		uint(req.ContactId),
+		req.OwnerId,
+		req.ContactId,
 	); err != nil {
 		return nil, mapErrors(err)
 	}
@@ -80,10 +80,10 @@ func (s *Server) DeleteContact(ctx context.Context, req *pb.DeleteContactRequest
 func (s *Server) GetContacts(ctx context.Context, req *pb.GetContactsRequest) (*pb.GetContactsResponse, error) {
 	contacts, err := s.App.GetContacts(
 		ctx,
-		uint(req.OwnerId),
+		req.OwnerId,
 		model.GetContacts{
-			Limit:  int(req.Pagination.Limit),
-			Offset: int(req.Pagination.Offset),
+			Limit:  uint(req.Pagination.Limit),
+			Offset: uint(req.Pagination.Offset),
 		})
 	if err != nil {
 		return nil, mapErrors(err)
@@ -100,7 +100,7 @@ func (s *Server) GetContacts(ctx context.Context, req *pb.GetContactsRequest) (*
 }
 
 func (s *Server) GetContactById(ctx context.Context, req *pb.GetContactByIdRequest) (*pb.GetContactByIdResponse, error) {
-	contact, err := s.App.GetContactById(ctx, uint(req.OwnerId), uint(req.ContactId))
+	contact, err := s.App.GetContactById(ctx, req.OwnerId, req.ContactId)
 	if err != nil {
 		return nil, mapErrors(err)
 	}

@@ -5,6 +5,7 @@ import (
 	"context"
 	"errors"
 	"github.com/jackc/pgx/v5"
+	"github.com/jackc/pgx/v5/pgconn"
 )
 
 const (
@@ -44,9 +45,8 @@ const (
 )
 
 func (c *coreRepoImpl) CreateEmployee(ctx context.Context, employee model.Employee) (model.Employee, error) {
-	// TODO добавить обработку ошибки unique email
-
-	var employeeId uint
+	var employeeId uint64
+	var pgErr *pgconn.PgError
 	if err := c.QueryRow(ctx, createEmployeeQuery,
 		employee.CompanyId,
 		employee.FirstName,
@@ -56,7 +56,14 @@ func (c *coreRepoImpl) CreateEmployee(ctx context.Context, employee model.Employ
 		employee.Department,
 		employee.CreationDate,
 		employee.IsDeleted,
-	).Scan(&employeeId); err != nil {
+	).Scan(&employeeId); errors.As(err, &pgErr) {
+		switch pgErr.Code {
+		case "23505": // duplicate primary key error
+			return model.Employee{}, model.ErrEmailRegistered
+		default:
+			return model.Employee{}, model.ErrServiceError
+		}
+	} else if err != nil {
 		return model.Employee{}, errors.Join(model.ErrDatabaseError, err)
 	} else {
 		employee.Id = employeeId
@@ -64,7 +71,7 @@ func (c *coreRepoImpl) CreateEmployee(ctx context.Context, employee model.Employ
 	}
 }
 
-func (c *coreRepoImpl) UpdateEmployee(ctx context.Context, employeeId uint, upd model.UpdateEmployee) (model.Employee, error) {
+func (c *coreRepoImpl) UpdateEmployee(ctx context.Context, employeeId uint64, upd model.UpdateEmployee) (model.Employee, error) {
 	if e, err := c.Exec(ctx, updateEmployeeQuery,
 		employeeId,
 		upd.FirstName,
@@ -80,7 +87,7 @@ func (c *coreRepoImpl) UpdateEmployee(ctx context.Context, employeeId uint, upd 
 	}
 }
 
-func (c *coreRepoImpl) DeleteEmployee(ctx context.Context, employeeId uint) error {
+func (c *coreRepoImpl) DeleteEmployee(ctx context.Context, employeeId uint64) error {
 	if e, err := c.Exec(ctx, deleteEmployeeQuery,
 		employeeId,
 	); err != nil {
@@ -92,7 +99,7 @@ func (c *coreRepoImpl) DeleteEmployee(ctx context.Context, employeeId uint) erro
 	}
 }
 
-func (c *coreRepoImpl) GetCompanyEmployees(ctx context.Context, companyId uint, filter model.FilterEmployee) ([]model.Employee, error) {
+func (c *coreRepoImpl) GetCompanyEmployees(ctx context.Context, companyId uint64, filter model.FilterEmployee) ([]model.Employee, error) {
 	rows, err := c.Query(ctx, getCompanyEmployeesQuery,
 		companyId,
 		filter.ByJobTitle,
@@ -124,7 +131,7 @@ func (c *coreRepoImpl) GetCompanyEmployees(ctx context.Context, companyId uint, 
 	return employees, nil
 }
 
-func (c *coreRepoImpl) GetEmployeeByName(ctx context.Context, companyId uint, ebn model.EmployeeByName) ([]model.Employee, error) {
+func (c *coreRepoImpl) GetEmployeeByName(ctx context.Context, companyId uint64, ebn model.EmployeeByName) ([]model.Employee, error) {
 	rows, err := c.Query(ctx, getEmployeeByNameQuery,
 		companyId,
 		ebn.Pattern+"%",
@@ -153,7 +160,7 @@ func (c *coreRepoImpl) GetEmployeeByName(ctx context.Context, companyId uint, eb
 	return employees, nil
 }
 
-func (c *coreRepoImpl) GetEmployeeById(ctx context.Context, employeeId uint) (model.Employee, error) {
+func (c *coreRepoImpl) GetEmployeeById(ctx context.Context, employeeId uint64) (model.Employee, error) {
 	row := c.QueryRow(ctx, getEmployeeByIdQuery, employeeId)
 	var employee model.Employee
 	if err := row.Scan(

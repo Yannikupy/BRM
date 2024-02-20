@@ -17,6 +17,9 @@ func mapErrors(err error) error {
 	case errors.Is(err, model.ErrEmployeeNotExists):
 		c = codes.NotFound
 		resErr = model.ErrEmployeeNotExists
+	case errors.Is(err, model.ErrEmailRegistered):
+		c = codes.AlreadyExists
+		resErr = model.ErrEmailRegistered
 	case errors.Is(err, model.ErrPassRepoError):
 		c = codes.ResourceExhausted
 		resErr = model.ErrPassRepoError

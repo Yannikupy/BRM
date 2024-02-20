@@ -12,11 +12,17 @@ func (a *authClientImpl) RegisterEmployee(ctx context.Context, creds model.Emplo
 	_, err := a.cli.RegisterEmployee(ctx, &pb.RegisterEmployeeRequest{
 		Email:      creds.Email,
 		Password:   creds.Password,
-		EmployeeId: uint64(creds.EmployeeId),
-		CompanyId:  uint64(creds.CompanyId),
+		EmployeeId: creds.EmployeeId,
+		CompanyId:  creds.CompanyId,
 	})
 	if err != nil {
-		return model.ErrAuthServiceError
+		code := status.Code(err)
+		switch code {
+		case codes.AlreadyExists:
+			return model.ErrEmailRegistered
+		default:
+			return model.ErrAuthServiceError
+		}
 	}
 	return nil
 }
@@ -28,6 +34,8 @@ func (a *authClientImpl) DeleteEmployee(ctx context.Context, email string) error
 		switch code {
 		case codes.NotFound:
 			return model.ErrEmployeeNotExists
+		case codes.AlreadyExists:
+			return model.ErrEmailRegistered
 		case codes.ResourceExhausted:
 			return model.ErrAuthServiceError
 		default:

@@ -11,8 +11,8 @@ func (s *Server) RegisterEmployee(ctx context.Context, req *pb.RegisterEmployeeR
 	err := s.App.RegisterEmployee(ctx, model.Employee{
 		Email:      req.Email,
 		Password:   req.Password,
-		EmployeeId: uint(req.EmployeeId),
-		CompanyId:  uint(req.CompanyId),
+		EmployeeId: req.EmployeeId,
+		CompanyId:  req.CompanyId,
 	})
 	if err != nil {
 		return &empty.Empty{}, mapErrors(err)

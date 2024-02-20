@@ -4,20 +4,41 @@ import (
 	"brm-core/internal/adapters/grpcauth"
 	"brm-core/internal/model"
 	"brm-core/internal/repo"
+	"brm-core/pkg/logger"
 	"context"
+	"errors"
 	"time"
 )
 
 type appImpl struct {
 	coreRepo repo.CoreRepo
 	auth     grpcauth.AuthClient
+
+	logs logger.Logger
 }
 
-func (a *appImpl) GetCompany(ctx context.Context, id uint) (model.Company, error) {
-	return a.coreRepo.GetCompany(ctx, id)
+func (a *appImpl) GetCompany(ctx context.Context, id uint64) (model.Company, error) {
+	var err error
+	defer func() {
+		a.writeLog(logger.Fields{
+			"company_id": id,
+			"Method":     "GetCompany",
+		}, err)
+	}()
+	company, err := a.coreRepo.GetCompany(ctx, id)
+	return company, err
 }
 
 func (a *appImpl) CreateCompanyAndOwner(ctx context.Context, company model.Company, owner model.Employee) (model.Company, model.Employee, error) {
+	var err error
+	defer func() {
+		a.writeLog(logger.Fields{
+			"company_name": company.Name,
+			"owner_email":  owner.Email,
+			"Method":       "CreateCompanyAndOwner",
+		}, err)
+	}()
+
 	// setting company fields
 	company.Id = 0
 	company.OwnerId = 0
@@ -48,7 +69,16 @@ func (a *appImpl) CreateCompanyAndOwner(ctx context.Context, company model.Compa
 	return newCompany, newOwner, nil
 }
 
-func (a *appImpl) UpdateCompany(ctx context.Context, companyId uint, ownerId uint, upd model.UpdateCompany) (model.Company, error) {
+func (a *appImpl) UpdateCompany(ctx context.Context, companyId uint64, ownerId uint64, upd model.UpdateCompany) (model.Company, error) {
+	var err error
+	defer func() {
+		a.writeLog(logger.Fields{
+			"company_id": companyId,
+			"owner_id":   ownerId,
+			"Method":     "UpdateCompany",
+		}, err)
+	}()
+
 	company, err := a.coreRepo.GetCompany(ctx, companyId)
 	if err != nil {
 		return model.Company{}, err
@@ -56,10 +86,31 @@ func (a *appImpl) UpdateCompany(ctx context.Context, companyId uint, ownerId uin
 		return model.Company{}, model.ErrAuthorization
 	}
 
+	if company.OwnerId != upd.OwnerId {
+		var newOwner model.Employee
+		newOwner, err = a.coreRepo.GetEmployeeById(ctx, upd.OwnerId)
+		if err != nil {
+			return model.Company{}, err
+		}
+
+		if newOwner.CompanyId != companyId {
+			return model.Company{}, model.ErrEmployeeNotExists
+		}
+	}
+
 	return a.coreRepo.UpdateCompany(ctx, companyId, upd)
 }
 
-func (a *appImpl) DeleteCompany(ctx context.Context, companyId uint, ownerId uint) error {
+func (a *appImpl) DeleteCompany(ctx context.Context, companyId uint64, ownerId uint64) error {
+	var err error
+	defer func() {
+		a.writeLog(logger.Fields{
+			"company_id": companyId,
+			"owner_id":   ownerId,
+			"method":     "DeleteCompany",
+		}, err)
+	}()
+
 	company, err := a.coreRepo.GetCompany(ctx, companyId)
 	if err != nil {
 		return err
@@ -70,7 +121,18 @@ func (a *appImpl) DeleteCompany(ctx context.Context, companyId uint, ownerId uin
 	return a.coreRepo.DeleteCompany(ctx, companyId)
 }
 
-func (a *appImpl) CreateEmployee(ctx context.Context, companyId uint, ownerId uint, employee model.Employee) (model.Employee, error) {
+func (a *appImpl) CreateEmployee(ctx context.Context, companyId uint64, ownerId uint64, employee model.Employee) (model.Employee, error) {
+	var err error
+	defer func() {
+		a.writeLog(logger.Fields{
+			"company_id":         companyId,
+			"owner_id":           ownerId,
+			"new_employee_email": employee.Email,
+			"method":             "CreateEmployee",
+		}, err)
+
+	}()
+
 	if companyId != employee.CompanyId {
 		return model.Employee{}, model.ErrAuthorization
 	}
@@ -105,7 +167,16 @@ func (a *appImpl) CreateEmployee(ctx context.Context, companyId uint, ownerId ui
 	return newEmployee, nil
 }
 
-func (a *appImpl) UpdateEmployee(ctx context.Context, companyId uint, ownerId uint, employeeId uint, upd model.UpdateEmployee) (model.Employee, error) {
+func (a *appImpl) UpdateEmployee(ctx context.Context, companyId uint64, ownerId uint64, employeeId uint64, upd model.UpdateEmployee) (model.Employee, error) {
+	var err error
+	defer func() {
+		a.writeLog(logger.Fields{
+			"company_id": companyId,
+			"owner_id":   ownerId,
+			"method":     "UpdateEmployee",
+		}, err)
+	}()
+
 	employee, err := a.coreRepo.GetEmployeeById(ctx, employeeId)
 	if err != nil {
 		return model.Employee{}, err
@@ -123,7 +194,16 @@ func (a *appImpl) UpdateEmployee(ctx context.Context, companyId uint, ownerId ui
 	return a.coreRepo.UpdateEmployee(ctx, employeeId, upd)
 }
 
-func (a *appImpl) DeleteEmployee(ctx context.Context, companyId uint, ownerId uint, employeeId uint) error {
+func (a *appImpl) DeleteEmployee(ctx context.Context, companyId uint64, ownerId uint64, employeeId uint64) error {
+	var err error
+	defer func() {
+		a.writeLog(logger.Fields{
+			"company_id": companyId,
+			"owner_id":   ownerId,
+			"Method":     "DeleteEmployee",
+		}, err)
+	}()
+
 	employee, err := a.coreRepo.GetEmployeeById(ctx, employeeId)
 	if err != nil {
 		return err
@@ -145,8 +225,17 @@ func (a *appImpl) DeleteEmployee(ctx context.Context, companyId uint, ownerId ui
 	return a.auth.DeleteEmployee(ctx, employee.Email)
 }
 
-func (a *appImpl) GetCompanyEmployees(ctx context.Context, companyId uint, employeeId uint, filter model.FilterEmployee) ([]model.Employee, error) {
-	_, err := a.coreRepo.GetCompany(ctx, companyId)
+func (a *appImpl) GetCompanyEmployees(ctx context.Context, companyId uint64, employeeId uint64, filter model.FilterEmployee) ([]model.Employee, error) {
+	var err error
+	defer func() {
+		a.writeLog(logger.Fields{
+			"company_id":  companyId,
+			"employee_id": employeeId,
+			"Method":      "GetCompanyEmployees",
+		}, err)
+	}()
+
+	_, err = a.coreRepo.GetCompany(ctx, companyId)
 	if err != nil {
 		return []model.Employee{}, err
 	}
@@ -160,8 +249,17 @@ func (a *appImpl) GetCompanyEmployees(ctx context.Context, companyId uint, emplo
 	return a.coreRepo.GetCompanyEmployees(ctx, companyId, filter)
 }
 
-func (a *appImpl) GetEmployeeByName(ctx context.Context, companyId uint, employeeId uint, ebn model.EmployeeByName) ([]model.Employee, error) {
-	_, err := a.coreRepo.GetCompany(ctx, companyId)
+func (a *appImpl) GetEmployeeByName(ctx context.Context, companyId uint64, employeeId uint64, ebn model.EmployeeByName) ([]model.Employee, error) {
+	var err error
+	defer func() {
+		a.writeLog(logger.Fields{
+			"company_id":  companyId,
+			"employee_id": employeeId,
+			"Method":      "GetEmployeeByName",
+		}, err)
+	}()
+
+	_, err = a.coreRepo.GetCompany(ctx, companyId)
 	if err != nil {
 		return []model.Employee{}, err
 	}
@@ -175,8 +273,17 @@ func (a *appImpl) GetEmployeeByName(ctx context.Context, companyId uint, employe
 	return a.coreRepo.GetEmployeeByName(ctx, companyId, ebn)
 }
 
-func (a *appImpl) GetEmployeeById(ctx context.Context, companyId uint, _ uint, employeeIdToFind uint) (model.Employee, error) {
-	_, err := a.coreRepo.GetCompany(ctx, companyId)
+func (a *appImpl) GetEmployeeById(ctx context.Context, companyId uint64, employeeId uint64, employeeIdToFind uint64) (model.Employee, error) {
+	var err error
+	defer func() {
+		a.writeLog(logger.Fields{
+			"company_id":  companyId,
+			"employee_id": employeeId,
+			"Method":      "GetEmployeeById",
+		}, err)
+	}()
+
+	_, err = a.coreRepo.GetCompany(ctx, companyId)
 	if err != nil {
 		return model.Employee{}, err
 	}
@@ -190,8 +297,17 @@ func (a *appImpl) GetEmployeeById(ctx context.Context, companyId uint, _ uint, e
 	return a.coreRepo.GetEmployeeById(ctx, employeeIdToFind)
 }
 
-func (a *appImpl) CreateContact(ctx context.Context, ownerId uint, employeeId uint) (model.Contact, error) {
-	_, err := a.coreRepo.GetEmployeeById(ctx, ownerId)
+func (a *appImpl) CreateContact(ctx context.Context, ownerId uint64, employeeId uint64) (model.Contact, error) {
+	var err error
+	defer func() {
+		a.writeLog(logger.Fields{
+			"contact_owner_id":         ownerId,
+			"employee_id_from_contact": employeeId,
+			"Method":                   "CreateContact",
+		}, err)
+	}()
+
+	_, err = a.coreRepo.GetEmployeeById(ctx, ownerId)
 	if err != nil {
 		return model.Contact{}, err
 	}
@@ -212,8 +328,17 @@ func (a *appImpl) CreateContact(ctx context.Context, ownerId uint, employeeId ui
 	})
 }
 
-func (a *appImpl) UpdateContact(ctx context.Context, ownerId uint, contactId uint, upd model.UpdateContact) (model.Contact, error) {
-	_, err := a.coreRepo.GetEmployeeById(ctx, ownerId)
+func (a *appImpl) UpdateContact(ctx context.Context, ownerId uint64, contactId uint64, upd model.UpdateContact) (model.Contact, error) {
+	var err error
+	defer func() {
+		a.writeLog(logger.Fields{
+			"contact_owner_id": ownerId,
+			"contact_id":       contactId,
+			"Method":           "UpdateContact",
+		}, err)
+	}()
+
+	_, err = a.coreRepo.GetEmployeeById(ctx, ownerId)
 	if err != nil {
 		return model.Contact{}, err
 	}
@@ -228,8 +353,17 @@ func (a *appImpl) UpdateContact(ctx context.Context, ownerId uint, contactId uin
 	return a.coreRepo.UpdateContact(ctx, ownerId, contactId, upd)
 }
 
-func (a *appImpl) DeleteContact(ctx context.Context, ownerId uint, contactId uint) error {
-	_, err := a.coreRepo.GetEmployeeById(ctx, ownerId)
+func (a *appImpl) DeleteContact(ctx context.Context, ownerId uint64, contactId uint64) error {
+	var err error
+	defer func() {
+		a.writeLog(logger.Fields{
+			"contact_owner_id": ownerId,
+			"contact_id":       contactId,
+			"Method":           "DeleteContact",
+		}, err)
+	}()
+
+	_, err = a.coreRepo.GetEmployeeById(ctx, ownerId)
 	if err != nil {
 		return err
 	}
@@ -244,8 +378,16 @@ func (a *appImpl) DeleteContact(ctx context.Context, ownerId uint, contactId uin
 	return a.coreRepo.DeleteContact(ctx, ownerId, contactId)
 }
 
-func (a *appImpl) GetContacts(ctx context.Context, ownerId uint, pagination model.GetContacts) ([]model.Contact, error) {
-	_, err := a.coreRepo.GetEmployeeById(ctx, ownerId)
+func (a *appImpl) GetContacts(ctx context.Context, ownerId uint64, pagination model.GetContacts) ([]model.Contact, error) {
+	var err error
+	defer func() {
+		a.writeLog(logger.Fields{
+			"contact_owner_id": ownerId,
+			"Method":           "GetContacts",
+		}, err)
+	}()
+
+	_, err = a.coreRepo.GetEmployeeById(ctx, ownerId)
 	if err != nil {
 		return []model.Contact{}, err
 	}
@@ -253,8 +395,17 @@ func (a *appImpl) GetContacts(ctx context.Context, ownerId uint, pagination mode
 	return a.coreRepo.GetContacts(ctx, ownerId, pagination)
 }
 
-func (a *appImpl) GetContactById(ctx context.Context, ownerId uint, contactId uint) (model.Contact, error) {
-	_, err := a.coreRepo.GetEmployeeById(ctx, ownerId)
+func (a *appImpl) GetContactById(ctx context.Context, ownerId uint64, contactId uint64) (model.Contact, error) {
+	var err error
+	defer func() {
+		a.writeLog(logger.Fields{
+			"contact_owner_id": ownerId,
+			"contact_id":       contactId,
+			"Method":           "GetContactById",
+		}, err)
+	}()
+
+	_, err = a.coreRepo.GetEmployeeById(ctx, ownerId)
 	if err != nil {
 		return model.Contact{}, err
 	}
@@ -267,4 +418,14 @@ func (a *appImpl) GetContactById(ctx context.Context, ownerId uint, contactId ui
 	}
 
 	return a.coreRepo.GetContactById(ctx, ownerId, contactId)
+}
+
+func (a *appImpl) writeLog(fields logger.Fields, err error) {
+	if errors.Is(err, model.ErrDatabaseError) || errors.Is(err, model.ErrAuthServiceError) {
+		a.logs.Error(fields, err.Error())
+	} else if err != nil {
+		a.logs.Info(fields, err.Error())
+	} else {
+		a.logs.Info(fields, "ok")
+	}
 }

@@ -41,7 +41,7 @@ func AddContact(a app.App) gin.HandlerFunc {
 			return
 		}
 
-		contact, err := a.CreateContact(c, ownerId, uint(req.EmployeeId))
+		contact, err := a.CreateContact(c, ownerId, req.EmployeeId)
 
 		switch {
 		case err == nil:
@@ -101,8 +101,8 @@ func GetContactsList(a app.App) gin.HandlerFunc {
 		contacts, err := a.GetContacts(c,
 			ownerId,
 			core.GetContacts{
-				Limit:  limit,
-				Offset: offset,
+				Limit:  uint(limit),
+				Offset: uint(offset),
 			})
 		switch {
 		case err == nil:
@@ -154,7 +154,7 @@ func GetContact(a app.App) gin.HandlerFunc {
 			return
 		}
 
-		contact, err := a.GetContactById(c, ownerId, uint(id))
+		contact, err := a.GetContactById(c, ownerId, id)
 		switch {
 		case err == nil:
 			data := contactToContactData(contact)
@@ -215,7 +215,7 @@ func UpdateContact(a app.App) gin.HandlerFunc {
 
 		contact, err := a.UpdateContact(c,
 			ownerId,
-			uint(id),
+			id,
 			core.UpdateContact{
 				Notes: req.Notes,
 			})
@@ -269,7 +269,7 @@ func DeleteContact(a app.App) gin.HandlerFunc {
 			return
 		}
 
-		err = a.DeleteContact(c, ownerId, uint(id))
+		err = a.DeleteContact(c, ownerId, id)
 		switch {
 		case err == nil:
 			c.JSON(http.StatusOK, contactResponse{

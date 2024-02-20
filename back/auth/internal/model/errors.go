@@ -13,6 +13,7 @@ var (
 	ErrTokensNotExist        = errors.New("required tokens are not exist")
 
 	ErrEmployeeNotExists = errors.New("employee with required email not exists")
+	ErrEmailRegistered   = errors.New("employee with this email is already registered")
 
 	ErrAuthRepoError = errors.New("something wrong with tokens repository")
 	ErrPassRepoError = errors.New("something wrong with passwords repository")

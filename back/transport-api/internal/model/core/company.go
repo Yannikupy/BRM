@@ -1,11 +1,11 @@
 package core
 
 type Company struct {
-	Id           uint
+	Id           uint64
 	Name         string
 	Description  string
-	Industry     uint
-	OwnerId      uint
+	Industry     uint64
+	OwnerId      uint64
 	Rating       float64
 	CreationDate int64
 	IsDeleted    bool
@@ -14,6 +14,6 @@ type Company struct {
 type UpdateCompany struct {
 	Name        string
 	Description string
-	Industry    uint
-	OwnerId     uint
+	Industry    uint64
+	OwnerId     uint64
 }

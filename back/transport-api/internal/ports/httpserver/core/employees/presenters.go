@@ -1,7 +1,7 @@
 package employees
 
 type addEmployeeRequest struct {
-	CompanyId  int    `json:"company_id"`
+	CompanyId  uint64 `json:"company_id"`
 	FirstName  string `json:"first_name"`
 	SecondName string `json:"second_name"`
 	Email      string `json:"email"`

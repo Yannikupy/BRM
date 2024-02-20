@@ -7,7 +7,7 @@ import (
 	"transport-api/pkg/tokenizer"
 )
 
-func AuthMiddleware(tkn tokenizer.Tokenizer) gin.HandlerFunc {
+func Auth(tkn tokenizer.Tokenizer) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		headerValue := c.GetHeader("Authorization")
 		token := getTokenFromHeader(headerValue)
@@ -33,7 +33,7 @@ func getTokenFromHeader(headerValue string) string {
 	return header[1]
 }
 
-func GetAuthData(c *gin.Context) (uint, uint, bool) {
+func GetAuthData(c *gin.Context) (uint64, uint64, bool) {
 	employeeId, ok := GetIdData(c, "EmployeeId")
 	if !ok {
 		return 0, 0, false
@@ -44,7 +44,7 @@ func GetAuthData(c *gin.Context) (uint, uint, bool) {
 		return 0, 0, false
 	}
 
-	return uint(employeeId), uint(companyId), true
+	return employeeId, companyId, true
 }
 
 func GetIdData(c *gin.Context, key string) (id uint64, ok bool) {
