@@ -9,14 +9,10 @@ import (
 
 func loggerInterceptor(logs logger.Logger) grpc.UnaryServerInterceptor {
 	return func(ctx context.Context, req any, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (resp any, err error) {
-		resp, err = handler(ctx, req)
-		if err != nil {
-			return nil, mapErrors(err)
-		}
 		logs.Info(logger.Fields{
 			"Method": info.FullMethod,
 		}, "got request")
-		return resp, nil
+		return handler(ctx, req)
 	}
 }
 
@@ -29,10 +25,6 @@ func panicInterceptor(logs logger.Logger) grpc.UnaryServerInterceptor {
 				}, fmt.Sprintf("panic: %v", r))
 			}
 		}()
-		resp, err = handler(ctx, req)
-		if err != nil {
-			return nil, mapErrors(err)
-		}
-		return resp, nil
+		return handler(ctx, req)
 	}
 }
