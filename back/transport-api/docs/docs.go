@@ -302,65 +302,6 @@ const docTemplate = `{
                 }
             }
         },
-        "/companies/mainpage/{id}": {
-            "get": {
-                "description": "Возвращает название и статистику компании для главной страницы",
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "core/companies"
-                ],
-                "summary": "Получение информации о компании",
-                "parameters": [
-                    {
-                        "type": "integer",
-                        "description": "id компании",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Успешное получение данных",
-                        "schema": {
-                            "$ref": "#/definitions/companies.mainPageResponse"
-                        }
-                    },
-                    "400": {
-                        "description": "Неверный формат входных данных",
-                        "schema": {
-                            "$ref": "#/definitions/companies.mainPageResponse"
-                        }
-                    },
-                    "401": {
-                        "description": "Ошибка авторизации",
-                        "schema": {
-                            "$ref": "#/definitions/companies.mainPageResponse"
-                        }
-                    },
-                    "403": {
-                        "description": "Нет прав для выполнения операции",
-                        "schema": {
-                            "$ref": "#/definitions/companies.mainPageResponse"
-                        }
-                    },
-                    "404": {
-                        "description": "Компания не найдена",
-                        "schema": {
-                            "$ref": "#/definitions/companies.mainPageResponse"
-                        }
-                    },
-                    "500": {
-                        "description": "Проблемы на стороне сервера",
-                        "schema": {
-                            "$ref": "#/definitions/companies.mainPageResponse"
-                        }
-                    }
-                }
-            }
-        },
         "/companies/{id}": {
             "get": {
                 "security": [
@@ -553,6 +494,65 @@ const docTemplate = `{
                         "description": "Проблемы на стороне сервера",
                         "schema": {
                             "$ref": "#/definitions/companies.companyResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/companies/{id}/mainpage": {
+            "get": {
+                "description": "Возвращает название и статистику компании для главной страницы",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "core/companies"
+                ],
+                "summary": "Получение информации о компании",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "id компании",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Успешное получение данных",
+                        "schema": {
+                            "$ref": "#/definitions/companies.mainPageResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Неверный формат входных данных",
+                        "schema": {
+                            "$ref": "#/definitions/companies.mainPageResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Ошибка авторизации",
+                        "schema": {
+                            "$ref": "#/definitions/companies.mainPageResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Нет прав для выполнения операции",
+                        "schema": {
+                            "$ref": "#/definitions/companies.mainPageResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Компания не найдена",
+                        "schema": {
+                            "$ref": "#/definitions/companies.mainPageResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Проблемы на стороне сервера",
+                        "schema": {
+                            "$ref": "#/definitions/companies.mainPageResponse"
                         }
                     }
                 }

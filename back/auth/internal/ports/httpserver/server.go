@@ -12,7 +12,7 @@ import (
 
 func New(addr string, a app.App, logs logger.Logger) *http.Server {
 	gin.SetMode(gin.ReleaseMode)
-	router := gin.Default()
+	router := gin.New()
 
 	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 

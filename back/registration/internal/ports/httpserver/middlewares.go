@@ -46,5 +46,6 @@ func panicMiddleware(logs logger.Logger) gin.HandlerFunc {
 				c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"data": nil, "error": model.ErrCoreError.Error()})
 			}
 		}()
+		c.Next()
 	}
 }
