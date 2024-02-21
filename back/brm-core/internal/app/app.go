@@ -98,7 +98,8 @@ func (a *appImpl) UpdateCompany(ctx context.Context, companyId uint64, ownerId u
 		}
 	}
 
-	return a.coreRepo.UpdateCompany(ctx, companyId, upd)
+	company, err = a.coreRepo.UpdateCompany(ctx, companyId, upd)
+	return company, err
 }
 
 func (a *appImpl) DeleteCompany(ctx context.Context, companyId uint64, ownerId uint64) error {
@@ -118,7 +119,8 @@ func (a *appImpl) DeleteCompany(ctx context.Context, companyId uint64, ownerId u
 		return model.ErrAuthorization
 	}
 
-	return a.coreRepo.DeleteCompany(ctx, companyId)
+	err = a.coreRepo.DeleteCompany(ctx, companyId)
+	return err
 }
 
 func (a *appImpl) CreateEmployee(ctx context.Context, companyId uint64, ownerId uint64, employee model.Employee) (model.Employee, error) {
@@ -191,7 +193,8 @@ func (a *appImpl) UpdateEmployee(ctx context.Context, companyId uint64, ownerId 
 		return model.Employee{}, model.ErrAuthorization
 	}
 
-	return a.coreRepo.UpdateEmployee(ctx, employeeId, upd)
+	employee, err = a.coreRepo.UpdateEmployee(ctx, employeeId, upd)
+	return employee, err
 }
 
 func (a *appImpl) DeleteEmployee(ctx context.Context, companyId uint64, ownerId uint64, employeeId uint64) error {
@@ -222,7 +225,8 @@ func (a *appImpl) DeleteEmployee(ctx context.Context, companyId uint64, ownerId 
 	if err != nil {
 		return err
 	}
-	return a.auth.DeleteEmployee(ctx, employee.Email)
+	err = a.auth.DeleteEmployee(ctx, employee.Email)
+	return err
 }
 
 func (a *appImpl) GetCompanyEmployees(ctx context.Context, companyId uint64, employeeId uint64, filter model.FilterEmployee) ([]model.Employee, error) {
@@ -246,7 +250,8 @@ func (a *appImpl) GetCompanyEmployees(ctx context.Context, companyId uint64, emp
 		return []model.Employee{}, model.ErrAuthorization
 	}
 
-	return a.coreRepo.GetCompanyEmployees(ctx, companyId, filter)
+	employees, err := a.coreRepo.GetCompanyEmployees(ctx, companyId, filter)
+	return employees, err
 }
 
 func (a *appImpl) GetEmployeeByName(ctx context.Context, companyId uint64, employeeId uint64, ebn model.EmployeeByName) ([]model.Employee, error) {
@@ -270,7 +275,8 @@ func (a *appImpl) GetEmployeeByName(ctx context.Context, companyId uint64, emplo
 		return []model.Employee{}, model.ErrAuthorization
 	}
 
-	return a.coreRepo.GetEmployeeByName(ctx, companyId, ebn)
+	employees, err := a.coreRepo.GetEmployeeByName(ctx, companyId, ebn)
+	return employees, err
 }
 
 func (a *appImpl) GetEmployeeById(ctx context.Context, companyId uint64, employeeId uint64, employeeIdToFind uint64) (model.Employee, error) {
@@ -294,7 +300,8 @@ func (a *appImpl) GetEmployeeById(ctx context.Context, companyId uint64, employe
 		return model.Employee{}, model.ErrAuthorization
 	}
 
-	return a.coreRepo.GetEmployeeById(ctx, employeeIdToFind)
+	employee, err = a.coreRepo.GetEmployeeById(ctx, employeeIdToFind)
+	return employee, err
 }
 
 func (a *appImpl) CreateContact(ctx context.Context, ownerId uint64, employeeId uint64) (model.Contact, error) {
@@ -317,7 +324,7 @@ func (a *appImpl) CreateContact(ctx context.Context, ownerId uint64, employeeId 
 		return model.Contact{}, err
 	}
 
-	return a.coreRepo.CreateContact(ctx, model.Contact{
+	contact, err := a.coreRepo.CreateContact(ctx, model.Contact{
 		Id:           0,
 		OwnerId:      ownerId,
 		EmployeeId:   employeeId,
@@ -326,6 +333,7 @@ func (a *appImpl) CreateContact(ctx context.Context, ownerId uint64, employeeId 
 		IsDeleted:    false,
 		Empl:         model.Employee{},
 	})
+	return contact, err
 }
 
 func (a *appImpl) UpdateContact(ctx context.Context, ownerId uint64, contactId uint64, upd model.UpdateContact) (model.Contact, error) {
@@ -350,7 +358,8 @@ func (a *appImpl) UpdateContact(ctx context.Context, ownerId uint64, contactId u
 		return model.Contact{}, err
 	}
 
-	return a.coreRepo.UpdateContact(ctx, ownerId, contactId, upd)
+	contact, err = a.coreRepo.UpdateContact(ctx, ownerId, contactId, upd)
+	return contact, err
 }
 
 func (a *appImpl) DeleteContact(ctx context.Context, ownerId uint64, contactId uint64) error {
@@ -375,7 +384,8 @@ func (a *appImpl) DeleteContact(ctx context.Context, ownerId uint64, contactId u
 		return model.ErrAuthorization
 	}
 
-	return a.coreRepo.DeleteContact(ctx, ownerId, contactId)
+	err = a.coreRepo.DeleteContact(ctx, ownerId, contactId)
+	return err
 }
 
 func (a *appImpl) GetContacts(ctx context.Context, ownerId uint64, pagination model.GetContacts) ([]model.Contact, error) {
@@ -392,7 +402,8 @@ func (a *appImpl) GetContacts(ctx context.Context, ownerId uint64, pagination mo
 		return []model.Contact{}, err
 	}
 
-	return a.coreRepo.GetContacts(ctx, ownerId, pagination)
+	contacts, err := a.coreRepo.GetContacts(ctx, ownerId, pagination)
+	return contacts, err
 }
 
 func (a *appImpl) GetContactById(ctx context.Context, ownerId uint64, contactId uint64) (model.Contact, error) {
@@ -417,7 +428,8 @@ func (a *appImpl) GetContactById(ctx context.Context, ownerId uint64, contactId 
 		return model.Contact{}, err
 	}
 
-	return a.coreRepo.GetContactById(ctx, ownerId, contactId)
+	contact, err = a.coreRepo.GetContactById(ctx, ownerId, contactId)
+	return contact, err
 }
 
 func (a *appImpl) writeLog(fields logger.Fields, err error) {
