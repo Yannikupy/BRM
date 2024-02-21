@@ -107,14 +107,16 @@ func (c *coreRepoImpl) GetContacts(ctx context.Context, ownerId uint64, paginati
 			&contact.Notes,
 			&contact.CreationDate,
 			&contact.IsDeleted,
+			&contact.Empl.Id,
+			&contact.Empl.CompanyId,
+			&contact.Empl.FirstName,
+			&contact.Empl.SecondName,
+			&contact.Empl.Email,
+			&contact.Empl.JobTitle,
+			&contact.Empl.Department,
+			&contact.Empl.CreationDate,
+			&contact.Empl.IsDeleted,
 		)
-
-		// TODO оптимизировать, добавить inner join
-		empl, err := c.GetEmployeeById(ctx, contact.EmployeeId)
-		if err != nil {
-			return []model.Contact{}, err
-		}
-		contact.Empl = empl
 
 		contacts = append(contacts, contact)
 	}
@@ -122,10 +124,12 @@ func (c *coreRepoImpl) GetContacts(ctx context.Context, ownerId uint64, paginati
 }
 
 func getGetContactsQuery(ownerId uint64) string {
+	shardName := getShardName(ownerId)
 	return fmt.Sprintf(`
 		SELECT * FROM %s
-		WHERE "owner_id" = $1 AND (NOT "is_deleted")
-		LIMIT $2 OFFSET $3;`, getShardName(ownerId))
+		INNER JOIN "employees" ON "employee_id" = "employees"."id"
+		WHERE "owner_id" = $1 AND (NOT "%s"."is_deleted")
+		LIMIT $2 OFFSET $3;`, shardName, shardName)
 }
 
 func (c *coreRepoImpl) GetContactById(ctx context.Context, ownerId uint64, contactId uint64) (model.Contact, error) {
@@ -140,25 +144,30 @@ func (c *coreRepoImpl) GetContactById(ctx context.Context, ownerId uint64, conta
 		&contact.Notes,
 		&contact.CreationDate,
 		&contact.IsDeleted,
+		&contact.Empl.Id,
+		&contact.Empl.CompanyId,
+		&contact.Empl.FirstName,
+		&contact.Empl.SecondName,
+		&contact.Empl.Email,
+		&contact.Empl.JobTitle,
+		&contact.Empl.Department,
+		&contact.Empl.CreationDate,
+		&contact.Empl.IsDeleted,
 	); errors.Is(err, pgx.ErrNoRows) {
 		return model.Contact{}, model.ErrContactNotExists
 	} else if err != nil {
 		return model.Contact{}, errors.Join(model.ErrDatabaseError, err)
 	}
 
-	empl, err := c.GetEmployeeById(ctx, contact.EmployeeId)
-	if err != nil {
-		return model.Contact{}, err
-	}
-	contact.Empl = empl
-
 	return contact, nil
 }
 
 func getGetContactByIdQuery(ownerId uint64) string {
+	shardName := getShardName(ownerId)
 	return fmt.Sprintf(`
 		SELECT * FROM %s
-		WHERE "id" = $1 AND (NOT "is_deleted");`, getShardName(ownerId))
+		INNER JOIN "employees" ON "employee_id" = "employees"."id"
+		WHERE "id" = $1 AND (NOT "%s"."is_deleted");`, shardName, shardName)
 }
 
 func getShardName(ownerId uint64) string {
