@@ -5,6 +5,7 @@ import (
 	"context"
 	"errors"
 	"github.com/jackc/pgx/v5"
+	"github.com/jackc/pgx/v5/pgconn"
 )
 
 const (
@@ -64,6 +65,7 @@ func (c *coreRepoImpl) GetCompany(ctx context.Context, id uint64) (model.Company
 
 func (c *coreRepoImpl) CreateCompanyAndOwner(ctx context.Context, company model.Company, owner model.Employee) (model.Company, model.Employee, error) {
 	var companyId, ownerId uint64
+	var pgErr *pgconn.PgError
 	if err := c.QueryRow(ctx, createCompanyQuery,
 		company.Name,
 		company.Description,
@@ -88,7 +90,14 @@ func (c *coreRepoImpl) CreateCompanyAndOwner(ctx context.Context, company model.
 		owner.Department,
 		owner.CreationDate,
 		owner.IsDeleted,
-	).Scan(&ownerId); err != nil {
+	).Scan(&ownerId); errors.As(err, &pgErr) {
+		switch pgErr.Code {
+		case "23505": // duplicate primary key error
+			return model.Company{}, model.Employee{}, model.ErrEmailRegistered
+		default:
+			return model.Company{}, model.Employee{}, model.ErrServiceError
+		}
+	} else if err != nil {
 		return model.Company{}, model.Employee{}, errors.Join(model.ErrDatabaseError, err)
 	}
 
