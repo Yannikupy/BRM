@@ -4,46 +4,28 @@ import (
 	"brm-core/internal/model"
 	"context"
 	"errors"
+	"fmt"
 	"github.com/jackc/pgx/v5"
-)
-
-const (
-	createContactQuery = `
-		INSERT INTO $1 ("owner_id", "employee_id", "notes", "creation_date", "is_deleted")
-		VALUES ($2, $3, $4, $5, $6)
-		RETURNING "id";`
-
-	updateContactQuery = `
-		UPDATE $1
-		SET "notes" = $3
-		WHERE "id" = $2 AND (NOT "is_deleted");`
-
-	deleteContactQuery = `
-		UPDATE $1
-		SET "is_deleted" = true
-		WHERE "id" = $2 AND (NOT "is_deleted");`
-
-	// TODO оптимизировать, добавить inner join
-	getContactsQuery = `
-		SELECT * FROM $1
-		WHERE "owner_id" = $2 AND (NOT "is_deleted")
-		LIMIT $3 OFFSET $4;`
-
-	getContactByIdQuery = `
-		SELECT * FROM $1
-		WHERE "id" = $2 AND (NOT "is_deleted");`
+	"github.com/jackc/pgx/v5/pgconn"
 )
 
 func (c *coreRepoImpl) CreateContact(ctx context.Context, contact model.Contact) (model.Contact, error) {
 	var contactId uint64
-	if err := c.QueryRow(ctx, createContactQuery,
-		getShardName(contact.OwnerId),
+	var pgErr *pgconn.PgError
+	if err := c.QueryRow(ctx, getCreateContactQuery(contact.OwnerId),
 		contact.OwnerId,
 		contact.EmployeeId,
 		contact.Notes,
 		contact.CreationDate,
 		contact.IsDeleted,
-	).Scan(contactId); err != nil {
+	).Scan(&contactId); errors.As(err, &pgErr) {
+		switch pgErr.Code {
+		case "23505": // duplicate primary key error
+			return model.Contact{}, model.ErrContactExist
+		default:
+			return model.Contact{}, model.ErrServiceError
+		}
+	} else if err != nil {
 		return model.Contact{}, errors.Join(model.ErrDatabaseError, err)
 	}
 
@@ -58,9 +40,15 @@ func (c *coreRepoImpl) CreateContact(ctx context.Context, contact model.Contact)
 	return contact, nil
 }
 
+func getCreateContactQuery(ownerId uint64) string {
+	return fmt.Sprintf(`
+	INSERT INTO %s ("owner_id", "employee_id", "notes", "creation_date", "is_deleted")
+	VALUES ($1, $2, $3, $4, $5)
+	RETURNING "id";`, getShardName(ownerId))
+}
+
 func (c *coreRepoImpl) UpdateContact(ctx context.Context, ownerId uint64, contactId uint64, upd model.UpdateContact) (model.Contact, error) {
-	if e, err := c.Exec(ctx, updateContactQuery,
-		getShardName(ownerId),
+	if e, err := c.Exec(ctx, getUpdateContactQuery(ownerId),
 		contactId,
 		upd.Notes,
 	); err != nil {
@@ -72,9 +60,15 @@ func (c *coreRepoImpl) UpdateContact(ctx context.Context, ownerId uint64, contac
 	return c.GetContactById(ctx, ownerId, contactId)
 }
 
+func getUpdateContactQuery(ownerId uint64) string {
+	return fmt.Sprintf(`
+		UPDATE %s
+		SET "notes" = $2
+		WHERE "id" = $1 AND (NOT "is_deleted");`, getShardName(ownerId))
+}
+
 func (c *coreRepoImpl) DeleteContact(ctx context.Context, ownerId uint64, contactId uint64) error {
-	if e, err := c.Exec(ctx, deleteContactQuery,
-		getShardName(ownerId),
+	if e, err := c.Exec(ctx, getDeleteContactQuery(ownerId),
 		contactId,
 	); err != nil {
 		return errors.Join(model.ErrDatabaseError, err)
@@ -85,9 +79,15 @@ func (c *coreRepoImpl) DeleteContact(ctx context.Context, ownerId uint64, contac
 	}
 }
 
+func getDeleteContactQuery(ownerId uint64) string {
+	return fmt.Sprintf(`
+		UPDATE %s
+		SET "is_deleted" = true
+		WHERE "id" = $1 AND (NOT "is_deleted");`, getShardName(ownerId))
+}
+
 func (c *coreRepoImpl) GetContacts(ctx context.Context, ownerId uint64, pagination model.GetContacts) ([]model.Contact, error) {
-	rows, err := c.Query(ctx, getContactsQuery,
-		getShardName(ownerId),
+	rows, err := c.Query(ctx, getGetContactsQuery(ownerId),
 		ownerId,
 		pagination.Limit,
 		pagination.Offset,
@@ -121,9 +121,15 @@ func (c *coreRepoImpl) GetContacts(ctx context.Context, ownerId uint64, paginati
 	return contacts, nil
 }
 
+func getGetContactsQuery(ownerId uint64) string {
+	return fmt.Sprintf(`
+		SELECT * FROM %s
+		WHERE "owner_id" = $1 AND (NOT "is_deleted")
+		LIMIT $2 OFFSET $3;`, getShardName(ownerId))
+}
+
 func (c *coreRepoImpl) GetContactById(ctx context.Context, ownerId uint64, contactId uint64) (model.Contact, error) {
-	row := c.QueryRow(ctx, getContactByIdQuery,
-		getShardName(ownerId),
+	row := c.QueryRow(ctx, getGetContactByIdQuery(ownerId),
 		contactId,
 	)
 	var contact model.Contact
@@ -147,6 +153,12 @@ func (c *coreRepoImpl) GetContactById(ctx context.Context, ownerId uint64, conta
 	contact.Empl = empl
 
 	return contact, nil
+}
+
+func getGetContactByIdQuery(ownerId uint64) string {
+	return fmt.Sprintf(`
+		SELECT * FROM %s
+		WHERE "id" = $1 AND (NOT "is_deleted");`, getShardName(ownerId))
 }
 
 func getShardName(ownerId uint64) string {

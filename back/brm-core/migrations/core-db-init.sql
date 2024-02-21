@@ -32,7 +32,8 @@ CREATE TABLE contact_shard01 (
     "employee_id" INTEGER,
     "notes" VARCHAR(500),
     "creation_date" DATE,
-    "is_deleted" BOOLEAN
+    "is_deleted" BOOLEAN,
+    UNIQUE ("owner_id", "employee_id")
 );
 
 CREATE TABLE contact_shard02 (
@@ -41,7 +42,8 @@ CREATE TABLE contact_shard02 (
     "employee_id" INTEGER,
     "notes" VARCHAR(500),
     "creation_date" DATE,
-    "is_deleted" BOOLEAN
+    "is_deleted" BOOLEAN,
+    UNIQUE ("owner_id", "employee_id")
 );
 
 CREATE TABLE contact_shard03 (
@@ -50,7 +52,8 @@ CREATE TABLE contact_shard03 (
     "employee_id" INTEGER,
     "notes" VARCHAR(500),
     "creation_date" DATE,
-    "is_deleted" BOOLEAN
+    "is_deleted" BOOLEAN,
+    UNIQUE ("owner_id", "employee_id")
 );
 
 CREATE TABLE contact_shard04 (
@@ -59,5 +62,6 @@ CREATE TABLE contact_shard04 (
     "employee_id" INTEGER,
     "notes" VARCHAR(500),
     "creation_date" DATE,
-    "is_deleted" BOOLEAN
+    "is_deleted" BOOLEAN,
+    UNIQUE ("owner_id", "employee_id")
 );
