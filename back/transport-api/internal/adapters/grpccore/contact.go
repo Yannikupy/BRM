@@ -35,6 +35,8 @@ func (c *coreClientImpl) CreateContact(ctx context.Context, ownerId uint64, empl
 		switch code {
 		case codes.NotFound:
 			return core.Contact{}, model.ErrEmployeeNotExists
+		case codes.AlreadyExists:
+			return core.Contact{}, model.ErrContactExist
 		case codes.ResourceExhausted:
 			return core.Contact{}, model.ErrCoreError
 		default:

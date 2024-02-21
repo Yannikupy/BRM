@@ -56,6 +56,8 @@ func AddContact(a app.App) gin.HandlerFunc {
 			c.AbortWithStatusJSON(http.StatusNotFound, errorResponse(model.ErrEmployeeNotExists))
 		case errors.Is(err, model.ErrPermissionDenied):
 			c.AbortWithStatusJSON(http.StatusForbidden, errorResponse(model.ErrPermissionDenied))
+		case errors.Is(err, model.ErrContactExist):
+			c.AbortWithStatusJSON(http.StatusConflict, errorResponse(model.ErrContactExist))
 		case errors.Is(err, model.ErrCoreError):
 			c.AbortWithStatusJSON(http.StatusInternalServerError, errorResponse(model.ErrCoreError))
 		default:
