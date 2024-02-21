@@ -1,0 +1,9 @@
+syntax = "proto3";
+
+package ads;
+option go_package = "/pb";
+import "google/protobuf/empty.proto";
+
+service AdsService {
+//  TODO add methods
+}
