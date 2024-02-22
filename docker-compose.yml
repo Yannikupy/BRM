@@ -41,6 +41,20 @@ services:
     volumes:
       - tokens-data:/root/redis
 
+  postgres-ads:
+    image: postgres:15.5
+    container_name: postgres-ads
+    environment:
+      POSTGRES_DB: ads-db
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: root
+    profiles: ["dev_front", "dev_back"]
+    ports:
+      - "5502:5432"
+    volumes:
+      - ./back/brm-ads/migrations/:/docker-entrypoint-initdb.d/
+      - ads-data:/var/lib/postgresql/data
+
   brm-core:
     build:
       context: back/brm-core
@@ -51,6 +65,17 @@ services:
       - "50000:50000"
     depends_on:
       - postgres-core
+
+  brm-ads:
+    build:
+      context: back/brm-ads
+      dockerfile: Dockerfile
+    command: ./brm-ads-app --docker
+    profiles: ["dev_front"]
+    ports:
+      - "50002:50002"
+    depends_on:
+      - postgres-ads
 
   transport-api:
     build:
@@ -93,3 +118,4 @@ volumes:
   core-data:
   passwords-data:
   tokens-data:
+  ads-data:
