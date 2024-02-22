@@ -20,7 +20,7 @@ import (
 // @Success		200		{object}	adResponse		"Успешное добавление объявления"
 // @Failure		500		{object}	adResponse		"Проблемы на стороне сервера"
 // @Failure		400		{object}	adResponse		"Неверный формат входных данных"
-// @Failure 401 {object} adResponse "Ошибка авторизации"
+// @Failure		401		{object}	adResponse		"Ошибка авторизации"
 // @Router			/ads [post]
 func AddAd(a app.App) gin.HandlerFunc {
 	return func(c *gin.Context) {
@@ -69,7 +69,7 @@ func AddAd(a app.App) gin.HandlerFunc {
 // @Success		200	{object}	adResponse	"Успешное получение объявления"
 // @Failure		500	{object}	adResponse	"Проблемы на стороне сервера"
 // @Failure		400	{object}	adResponse	"Неверный формат входных данных"
-// @Failure 401 {object} adResponse "Ошибка авторизации"
+// @Failure		401	{object}	adResponse	"Ошибка авторизации"
 // @Failure		404	{object}	adResponse	"Объявление не найдено"
 // @Router			/ads/{id} [get]
 func GetAd(a app.App) gin.HandlerFunc {
@@ -109,19 +109,19 @@ func GetAd(a app.App) gin.HandlerFunc {
 // @Description	Получает список объявлений с использованием фильтрации и пагинации
 // @Tags			ads
 // @Produce		json
-// @Param			limit		query		int				true	"Limit"
-// @Param			offset		query		int				true	"Offset"
-// @Param			pattern		query		string			false	"Поиск по названию/тексту"
-// @Param company_id query int false "Поиск по компании"
-// @Param			industry	query		int				false	"Поиск по отрасли"
-// @Param by_price query bool false "Сортировка по возрастанию цены"
-// @Param by_price_desc query bool false "Сортировка по убыванию цены"
-// @Param by_date query bool false "Сортировка по возрастанию даты создания"
-// @Param by_date_desc bool false "Сортировка по убыванию даты создания"
-// @Success		200			{object}	adListResponse	"Успешное получение объявлений"
-// @Failure		500			{object}	adListResponse	"Проблемы на стороне сервера"
-// @Failure		400			{object}	adListResponse	"Неверный формат входных данных"
-// @Failure 401 {object} adResponse "Ошибка авторизации"
+// @Param			limit			query		int				true	"Limit"
+// @Param			offset			query		int				true	"Offset"
+// @Param			pattern			query		string			false	"Поиск по названию/тексту"
+// @Param			company_id		query		int				false	"Поиск по компании"
+// @Param			industry		query		int				false	"Поиск по отрасли"
+// @Param			by_price		query		bool			false	"Сортировка по возрастанию цены"
+// @Param			by_price_desc	query		bool			false	"Сортировка по убыванию цены"
+// @Param			by_date			query		bool			false	"Сортировка по возрастанию даты создания"
+// @Param			by_date_desc	query		bool			false	"Сортировка по убыванию даты создания"
+// @Success		200				{object}	adListResponse	"Успешное получение объявлений"
+// @Failure		500				{object}	adListResponse	"Проблемы на стороне сервера"
+// @Failure		400				{object}	adListResponse	"Неверный формат входных данных"
+// @Failure		401				{object}	adResponse		"Ошибка авторизации"
 // @Router			/ads [get]
 func GetAdsList(a app.App) gin.HandlerFunc {
 	return func(c *gin.Context) {
@@ -300,12 +300,12 @@ func DeleteAd(a app.App) gin.HandlerFunc {
 // @Description	Создаёт отклик у откликнувшейся компании и сделку у владельца объявления
 // @Tags			ads
 // @Produce		json
-// @Param			id	path		int			true	"id объявления"
+// @Param			id	path		int					true	"id объявления"
 // @Success		200	{object}	responseResponse	"Успешное создание отклика"
 // @Failure		500	{object}	responseResponse	"Проблемы на стороне сервера"
 // @Failure		400	{object}	responseResponse	"Неверный формат входных данных"
 // @Failure		404	{object}	responseResponse	"Объявление не найдено"
-// @Failure 409 {object} responseResponse "Попытка откликнуться на объявление своей же компании"
+// @Failure		409	{object}	responseResponse	"Попытка откликнуться на объявление своей же компании"
 // @Router			/ads/{id}/response [post]
 func AddResponse(a app.App) gin.HandlerFunc {
 	return func(c *gin.Context) {
@@ -346,11 +346,11 @@ func AddResponse(a app.App) gin.HandlerFunc {
 // @Description	Возвращает список откликов компании на объявления
 // @Tags			ads
 // @Produce		json
-// @Param			limit		query		int				true	"Limit"
-// @Param			offset		query		int				true	"Offset"
-// @Success		200	{object}	responseListResponse	"Успешное получение списка"
-// @Failure		500	{object}	responseListResponse	"Проблемы на стороне сервера"
-// @Failure		400	{object}	responseListResponse	"Неверный формат входных данных"
+// @Param			limit	query		int						true	"Limit"
+// @Param			offset	query		int						true	"Offset"
+// @Success		200		{object}	responseListResponse	"Успешное получение списка"
+// @Failure		500		{object}	responseListResponse	"Проблемы на стороне сервера"
+// @Failure		400		{object}	responseListResponse	"Неверный формат входных данных"
 // @Router			/responses [get]
 func GetResponsesList(a app.App) gin.HandlerFunc {
 	return func(c *gin.Context) {

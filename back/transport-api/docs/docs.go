@@ -43,16 +43,44 @@ const docTemplate = `{
                     {
                         "type": "string",
                         "description": "Поиск по названию/тексту",
-                        "name": "name",
-                        "in": "query",
-                        "required": true
+                        "name": "pattern",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Поиск по компании",
+                        "name": "company_id",
+                        "in": "query"
                     },
                     {
                         "type": "integer",
                         "description": "Поиск по отрасли",
                         "name": "industry",
-                        "in": "query",
-                        "required": true
+                        "in": "query"
+                    },
+                    {
+                        "type": "boolean",
+                        "description": "Сортировка по возрастанию цены",
+                        "name": "by_price",
+                        "in": "query"
+                    },
+                    {
+                        "type": "boolean",
+                        "description": "Сортировка по убыванию цены",
+                        "name": "by_price_desc",
+                        "in": "query"
+                    },
+                    {
+                        "type": "boolean",
+                        "description": "Сортировка по возрастанию даты создания",
+                        "name": "by_date",
+                        "in": "query"
+                    },
+                    {
+                        "type": "boolean",
+                        "description": "Сортировка по убыванию даты создания",
+                        "name": "by_date_desc",
+                        "in": "query"
                     }
                 ],
                 "responses": {
@@ -66,6 +94,12 @@ const docTemplate = `{
                         "description": "Неверный формат входных данных",
                         "schema": {
                             "$ref": "#/definitions/ads.adListResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Ошибка авторизации",
+                        "schema": {
+                            "$ref": "#/definitions/ads.adResponse"
                         }
                     },
                     "500": {
@@ -112,6 +146,12 @@ const docTemplate = `{
                             "$ref": "#/definitions/ads.adResponse"
                         }
                     },
+                    "401": {
+                        "description": "Ошибка авторизации",
+                        "schema": {
+                            "$ref": "#/definitions/ads.adResponse"
+                        }
+                    },
                     "500": {
                         "description": "Проблемы на стороне сервера",
                         "schema": {
@@ -149,6 +189,12 @@ const docTemplate = `{
                     },
                     "400": {
                         "description": "Неверный формат входных данных",
+                        "schema": {
+                            "$ref": "#/definitions/ads.adResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Ошибка авторизации",
                         "schema": {
                             "$ref": "#/definitions/ads.adResponse"
                         }
@@ -265,6 +311,59 @@ const docTemplate = `{
                         "description": "Проблемы на стороне сервера",
                         "schema": {
                             "$ref": "#/definitions/ads.adResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/ads/{id}/response": {
+            "post": {
+                "description": "Создаёт отклик у откликнувшейся компании и сделку у владельца объявления",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "ads"
+                ],
+                "summary": "Откликнуться на объявление",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "id объявления",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Успешное создание отклика",
+                        "schema": {
+                            "$ref": "#/definitions/ads.responseResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Неверный формат входных данных",
+                        "schema": {
+                            "$ref": "#/definitions/ads.responseResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Объявление не найдено",
+                        "schema": {
+                            "$ref": "#/definitions/ads.responseResponse"
+                        }
+                    },
+                    "409": {
+                        "description": "Попытка откликнуться на объявление своей же компании",
+                        "schema": {
+                            "$ref": "#/definitions/ads.responseResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Проблемы на стороне сервера",
+                        "schema": {
+                            "$ref": "#/definitions/ads.responseResponse"
                         }
                     }
                 }
@@ -1521,6 +1620,54 @@ const docTemplate = `{
                 }
             }
         },
+        "/responses": {
+            "get": {
+                "description": "Возвращает список откликов компании на объявления",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "ads"
+                ],
+                "summary": "Получение списка откликов на объявления",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Limit",
+                        "name": "limit",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Offset",
+                        "name": "offset",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Успешное получение списка",
+                        "schema": {
+                            "$ref": "#/definitions/ads.responseListResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Неверный формат входных данных",
+                        "schema": {
+                            "$ref": "#/definitions/ads.responseListResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Проблемы на стороне сервера",
+                        "schema": {
+                            "$ref": "#/definitions/ads.responseListResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/tasks": {
             "get": {
                 "description": "Получает список задач с использованием фильтрации и пагинации",
@@ -1813,25 +1960,28 @@ const docTemplate = `{
         "ads.adData": {
             "type": "object",
             "properties": {
-                "ad_id": {
-                    "type": "integer"
-                },
                 "company_id": {
                     "type": "integer"
                 },
-                "created_at": {
+                "created_by": {
                     "type": "integer"
                 },
-                "created_id": {
+                "creation_date": {
+                    "type": "integer"
+                },
+                "id": {
                     "type": "integer"
                 },
                 "industry": {
-                    "type": "string"
+                    "type": "integer"
+                },
+                "is_deleted": {
+                    "type": "boolean"
                 },
                 "price": {
                     "type": "integer"
                 },
-                "responsible_id": {
+                "responsible": {
                     "type": "integer"
                 },
                 "text": {
@@ -1871,7 +2021,7 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "industry": {
-                    "type": "string"
+                    "type": "integer"
                 },
                 "price": {
                     "type": "integer"
@@ -1884,13 +2034,67 @@ const docTemplate = `{
                 }
             }
         },
+        "ads.responseData": {
+            "type": "object",
+            "properties": {
+                "ad_id": {
+                    "type": "integer"
+                },
+                "company_id": {
+                    "type": "integer"
+                },
+                "creation_date": {
+                    "type": "integer"
+                },
+                "employee_id": {
+                    "type": "integer"
+                },
+                "id": {
+                    "type": "integer"
+                }
+            }
+        },
+        "ads.responseListResponse": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/ads.responseData"
+                    }
+                },
+                "error": {
+                    "type": "string"
+                }
+            }
+        },
+        "ads.responseResponse": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "$ref": "#/definitions/ads.responseData"
+                },
+                "error": {
+                    "type": "string"
+                }
+            }
+        },
         "ads.updateAdRequest": {
             "type": "object",
             "properties": {
+                "industry": {
+                    "type": "integer"
+                },
                 "price": {
                     "type": "integer"
                 },
+                "responsible": {
+                    "type": "integer"
+                },
                 "text": {
+                    "type": "string"
+                },
+                "title": {
                     "type": "string"
                 }
             }

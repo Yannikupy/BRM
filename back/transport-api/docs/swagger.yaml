@@ -2,19 +2,21 @@ basePath: /api/v1
 definitions:
   ads.adData:
     properties:
-      ad_id:
-        type: integer
       company_id:
         type: integer
-      created_at:
+      created_by:
         type: integer
-      created_id:
+      creation_date:
+        type: integer
+      id:
         type: integer
       industry:
-        type: string
+        type: integer
+      is_deleted:
+        type: boolean
       price:
         type: integer
-      responsible_id:
+      responsible:
         type: integer
       text:
         type: string
@@ -40,7 +42,7 @@ definitions:
   ads.addAdRequest:
     properties:
       industry:
-        type: string
+        type: integer
       price:
         type: integer
       text:
@@ -48,11 +50,46 @@ definitions:
       title:
         type: string
     type: object
+  ads.responseData:
+    properties:
+      ad_id:
+        type: integer
+      company_id:
+        type: integer
+      creation_date:
+        type: integer
+      employee_id:
+        type: integer
+      id:
+        type: integer
+    type: object
+  ads.responseListResponse:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/ads.responseData'
+        type: array
+      error:
+        type: string
+    type: object
+  ads.responseResponse:
+    properties:
+      data:
+        $ref: '#/definitions/ads.responseData'
+      error:
+        type: string
+    type: object
   ads.updateAdRequest:
     properties:
+      industry:
+        type: integer
       price:
         type: integer
+      responsible:
+        type: integer
       text:
+        type: string
+      title:
         type: string
     type: object
   companies.companyData:
@@ -418,14 +455,32 @@ paths:
         type: integer
       - description: Поиск по названию/тексту
         in: query
-        name: name
-        required: true
+        name: pattern
         type: string
+      - description: Поиск по компании
+        in: query
+        name: company_id
+        type: integer
       - description: Поиск по отрасли
         in: query
         name: industry
-        required: true
         type: integer
+      - description: Сортировка по возрастанию цены
+        in: query
+        name: by_price
+        type: boolean
+      - description: Сортировка по убыванию цены
+        in: query
+        name: by_price_desc
+        type: boolean
+      - description: Сортировка по возрастанию даты создания
+        in: query
+        name: by_date
+        type: boolean
+      - description: Сортировка по убыванию даты создания
+        in: query
+        name: by_date_desc
+        type: boolean
       produces:
       - application/json
       responses:
@@ -437,6 +492,10 @@ paths:
           description: Неверный формат входных данных
           schema:
             $ref: '#/definitions/ads.adListResponse'
+        "401":
+          description: Ошибка авторизации
+          schema:
+            $ref: '#/definitions/ads.adResponse'
         "500":
           description: Проблемы на стороне сервера
           schema:
@@ -464,6 +523,10 @@ paths:
             $ref: '#/definitions/ads.adResponse'
         "400":
           description: Неверный формат входных данных
+          schema:
+            $ref: '#/definitions/ads.adResponse'
+        "401":
+          description: Ошибка авторизации
           schema:
             $ref: '#/definitions/ads.adResponse'
         "500":
@@ -523,6 +586,10 @@ paths:
           description: Неверный формат входных данных
           schema:
             $ref: '#/definitions/ads.adResponse'
+        "401":
+          description: Ошибка авторизации
+          schema:
+            $ref: '#/definitions/ads.adResponse'
         "404":
           description: Объявление не найдено
           schema:
@@ -570,6 +637,41 @@ paths:
           schema:
             $ref: '#/definitions/ads.adResponse'
       summary: Редактирование объявления
+      tags:
+      - ads
+  /ads/{id}/response:
+    post:
+      description: Создаёт отклик у откликнувшейся компании и сделку у владельца объявления
+      parameters:
+      - description: id объявления
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Успешное создание отклика
+          schema:
+            $ref: '#/definitions/ads.responseResponse'
+        "400":
+          description: Неверный формат входных данных
+          schema:
+            $ref: '#/definitions/ads.responseResponse'
+        "404":
+          description: Объявление не найдено
+          schema:
+            $ref: '#/definitions/ads.responseResponse'
+        "409":
+          description: Попытка откликнуться на объявление своей же компании
+          schema:
+            $ref: '#/definitions/ads.responseResponse'
+        "500":
+          description: Проблемы на стороне сервера
+          schema:
+            $ref: '#/definitions/ads.responseResponse'
+      summary: Откликнуться на объявление
       tags:
       - ads
   /companies/{id}:
@@ -1388,6 +1490,38 @@ paths:
       summary: Получение этапов сделки
       tags:
       - leads
+  /responses:
+    get:
+      description: Возвращает список откликов компании на объявления
+      parameters:
+      - description: Limit
+        in: query
+        name: limit
+        required: true
+        type: integer
+      - description: Offset
+        in: query
+        name: offset
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Успешное получение списка
+          schema:
+            $ref: '#/definitions/ads.responseListResponse'
+        "400":
+          description: Неверный формат входных данных
+          schema:
+            $ref: '#/definitions/ads.responseListResponse'
+        "500":
+          description: Проблемы на стороне сервера
+          schema:
+            $ref: '#/definitions/ads.responseListResponse'
+      summary: Получение списка откликов на объявления
+      tags:
+      - ads
   /tasks:
     get:
       description: Получает список задач с использованием фильтрации и пагинации
