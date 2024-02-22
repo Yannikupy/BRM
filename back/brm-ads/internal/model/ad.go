@@ -41,14 +41,6 @@ type AdFilter struct {
 
 	ByIndustry bool
 	Industry   uint64
-
-	ByPrice  bool
-	MinPrice uint
-	MaxPrice uint
-
-	ByDate  bool
-	MinDate time.Time
-	MaxDate time.Time
 }
 
 type AdSorter struct {

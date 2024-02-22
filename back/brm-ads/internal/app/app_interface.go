@@ -2,6 +2,8 @@ package app
 
 import (
 	"brm-ads/internal/model"
+	"brm-ads/internal/repo"
+	"brm-ads/pkg/logger"
 	"context"
 )
 
@@ -13,5 +15,12 @@ type App interface {
 	DeleteAd(ctx context.Context, companyId uint64, employeeId uint64, adId uint64) error
 
 	CreateResponse(ctx context.Context, companyId uint64, employeeId uint64, adId uint64) (model.Response, error)
-	GetResponses(ctx context.Context, companyId uint64, employeeId uint64) ([]model.Response, error)
+	GetResponses(ctx context.Context, companyId uint64, employeeId uint64, limit uint, offset uint) ([]model.Response, error)
+}
+
+func New(repo repo.AdRepo, logs logger.Logger) App {
+	return &appImpl{
+		repo: repo,
+		logs: logs,
+	}
 }

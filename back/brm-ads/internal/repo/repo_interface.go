@@ -3,6 +3,7 @@ package repo
 import (
 	"brm-ads/internal/model"
 	"context"
+	"github.com/jackc/pgx/v5"
 )
 
 type AdRepo interface {
@@ -13,5 +14,11 @@ type AdRepo interface {
 	DeleteAd(ctx context.Context, adId uint64) error
 
 	CreateResponse(ctx context.Context, resp model.Response) (model.Response, error)
-	GetResponses(ctx context.Context, companyId uint64) ([]model.Response, error)
+	GetResponses(ctx context.Context, companyId uint64, limit uint, offset uint) ([]model.Response, error)
+}
+
+func New(conn *pgx.Conn) AdRepo {
+	return &adRepoImpl{
+		Conn: *conn,
+	}
 }

@@ -1,7 +1,6 @@
 package app
 
 import (
-	"brm-ads/internal/adapters/grpccore"
 	"brm-ads/internal/model"
 	"brm-ads/internal/repo"
 	"brm-ads/pkg/logger"
@@ -12,7 +11,7 @@ import (
 
 type appImpl struct {
 	repo repo.AdRepo
-	core grpccore.CoreClient
+	//core grpccore.CoreClient
 
 	logs logger.Logger
 }
@@ -51,6 +50,8 @@ func (a *appImpl) CreateAd(ctx context.Context, companyId uint64, employeeId uin
 			"Method":      "CreateAd",
 		}, err)
 	}()
+
+	// TODO add industry check
 
 	// setting ad fields
 	ad.CompanyId = companyId
@@ -132,10 +133,13 @@ func (a *appImpl) CreateResponse(ctx context.Context, companyId uint64, employee
 		AdId:         adId,
 		CreationDate: time.Now().UTC(),
 	})
+
+	// TODO add lead creation
+
 	return resp, err
 }
 
-func (a *appImpl) GetResponses(ctx context.Context, companyId uint64, employeeId uint64) ([]model.Response, error) {
+func (a *appImpl) GetResponses(ctx context.Context, companyId uint64, employeeId uint64, limit uint, offset uint) ([]model.Response, error) {
 	var err error
 	defer func() {
 		a.writeLog(logger.Fields{
@@ -145,7 +149,7 @@ func (a *appImpl) GetResponses(ctx context.Context, companyId uint64, employeeId
 		}, err)
 	}()
 
-	resps, err := a.repo.GetResponses(ctx, companyId)
+	resps, err := a.repo.GetResponses(ctx, companyId, limit, offset)
 	return resps, err
 }
 
