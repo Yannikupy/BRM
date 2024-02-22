@@ -1,0 +1,10 @@
+"postgres-core":
+  "username": "root"
+  "host": "localhost"
+  "port": 5502
+  "dbname": "ads-db"
+  "sslmode": "disable"
+
+"grpc-server":
+  "network": "tcp"
+  "port": 50002
