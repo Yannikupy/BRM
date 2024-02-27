@@ -2,6 +2,7 @@ package main
 
 import (
 	"brm-ads/cmd/server/factory"
+	"brm-ads/internal/adapters/grpccore"
 	"brm-ads/internal/app"
 	"brm-ads/internal/ports/grpcserver"
 	"brm-ads/internal/repo"
@@ -9,6 +10,7 @@ import (
 	"context"
 	"flag"
 	"fmt"
+	"github.com/spf13/viper"
 	"os"
 	"os/signal"
 	"syscall"
@@ -41,7 +43,14 @@ func main() {
 		logs.Fatal(nil, err.Error())
 	}
 
-	a := app.New(repo.New(adsRepo), logs)
+	coreClient, err := grpccore.NewCoreClient(ctx, fmt.Sprintf("%s:%d",
+		viper.GetString("grpc-core-client.host"),
+		viper.GetInt("grpc-core-client.port")))
+	if err != nil {
+		logs.Fatal(nil, fmt.Sprintf("create grpc core client: %s", err.Error()))
+	}
+
+	a := app.New(repo.New(adsRepo), coreClient, logs)
 
 	srv := grpcserver.New(a, logs)
 	lis, err := factory.PrepareListener()
