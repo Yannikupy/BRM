@@ -14,6 +14,7 @@ import (
 // @Summary		Добавление нового объявления
 // @Description	Добавляет новое объявление
 // @Tags			ads
+// @Security		ApiKeyAuth
 // @Accept			json
 // @Produce		json
 // @Param			input	body		addAdRequest	true	"Новое объявление в JSON"
@@ -64,6 +65,7 @@ func AddAd(a app.App) gin.HandlerFunc {
 // @Summary		Получение объявления
 // @Description	Получает объявление по id
 // @Tags			ads
+// @Security		ApiKeyAuth
 // @Produce		json
 // @Param			id	path		int			true	"id объявления"
 // @Success		200	{object}	adResponse	"Успешное получение объявления"
@@ -108,6 +110,7 @@ func GetAd(a app.App) gin.HandlerFunc {
 // @Summary		Получение списка объявлений
 // @Description	Получает список объявлений с использованием фильтрации и пагинации
 // @Tags			ads
+// @Security		ApiKeyAuth
 // @Produce		json
 // @Param			limit			query		int				true	"Limit"
 // @Param			offset			query		int				true	"Offset"
@@ -173,9 +176,31 @@ func GetAdsList(a app.App) gin.HandlerFunc {
 					}
 				}
 			}
-			// TODO add sorting query params
+
+			sorter := &ads.AdSorter{}
+
+			byDate, _ := c.GetQuery("by_date")
+			byPrice, _ := c.GetQuery("by_price")
+			byPriceDesc, _ := c.GetQuery("by_price_desc")
+			byDateDesc, _ := c.GetQuery("by_date_desc")
+
+			switch {
+			case byDate == "true":
+				sorter.ByDateAsc = true
+			case byPrice == "true":
+				sorter.ByPriceAsc = true
+			case byPriceDesc == "true":
+				sorter.ByPriceDesc = true
+			case byDateDesc == "true":
+				sorter.ByDateDesc = true
+			}
+
+			if !sorter.ByDateAsc && !sorter.ByDateDesc && !sorter.ByPriceAsc && !sorter.ByPriceDesc {
+				sorter = nil
+			}
 
 			params.Filter = filter
+			params.Sort = sorter
 			adList, err = a.GetAdsList(c, params)
 		}
 
@@ -196,6 +221,7 @@ func GetAdsList(a app.App) gin.HandlerFunc {
 // @Summary		Редактирование объявления
 // @Description	Изменяет одно или несколько полей объявления
 // @Tags			ads
+// @Security		ApiKeyAuth
 // @Accept			json
 // @Produce		json
 // @Param			id		path		int				true	"id объявления"
@@ -255,6 +281,7 @@ func UpdateAd(a app.App) gin.HandlerFunc {
 // @Summary		Удаление объявления
 // @Description	Безвозвратно удаляет объявление
 // @Tags			ads
+// @Security		ApiKeyAuth
 // @Produce		json
 // @Param			id	path		int			true	"id объявления"
 // @Success		200	{object}	adResponse	"Успешное удаление объявления"
@@ -299,6 +326,7 @@ func DeleteAd(a app.App) gin.HandlerFunc {
 // @Summary		Откликнуться на объявление
 // @Description	Создаёт отклик у откликнувшейся компании и сделку у владельца объявления
 // @Tags			ads
+// @Security		ApiKeyAuth
 // @Produce		json
 // @Param			id	path		int					true	"id объявления"
 // @Success		200	{object}	responseResponse	"Успешное создание отклика"
@@ -345,6 +373,7 @@ func AddResponse(a app.App) gin.HandlerFunc {
 // @Summary		Получение списка откликов на объявления
 // @Description	Возвращает список откликов компании на объявления
 // @Tags			ads
+// @Security		ApiKeyAuth
 // @Produce		json
 // @Param			limit	query		int						true	"Limit"
 // @Param			offset	query		int						true	"Offset"
