@@ -500,6 +500,8 @@ paths:
           description: Проблемы на стороне сервера
           schema:
             $ref: '#/definitions/ads.adListResponse'
+      security:
+      - ApiKeyAuth: []
       summary: Получение списка объявлений
       tags:
       - ads
@@ -533,6 +535,8 @@ paths:
           description: Проблемы на стороне сервера
           schema:
             $ref: '#/definitions/ads.adResponse'
+      security:
+      - ApiKeyAuth: []
       summary: Добавление нового объявления
       tags:
       - ads
@@ -564,6 +568,8 @@ paths:
           description: Проблемы на стороне сервера
           schema:
             $ref: '#/definitions/ads.adResponse'
+      security:
+      - ApiKeyAuth: []
       summary: Удаление объявления
       tags:
       - ads
@@ -598,6 +604,8 @@ paths:
           description: Проблемы на стороне сервера
           schema:
             $ref: '#/definitions/ads.adResponse'
+      security:
+      - ApiKeyAuth: []
       summary: Получение объявления
       tags:
       - ads
@@ -636,6 +644,8 @@ paths:
           description: Проблемы на стороне сервера
           schema:
             $ref: '#/definitions/ads.adResponse'
+      security:
+      - ApiKeyAuth: []
       summary: Редактирование объявления
       tags:
       - ads
@@ -671,6 +681,8 @@ paths:
           description: Проблемы на стороне сервера
           schema:
             $ref: '#/definitions/ads.responseResponse'
+      security:
+      - ApiKeyAuth: []
       summary: Откликнуться на объявление
       tags:
       - ads
@@ -1519,6 +1531,8 @@ paths:
           description: Проблемы на стороне сервера
           schema:
             $ref: '#/definitions/ads.responseListResponse'
+      security:
+      - ApiKeyAuth: []
       summary: Получение списка откликов на объявления
       tags:
       - ads

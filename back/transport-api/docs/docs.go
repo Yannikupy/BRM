@@ -17,6 +17,11 @@ const docTemplate = `{
     "paths": {
         "/ads": {
             "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "Получает список объявлений с использованием фильтрации и пагинации",
                 "produces": [
                     "application/json"
@@ -111,6 +116,11 @@ const docTemplate = `{
                 }
             },
             "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "Добавляет новое объявление",
                 "consumes": [
                     "application/json"
@@ -163,6 +173,11 @@ const docTemplate = `{
         },
         "/ads/{id}": {
             "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "Получает объявление по id",
                 "produces": [
                     "application/json"
@@ -214,6 +229,11 @@ const docTemplate = `{
                 }
             },
             "put": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "Изменяет одно или несколько полей объявления",
                 "consumes": [
                     "application/json"
@@ -271,6 +291,11 @@ const docTemplate = `{
                 }
             },
             "delete": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "Безвозвратно удаляет объявление",
                 "produces": [
                     "application/json"
@@ -318,6 +343,11 @@ const docTemplate = `{
         },
         "/ads/{id}/response": {
             "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "Создаёт отклик у откликнувшейся компании и сделку у владельца объявления",
                 "produces": [
                     "application/json"
@@ -1622,6 +1652,11 @@ const docTemplate = `{
         },
         "/responses": {
             "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "Возвращает список откликов компании на объявления",
                 "produces": [
                     "application/json"
