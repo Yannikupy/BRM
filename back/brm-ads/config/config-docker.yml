@@ -5,6 +5,10 @@
   "dbname": "ads-db"
   "sslmode": "disable"
 
+"grpc-core-client":
+  "host": "brm-core"
+  "port": 50000
+
 "grpc-server":
   "network": "tcp"
   "port": 50002

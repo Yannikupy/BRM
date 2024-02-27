@@ -1,6 +1,7 @@
 package app
 
 import (
+	"brm-ads/internal/adapters/grpccore"
 	"brm-ads/internal/model"
 	"brm-ads/internal/repo"
 	"brm-ads/pkg/logger"
@@ -11,7 +12,7 @@ import (
 
 type appImpl struct {
 	repo repo.AdRepo
-	//core grpccore.CoreClient
+	core grpccore.CoreClient
 
 	logs logger.Logger
 }
@@ -36,6 +37,11 @@ func (a *appImpl) GetAdsList(ctx context.Context, params model.AdsListParams) ([
 			"Method": "GetAdsList",
 		}, err)
 	}()
+	if params.Filter != nil && params.Filter.ByCompany {
+		if _, err = a.core.GetCompany(ctx, params.Filter.CompanyId); err != nil {
+			return nil, err
+		}
+	}
 
 	ads, err := a.repo.GetAdsList(ctx, params)
 	return ads, err
@@ -79,6 +85,11 @@ func (a *appImpl) UpdateAd(ctx context.Context, companyId uint64, employeeId uin
 		return model.Ad{}, err
 	}
 	if ad.Responsible != employeeId {
+		return model.Ad{}, model.ErrAuthorization
+	}
+	if newResponsibleCompanyId, _, err := a.core.GetEmployeeById(ctx, companyId, employeeId, upd.Responsible); err != nil {
+		return model.Ad{}, err
+	} else if newResponsibleCompanyId != ad.CompanyId {
 		return model.Ad{}, model.ErrAuthorization
 	}
 
