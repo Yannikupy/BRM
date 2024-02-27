@@ -10,6 +10,9 @@ type appImpl struct {
 	ads  grpcads.AdsClient
 }
 
-func NewApp(coreCli grpccore.CoreClient) App {
-	return &appImpl{core: coreCli}
+func NewApp(coreCli grpccore.CoreClient, adsCli grpcads.AdsClient) App {
+	return &appImpl{
+		core: coreCli,
+		ads:  adsCli,
+	}
 }
