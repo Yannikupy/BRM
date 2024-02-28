@@ -123,6 +123,14 @@ func (a *appImpl) DeleteCompany(ctx context.Context, companyId uint64, ownerId u
 	return err
 }
 
+func (a *appImpl) GetIndustriesList(ctx context.Context) (map[string]string, error) {
+	return a.coreRepo.GetIndustriesList(ctx)
+}
+
+func (a *appImpl) GetIndustryById(ctx context.Context, id uint64) (string, error) {
+	return a.coreRepo.GetIndustryById(ctx, id)
+}
+
 func (a *appImpl) CreateEmployee(ctx context.Context, companyId uint64, ownerId uint64, employee model.Employee) (model.Employee, error) {
 	var err error
 	defer func() {
