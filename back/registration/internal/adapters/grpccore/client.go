@@ -54,6 +54,8 @@ func (c *coreClientImpl) CreateCompanyAndOwner(ctx context.Context, company mode
 	if err != nil {
 		code := status.Code(err)
 		switch code {
+		case codes.NotFound:
+			return model.Company{}, model.Employee{}, model.ErrIndustryNotExists
 		case codes.ResourceExhausted:
 			return model.Company{}, model.Employee{}, model.ErrCoreError
 		default:

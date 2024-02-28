@@ -1,4 +1,4 @@
-"postgres-core":
+"postgres-ads":
   "username": "root"
   "host": "postgres-ads"
   "port": 5432
