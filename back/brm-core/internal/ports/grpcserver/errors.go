@@ -23,6 +23,9 @@ func mapErrors(err error) error {
 	case errors.Is(err, model.ErrContactNotExists):
 		c = codes.NotFound
 		resErr = model.ErrContactNotExists
+	case errors.Is(err, model.ErrIndustryNotExists):
+		c = codes.NotFound
+		resErr = model.ErrIndustryNotExists
 	case errors.Is(err, model.ErrAuthorization):
 		c = codes.PermissionDenied
 		resErr = model.ErrAuthorization

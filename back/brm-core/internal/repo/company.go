@@ -6,6 +6,7 @@ import (
 	"errors"
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgconn"
+	"strconv"
 )
 
 const (
@@ -40,6 +41,13 @@ const (
 		UPDATE "companies"
 		SET "is_deleted" = true
 		WHERE "id" = $1 AND (NOT "is_deleted");`
+
+	getIndustriesListQuery = `
+		SELECT * FROM "industries";`
+
+	getIndustryByIdQuery = `
+		SELECT "name" FROM "industries"
+		WHERE "id" = $1;`
 )
 
 func (c *coreRepoImpl) GetCompany(ctx context.Context, id uint64) (model.Company, error) {
@@ -136,5 +144,34 @@ func (c *coreRepoImpl) DeleteCompany(ctx context.Context, companyId uint64) erro
 		return model.ErrCompanyNotExists
 	} else {
 		return nil
+	}
+}
+
+func (c *coreRepoImpl) GetIndustriesList(ctx context.Context) (map[string]string, error) {
+	rows, err := c.Query(ctx, getIndustriesListQuery)
+	if err != nil {
+		return map[string]string{}, model.ErrDatabaseError
+	}
+	defer rows.Close()
+
+	industries := make(map[string]string)
+	for rows.Next() {
+		var id int
+		var industry string
+		_ = rows.Scan(&id, &industry)
+		industries[strconv.Itoa(id)] = industry
+	}
+	return industries, nil
+}
+
+func (c *coreRepoImpl) GetIndustryById(ctx context.Context, id uint64) (string, error) {
+	row := c.QueryRow(ctx, getIndustryByIdQuery, id)
+	var industry string
+	if err := row.Scan(&industry); errors.Is(err, pgx.ErrNoRows) {
+		return "", model.ErrIndustryNotExists
+	} else if err != nil {
+		return "", errors.Join(model.ErrDatabaseError, err)
+	} else {
+		return industry, nil
 	}
 }

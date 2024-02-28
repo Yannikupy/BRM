@@ -9,11 +9,6 @@ CREATE TABLE companies (
     "is_deleted" BOOLEAN
 );
 
-CREATE TABLE industries (
-    "id" SERIAL PRIMARY KEY,
-    "name" VARCHAR(100)
-);
-
 CREATE TABLE employees (
     "id" SERIAL PRIMARY KEY,
     "company_id" INTEGER,
@@ -65,3 +60,22 @@ CREATE TABLE contact_shard04 (
     "is_deleted" BOOLEAN,
     UNIQUE ("owner_id", "employee_id")
 );
+
+CREATE TABLE industries (
+    "id" SERIAL PRIMARY KEY,
+    "name" VARCHAR(100)
+);
+
+INSERT INTO "industries" (name)
+VALUES
+    ('Информационные технологии'),
+    ('Юридические услуги'),
+    ('Транспорт'),
+    ('Промышленность'),
+    ('Еда и напитки'),
+    ('Одежда и обувь'),
+    ('Развлечения'),
+    ('Туризм'),
+    ('Медицина'),
+    ('Рестораны и бары'),
+    ('Гостиницы');
