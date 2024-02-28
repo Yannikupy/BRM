@@ -56,6 +56,8 @@ func AddAd(a app.App) gin.HandlerFunc {
 			})
 		case errors.Is(err, model.ErrAdsError):
 			c.AbortWithStatusJSON(http.StatusInternalServerError, errorResponse(model.ErrAdsError))
+		case errors.Is(err, model.ErrIndustryNotExists):
+			c.AbortWithStatusJSON(http.StatusNotFound, errorResponse(model.ErrIndustryNotExists))
 		default:
 			c.AbortWithStatusJSON(http.StatusInternalServerError, errorResponse(model.ErrAdsUnknown))
 		}
@@ -268,6 +270,8 @@ func UpdateAd(a app.App) gin.HandlerFunc {
 			})
 		case errors.Is(err, model.ErrAdNotExists):
 			c.AbortWithStatusJSON(http.StatusNotFound, errorResponse(model.ErrAdNotExists))
+		case errors.Is(err, model.ErrIndustryNotExists):
+			c.AbortWithStatusJSON(http.StatusNotFound, errorResponse(model.ErrIndustryNotExists))
 		case errors.Is(err, model.ErrPermissionDenied):
 			c.AbortWithStatusJSON(http.StatusForbidden, errorResponse(model.ErrPermissionDenied))
 		case errors.Is(err, model.ErrAdsError):

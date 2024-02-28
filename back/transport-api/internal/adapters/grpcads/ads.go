@@ -4,6 +4,7 @@ import (
 	"context"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
+	"strings"
 	"transport-api/internal/adapters/grpcads/pb"
 	"transport-api/internal/model"
 	"transport-api/internal/model/ads"
@@ -111,6 +112,8 @@ func (a *adsClientImpl) CreateAd(ctx context.Context, companyId uint64, employee
 	if err != nil {
 		code := status.Code(err)
 		switch code {
+		case codes.NotFound:
+			return ads.Ad{}, model.ErrIndustryNotExists
 		case codes.ResourceExhausted:
 			return ads.Ad{}, model.ErrAdsError
 		default:
@@ -139,7 +142,12 @@ func (a *adsClientImpl) UpdateAd(ctx context.Context, companyId uint64, employee
 		case codes.PermissionDenied:
 			return ads.Ad{}, model.ErrPermissionDenied
 		case codes.NotFound:
-			return ads.Ad{}, model.ErrAdNotExists
+			// костыль, ну а чё ещё поделать
+			if strings.Contains(err.Error(), "industry") {
+				return ads.Ad{}, model.ErrIndustryNotExists
+			} else {
+				return ads.Ad{}, model.ErrAdNotExists
+			}
 		case codes.ResourceExhausted:
 			return ads.Ad{}, model.ErrAdsError
 		case codes.Unknown:
