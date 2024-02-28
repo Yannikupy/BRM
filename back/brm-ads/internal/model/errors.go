@@ -6,6 +6,7 @@ var (
 	ErrAdNotExists       = errors.New("ad with required id does not exist")
 	ErrCompanyNotExists  = errors.New("company with required id does not exist")
 	ErrEmployeeNotExists = errors.New("employee with required id does not exist")
+	ErrIndustryNotExists = errors.New("industry with required id does not exist")
 
 	ErrAuthorization = errors.New("you don't have rights for this operation")
 	ErrSameCompany   = errors.New("you can't response to ad from your company")

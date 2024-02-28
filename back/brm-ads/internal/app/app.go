@@ -57,7 +57,9 @@ func (a *appImpl) CreateAd(ctx context.Context, companyId uint64, employeeId uin
 		}, err)
 	}()
 
-	// TODO add industry check
+	if _, err = a.core.GetIndustryById(ctx, ad.Industry); err != nil {
+		return model.Ad{}, err
+	}
 
 	// setting ad fields
 	ad.CompanyId = companyId
@@ -87,10 +89,14 @@ func (a *appImpl) UpdateAd(ctx context.Context, companyId uint64, employeeId uin
 	if ad.Responsible != employeeId {
 		return model.Ad{}, model.ErrAuthorization
 	}
-	if newResponsibleCompanyId, _, err := a.core.GetEmployeeById(ctx, companyId, employeeId, upd.Responsible); err != nil {
+	var newResponsibleCompanyId uint64
+	if newResponsibleCompanyId, _, err = a.core.GetEmployeeById(ctx, companyId, employeeId, upd.Responsible); err != nil {
 		return model.Ad{}, err
 	} else if newResponsibleCompanyId != ad.CompanyId {
 		return model.Ad{}, model.ErrAuthorization
+	}
+	if _, err = a.core.GetIndustryById(ctx, upd.Industry); err != nil {
+		return model.Ad{}, err
 	}
 
 	ad, err = a.repo.UpdateAd(ctx, adId, upd)
