@@ -401,6 +401,11 @@ const docTemplate = `{
         },
         "/companies/industries": {
             "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "Возвращает словарь из отраслей и их id",
                 "produces": [
                     "application/json"
@@ -413,19 +418,56 @@ const docTemplate = `{
                     "200": {
                         "description": "Успешное получение данных",
                         "schema": {
-                            "$ref": "#/definitions/companies.industryResponse"
-                        }
-                    },
-                    "400": {
-                        "description": "Неверный формат входных данных",
-                        "schema": {
-                            "$ref": "#/definitions/companies.industryResponse"
+                            "$ref": "#/definitions/companies.industriesResponse"
                         }
                     },
                     "500": {
                         "description": "Проблемы на стороне сервера",
                         "schema": {
-                            "$ref": "#/definitions/companies.industryResponse"
+                            "$ref": "#/definitions/companies.industriesResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/companies/industries/:id": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Возвращает название отрасли по id",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "core/companies"
+                ],
+                "summary": "Получение отрасли по id",
+                "responses": {
+                    "200": {
+                        "description": "Успешное получение данных",
+                        "schema": {
+                            "$ref": "#/definitions/companies.industriesResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Неверный формат входных данных",
+                        "schema": {
+                            "$ref": "#/definitions/companies.companyResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Отрасль не найдена",
+                        "schema": {
+                            "$ref": "#/definitions/companies.companyResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Проблемы на стороне сервера",
+                        "schema": {
+                            "$ref": "#/definitions/companies.industriesResponse"
                         }
                     }
                 }
@@ -2174,12 +2216,12 @@ const docTemplate = `{
                 }
             }
         },
-        "companies.industryResponse": {
+        "companies.industriesResponse": {
             "type": "object",
             "properties": {
                 "data": {
-                    "type": "array",
-                    "items": {
+                    "type": "object",
+                    "additionalProperties": {
                         "type": "string"
                     }
                 },

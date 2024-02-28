@@ -42,9 +42,14 @@ type companyData struct {
 	IsDeleted    bool    `json:"is_deleted"`
 }
 
+type industriesResponse struct {
+	Data map[string]string `json:"data"`
+	Err  *string           `json:"error"`
+}
+
 type industryResponse struct {
-	Industries []string `json:"data"`
-	Err        *string  `json:"error"`
+	Data string  `json:"data"`
+	Err  *string `json:"error"`
 }
 
 type mainPageResponse struct {

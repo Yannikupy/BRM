@@ -23,6 +23,7 @@ func appRouter(r *gin.RouterGroup, a app.App, tkn tokenizer.Tokenizer, logs logg
 	r.PUT("/companies/:id", companies.UpdateCompany(a))
 	r.DELETE("/companies/:id", companies.DeleteCompany(a))
 	r.GET("/companies/industries", companies.GetIndustriesMap(a))
+	r.GET("/companies/industries/:id", companies.GetIndustry(a))
 
 	r.POST("/employees", employees.AddEmployee(a))
 	r.GET("/employees/:id", employees.GetEmployee(a))

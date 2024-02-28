@@ -118,12 +118,12 @@ definitions:
       error:
         type: string
     type: object
-  companies.industryResponse:
+  companies.industriesResponse:
     properties:
       data:
-        items:
+        additionalProperties:
           type: string
-        type: array
+        type: object
       error:
         type: string
     type: object
@@ -861,16 +861,41 @@ paths:
         "200":
           description: Успешное получение данных
           schema:
-            $ref: '#/definitions/companies.industryResponse'
-        "400":
-          description: Неверный формат входных данных
-          schema:
-            $ref: '#/definitions/companies.industryResponse'
+            $ref: '#/definitions/companies.industriesResponse'
         "500":
           description: Проблемы на стороне сервера
           schema:
-            $ref: '#/definitions/companies.industryResponse'
+            $ref: '#/definitions/companies.industriesResponse'
+      security:
+      - ApiKeyAuth: []
       summary: Получение отраслей
+      tags:
+      - core/companies
+  /companies/industries/:id:
+    get:
+      description: Возвращает название отрасли по id
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Успешное получение данных
+          schema:
+            $ref: '#/definitions/companies.industriesResponse'
+        "400":
+          description: Неверный формат входных данных
+          schema:
+            $ref: '#/definitions/companies.companyResponse'
+        "404":
+          description: Отрасль не найдена
+          schema:
+            $ref: '#/definitions/companies.companyResponse'
+        "500":
+          description: Проблемы на стороне сервера
+          schema:
+            $ref: '#/definitions/companies.industriesResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Получение отрасли по id
       tags:
       - core/companies
   /contacts:
