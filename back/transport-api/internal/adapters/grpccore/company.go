@@ -5,6 +5,7 @@ import (
 	"github.com/golang/protobuf/ptypes/empty"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
+	"strings"
 	"transport-api/internal/adapters/grpccore/pb"
 	"transport-api/internal/model"
 	"transport-api/internal/model/core"
@@ -57,7 +58,12 @@ func (c *coreClientImpl) UpdateCompany(ctx context.Context, companyId uint64, ow
 		code := status.Code(err)
 		switch code {
 		case codes.NotFound:
-			return core.Company{}, model.ErrCompanyNotExists
+			// костыль, ну а чё поделать
+			if strings.Contains(err.Error(), "company") {
+				return core.Company{}, model.ErrCompanyNotExists
+			} else {
+				return core.Company{}, model.ErrIndustryNotExists
+			}
 		case codes.PermissionDenied:
 			return core.Company{}, model.ErrPermissionDenied
 		case codes.ResourceExhausted:

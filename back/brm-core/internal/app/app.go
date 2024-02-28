@@ -39,6 +39,12 @@ func (a *appImpl) CreateCompanyAndOwner(ctx context.Context, company model.Compa
 		}, err)
 	}()
 
+	if _, err = a.GetIndustryById(ctx, company.Industry); errors.Is(err, model.ErrIndustryNotExists) {
+		return model.Company{}, model.Employee{}, model.ErrIndustryNotExists
+	} else if err != nil {
+		return model.Company{}, model.Employee{}, errors.Join(model.ErrDatabaseError, err)
+	}
+
 	// setting company fields
 	company.Id = 0
 	company.OwnerId = 0
@@ -96,6 +102,12 @@ func (a *appImpl) UpdateCompany(ctx context.Context, companyId uint64, ownerId u
 		if newOwner.CompanyId != companyId {
 			return model.Company{}, model.ErrEmployeeNotExists
 		}
+	}
+
+	if _, err = a.GetIndustryById(ctx, upd.Industry); errors.Is(err, model.ErrIndustryNotExists) {
+		return model.Company{}, model.ErrIndustryNotExists
+	} else if err != nil {
+		return model.Company{}, errors.Join(model.ErrDatabaseError, err)
 	}
 
 	company, err = a.coreRepo.UpdateCompany(ctx, companyId, upd)

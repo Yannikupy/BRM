@@ -15,6 +15,7 @@ import (
 // @Param			input	body		addCompanyAndOwnerRequest	true	"Информация о компании и её владельце"
 // @Success		200		{object}	companyAndOwnerResponse		"Успешное добавление компании с владельцем"
 // @Failure		500		{object}	companyAndOwnerResponse		"Проблемы на стороне сервера"
+// @Failure		404		{object}	companyAndOwnerResponse		"Попытка создать компанию в несуществующей индустрии"
 // @Failure		400		{object}	companyAndOwnerResponse		"Неверный формат входных данных"
 // @Router			/register [post]
 func addCompanyWithOwner(a app.App) gin.HandlerFunc {
@@ -59,6 +60,8 @@ func addCompanyWithOwner(a app.App) gin.HandlerFunc {
 				},
 				Err: nil,
 			})
+		case errors.Is(err, model.ErrIndustryNotExists):
+			c.AbortWithStatusJSON(http.StatusNotFound, errorResponse(model.ErrIndustryNotExists))
 		case errors.Is(err, model.ErrCoreError):
 			c.AbortWithStatusJSON(http.StatusInternalServerError, errorResponse(model.ErrCoreError))
 		default:

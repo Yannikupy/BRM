@@ -144,6 +144,8 @@ func UpdateCompany(a app.App) gin.HandlerFunc {
 			c.AbortWithStatusJSON(http.StatusNotFound, errorResponse(model.ErrCompanyNotExists))
 		case errors.Is(err, model.ErrEmployeeNotExists):
 			c.AbortWithStatusJSON(http.StatusNotFound, errorResponse(model.ErrEmployeeNotExists))
+		case errors.Is(err, model.ErrIndustryNotExists):
+			c.AbortWithStatusJSON(http.StatusNotFound, errorResponse(model.ErrIndustryNotExists))
 		case errors.Is(err, model.ErrPermissionDenied):
 			c.AbortWithStatusJSON(http.StatusForbidden, errorResponse(model.ErrPermissionDenied))
 		case errors.Is(err, model.ErrCoreError):

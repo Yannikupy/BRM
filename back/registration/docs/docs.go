@@ -49,6 +49,12 @@ const docTemplate = `{
                             "$ref": "#/definitions/httpserver.companyAndOwnerResponse"
                         }
                     },
+                    "404": {
+                        "description": "Попытка создать компанию в несуществующей индустрии",
+                        "schema": {
+                            "$ref": "#/definitions/httpserver.companyAndOwnerResponse"
+                        }
+                    },
                     "500": {
                         "description": "Проблемы на стороне сервера",
                         "schema": {
