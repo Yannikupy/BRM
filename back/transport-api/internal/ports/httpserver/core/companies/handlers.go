@@ -204,22 +204,61 @@ func DeleteCompany(a app.App) gin.HandlerFunc {
 // @Summary		Получение отраслей
 // @Description	Возвращает словарь из отраслей и их id
 // @Tags			core/companies
+// @Security		ApiKeyAuth
 // @Produce		json
-// @Success		200	{object}	industryResponse	"Успешное получение данных"
-// @Failure		500	{object}	industryResponse	"Проблемы на стороне сервера"
-// @Failure		400	{object}	industryResponse	"Неверный формат входных данных"
+// @Success		200	{object}	industriesResponse	"Успешное получение данных"
+// @Failure		500	{object}	industriesResponse	"Проблемы на стороне сервера"
 // @Router			/companies/industries [get]
 func GetIndustriesMap(a app.App) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		// TODO implement
-		c.JSON(http.StatusOK, industryResponse{
-			Industries: []string{
-				"802",
-				"804",
-				"805",
-				"806",
-			},
-			Err: nil,
-		})
+		industries, err := a.GetIndustriesList(c)
+
+		switch {
+		case err == nil:
+			c.JSON(http.StatusOK, industriesResponse{
+				Data: industries,
+				Err:  nil,
+			})
+		case errors.Is(err, model.ErrCoreError):
+			c.AbortWithStatusJSON(http.StatusInternalServerError, errorResponse(model.ErrCoreError))
+		default:
+			c.AbortWithStatusJSON(http.StatusInternalServerError, errorResponse(model.ErrCoreUnknown))
+		}
+	}
+}
+
+// @Summary		Получение отрасли по id
+// @Description	Возвращает название отрасли по id
+// @Tags			core/companies
+// @Security		ApiKeyAuth
+// @Produce		json
+// @Success		200	{object}	industriesResponse	"Успешное получение данных"
+// @Failure		500	{object}	industriesResponse	"Проблемы на стороне сервера"
+// @Failure		400	{object}	companyResponse		"Неверный формат входных данных"
+// @Failure		404	{object}	companyResponse		"Отрасль не найдена"
+// @Router			/companies/industries/{id} [get]
+func GetIndustry(a app.App) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		industryId, err := strconv.ParseUint(c.Param("id"), 10, 64)
+		if err != nil {
+			c.AbortWithStatusJSON(http.StatusBadRequest, errorResponse(model.ErrInvalidInput))
+			return
+		}
+
+		industry, err := a.GetIndustryById(c, industryId)
+
+		switch {
+		case err == nil:
+			c.JSON(http.StatusOK, industryResponse{
+				Data: industry,
+				Err:  nil,
+			})
+		case errors.Is(err, model.ErrIndustryNotExists):
+			c.AbortWithStatusJSON(http.StatusNotFound, errorResponse(model.ErrIndustryNotExists))
+		case errors.Is(err, model.ErrCoreError):
+			c.AbortWithStatusJSON(http.StatusInternalServerError, errorResponse(model.ErrCoreError))
+		default:
+			c.AbortWithStatusJSON(http.StatusInternalServerError, errorResponse(model.ErrCoreUnknown))
+		}
 	}
 }

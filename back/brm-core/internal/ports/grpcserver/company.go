@@ -5,6 +5,7 @@ import (
 	"brm-core/internal/ports/grpcserver/pb"
 	"context"
 	"github.com/golang/protobuf/ptypes/empty"
+	"google.golang.org/protobuf/types/known/emptypb"
 	"time"
 )
 
@@ -91,4 +92,20 @@ func (s *Server) DeleteCompany(ctx context.Context, req *pb.DeleteCompanyRequest
 		return nil, mapErrors(err)
 	}
 	return &empty.Empty{}, nil
+}
+
+func (s *Server) GetIndustriesList(ctx context.Context, _ *emptypb.Empty) (*pb.GetIndustriesListResponse, error) {
+	if industries, err := s.App.GetIndustriesList(ctx); err != nil {
+		return nil, mapErrors(err)
+	} else {
+		return &pb.GetIndustriesListResponse{Data: industries}, nil
+	}
+}
+
+func (s *Server) GetIndustryById(ctx context.Context, req *pb.GetIndustryByIdRequest) (*pb.GetIndustryByIdResponse, error) {
+	if industry, err := s.App.GetIndustryById(ctx, req.Id); err != nil {
+		return nil, mapErrors(err)
+	} else {
+		return &pb.GetIndustryByIdResponse{Industry: industry}, nil
+	}
 }

@@ -13,6 +13,7 @@ import (
 	"os/signal"
 	"syscall"
 	"time"
+	"transport-api/internal/adapters/grpcads"
 	"transport-api/internal/adapters/grpccore"
 	"transport-api/internal/app"
 	"transport-api/internal/ports/httpserver"
@@ -62,7 +63,15 @@ func main() {
 		logs.Fatal(nil, fmt.Sprintf("create grpc core client: %s", err.Error()))
 	}
 
-	a := app.NewApp(coreClient)
+	adsClient, err := grpcads.NewAdsClient(ctx, fmt.Sprintf("%s:%d",
+		viper.GetString("grpc-ads-client.host"),
+		viper.GetInt("grpc-ads-client.port"),
+	))
+	if err != nil {
+		logs.Fatal(nil, fmt.Sprintf("create ads core client: %s", err.Error()))
+	}
+
+	a := app.NewApp(coreClient, adsClient)
 	tkn := tokenizer.New(os.Getenv("SIGNKEY"))
 
 	srv := httpserver.New(fmt.Sprintf("%s:%d",

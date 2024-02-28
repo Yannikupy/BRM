@@ -4,6 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 	_ "transport-api/docs"
 	"transport-api/internal/app"
+	"transport-api/internal/ports/httpserver/ads"
 	"transport-api/internal/ports/httpserver/core/companies"
 	"transport-api/internal/ports/httpserver/core/contacts"
 	"transport-api/internal/ports/httpserver/core/employees"
@@ -22,6 +23,7 @@ func appRouter(r *gin.RouterGroup, a app.App, tkn tokenizer.Tokenizer, logs logg
 	r.PUT("/companies/:id", companies.UpdateCompany(a))
 	r.DELETE("/companies/:id", companies.DeleteCompany(a))
 	r.GET("/companies/industries", companies.GetIndustriesMap(a))
+	r.GET("/companies/industries/:id", companies.GetIndustry(a))
 
 	r.POST("/employees", employees.AddEmployee(a))
 	r.GET("/employees/:id", employees.GetEmployee(a))
@@ -42,11 +44,14 @@ func appRouter(r *gin.RouterGroup, a app.App, tkn tokenizer.Tokenizer, logs logg
 	//r.DELETE("/tasks/:id", tasks.DeleteTask(a))
 	//r.GET("/tasks/stages", tasks.GetStagesMap(a))
 	//
-	//r.POST("/ads", ads.AddAd(a))
-	//r.GET("/ads/:id", ads.GetAd(a))
-	//r.GET("/ads", ads.GetAdsList(a))
-	//r.PUT("/ads/:id", ads.UpdateAd(a))
-	//r.DELETE("/ads/:id", ads.DeleteAd(a))
+	r.POST("/ads", ads.AddAd(a))
+	r.GET("/ads/:id", ads.GetAd(a))
+	r.GET("/ads", ads.GetAdsList(a))
+	r.PUT("/ads/:id", ads.UpdateAd(a))
+	r.DELETE("/ads/:id", ads.DeleteAd(a))
+
+	r.POST("/ads/:id/response", ads.AddResponse(a))
+	r.GET("/responses", ads.GetResponsesList(a))
 	//
 	//r.POST("/leads", leads.AddLead(a))
 	//r.GET("/leads/:id", leads.GetLead(a))

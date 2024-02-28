@@ -17,6 +17,11 @@ const docTemplate = `{
     "paths": {
         "/ads": {
             "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "Получает список объявлений с использованием фильтрации и пагинации",
                 "produces": [
                     "application/json"
@@ -43,16 +48,44 @@ const docTemplate = `{
                     {
                         "type": "string",
                         "description": "Поиск по названию/тексту",
-                        "name": "name",
-                        "in": "query",
-                        "required": true
+                        "name": "pattern",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Поиск по компании",
+                        "name": "company_id",
+                        "in": "query"
                     },
                     {
                         "type": "integer",
                         "description": "Поиск по отрасли",
                         "name": "industry",
-                        "in": "query",
-                        "required": true
+                        "in": "query"
+                    },
+                    {
+                        "type": "boolean",
+                        "description": "Сортировка по возрастанию цены",
+                        "name": "by_price",
+                        "in": "query"
+                    },
+                    {
+                        "type": "boolean",
+                        "description": "Сортировка по убыванию цены",
+                        "name": "by_price_desc",
+                        "in": "query"
+                    },
+                    {
+                        "type": "boolean",
+                        "description": "Сортировка по возрастанию даты создания",
+                        "name": "by_date",
+                        "in": "query"
+                    },
+                    {
+                        "type": "boolean",
+                        "description": "Сортировка по убыванию даты создания",
+                        "name": "by_date_desc",
+                        "in": "query"
                     }
                 ],
                 "responses": {
@@ -68,6 +101,12 @@ const docTemplate = `{
                             "$ref": "#/definitions/ads.adListResponse"
                         }
                     },
+                    "401": {
+                        "description": "Ошибка авторизации",
+                        "schema": {
+                            "$ref": "#/definitions/ads.adResponse"
+                        }
+                    },
                     "500": {
                         "description": "Проблемы на стороне сервера",
                         "schema": {
@@ -77,6 +116,11 @@ const docTemplate = `{
                 }
             },
             "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "Добавляет новое объявление",
                 "consumes": [
                     "application/json"
@@ -112,6 +156,12 @@ const docTemplate = `{
                             "$ref": "#/definitions/ads.adResponse"
                         }
                     },
+                    "401": {
+                        "description": "Ошибка авторизации",
+                        "schema": {
+                            "$ref": "#/definitions/ads.adResponse"
+                        }
+                    },
                     "500": {
                         "description": "Проблемы на стороне сервера",
                         "schema": {
@@ -123,6 +173,11 @@ const docTemplate = `{
         },
         "/ads/{id}": {
             "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "Получает объявление по id",
                 "produces": [
                     "application/json"
@@ -153,6 +208,12 @@ const docTemplate = `{
                             "$ref": "#/definitions/ads.adResponse"
                         }
                     },
+                    "401": {
+                        "description": "Ошибка авторизации",
+                        "schema": {
+                            "$ref": "#/definitions/ads.adResponse"
+                        }
+                    },
                     "404": {
                         "description": "Объявление не найдено",
                         "schema": {
@@ -168,6 +229,11 @@ const docTemplate = `{
                 }
             },
             "put": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "Изменяет одно или несколько полей объявления",
                 "consumes": [
                     "application/json"
@@ -225,6 +291,11 @@ const docTemplate = `{
                 }
             },
             "delete": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "Безвозвратно удаляет объявление",
                 "produces": [
                     "application/json"
@@ -270,8 +341,71 @@ const docTemplate = `{
                 }
             }
         },
+        "/ads/{id}/response": {
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Создаёт отклик у откликнувшейся компании и сделку у владельца объявления",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "ads"
+                ],
+                "summary": "Откликнуться на объявление",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "id объявления",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Успешное создание отклика",
+                        "schema": {
+                            "$ref": "#/definitions/ads.responseResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Неверный формат входных данных",
+                        "schema": {
+                            "$ref": "#/definitions/ads.responseResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Объявление не найдено",
+                        "schema": {
+                            "$ref": "#/definitions/ads.responseResponse"
+                        }
+                    },
+                    "409": {
+                        "description": "Попытка откликнуться на объявление своей же компании",
+                        "schema": {
+                            "$ref": "#/definitions/ads.responseResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Проблемы на стороне сервера",
+                        "schema": {
+                            "$ref": "#/definitions/ads.responseResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/companies/industries": {
             "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "Возвращает словарь из отраслей и их id",
                 "produces": [
                     "application/json"
@@ -284,19 +418,56 @@ const docTemplate = `{
                     "200": {
                         "description": "Успешное получение данных",
                         "schema": {
-                            "$ref": "#/definitions/companies.industryResponse"
-                        }
-                    },
-                    "400": {
-                        "description": "Неверный формат входных данных",
-                        "schema": {
-                            "$ref": "#/definitions/companies.industryResponse"
+                            "$ref": "#/definitions/companies.industriesResponse"
                         }
                     },
                     "500": {
                         "description": "Проблемы на стороне сервера",
                         "schema": {
-                            "$ref": "#/definitions/companies.industryResponse"
+                            "$ref": "#/definitions/companies.industriesResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/companies/industries/{id}": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Возвращает название отрасли по id",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "core/companies"
+                ],
+                "summary": "Получение отрасли по id",
+                "responses": {
+                    "200": {
+                        "description": "Успешное получение данных",
+                        "schema": {
+                            "$ref": "#/definitions/companies.industriesResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Неверный формат входных данных",
+                        "schema": {
+                            "$ref": "#/definitions/companies.companyResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Отрасль не найдена",
+                        "schema": {
+                            "$ref": "#/definitions/companies.companyResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Проблемы на стороне сервера",
+                        "schema": {
+                            "$ref": "#/definitions/companies.industriesResponse"
                         }
                     }
                 }
@@ -1521,6 +1692,59 @@ const docTemplate = `{
                 }
             }
         },
+        "/responses": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Возвращает список откликов компании на объявления",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "ads"
+                ],
+                "summary": "Получение списка откликов на объявления",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Limit",
+                        "name": "limit",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Offset",
+                        "name": "offset",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Успешное получение списка",
+                        "schema": {
+                            "$ref": "#/definitions/ads.responseListResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Неверный формат входных данных",
+                        "schema": {
+                            "$ref": "#/definitions/ads.responseListResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Проблемы на стороне сервера",
+                        "schema": {
+                            "$ref": "#/definitions/ads.responseListResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/tasks": {
             "get": {
                 "description": "Получает список задач с использованием фильтрации и пагинации",
@@ -1813,25 +2037,28 @@ const docTemplate = `{
         "ads.adData": {
             "type": "object",
             "properties": {
-                "ad_id": {
-                    "type": "integer"
-                },
                 "company_id": {
                     "type": "integer"
                 },
-                "created_at": {
+                "created_by": {
                     "type": "integer"
                 },
-                "created_id": {
+                "creation_date": {
+                    "type": "integer"
+                },
+                "id": {
                     "type": "integer"
                 },
                 "industry": {
-                    "type": "string"
+                    "type": "integer"
+                },
+                "is_deleted": {
+                    "type": "boolean"
                 },
                 "price": {
                     "type": "integer"
                 },
-                "responsible_id": {
+                "responsible": {
                     "type": "integer"
                 },
                 "text": {
@@ -1871,7 +2098,7 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "industry": {
-                    "type": "string"
+                    "type": "integer"
                 },
                 "price": {
                     "type": "integer"
@@ -1884,13 +2111,67 @@ const docTemplate = `{
                 }
             }
         },
+        "ads.responseData": {
+            "type": "object",
+            "properties": {
+                "ad_id": {
+                    "type": "integer"
+                },
+                "company_id": {
+                    "type": "integer"
+                },
+                "creation_date": {
+                    "type": "integer"
+                },
+                "employee_id": {
+                    "type": "integer"
+                },
+                "id": {
+                    "type": "integer"
+                }
+            }
+        },
+        "ads.responseListResponse": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/ads.responseData"
+                    }
+                },
+                "error": {
+                    "type": "string"
+                }
+            }
+        },
+        "ads.responseResponse": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "$ref": "#/definitions/ads.responseData"
+                },
+                "error": {
+                    "type": "string"
+                }
+            }
+        },
         "ads.updateAdRequest": {
             "type": "object",
             "properties": {
+                "industry": {
+                    "type": "integer"
+                },
                 "price": {
                     "type": "integer"
                 },
+                "responsible": {
+                    "type": "integer"
+                },
                 "text": {
+                    "type": "string"
+                },
+                "title": {
                     "type": "string"
                 }
             }
@@ -1935,12 +2216,12 @@ const docTemplate = `{
                 }
             }
         },
-        "companies.industryResponse": {
+        "companies.industriesResponse": {
             "type": "object",
             "properties": {
                 "data": {
-                    "type": "array",
-                    "items": {
+                    "type": "object",
+                    "additionalProperties": {
                         "type": "string"
                     }
                 },

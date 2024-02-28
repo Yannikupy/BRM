@@ -2,6 +2,10 @@
   "host": "brm-core"
   "port": 50000
 
+"grpc-ads-client":
+  "host": "brm-ads"
+  "port": 50002
+
 "http-server":
   "host": "transport-api"
   "port": 8090

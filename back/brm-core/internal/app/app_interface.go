@@ -27,6 +27,9 @@ type CompanyApp interface {
 	CreateCompanyAndOwner(ctx context.Context, company model.Company, owner model.Employee) (model.Company, model.Employee, error)
 	UpdateCompany(ctx context.Context, companyId uint64, ownerId uint64, upd model.UpdateCompany) (model.Company, error)
 	DeleteCompany(ctx context.Context, companyId uint64, ownerId uint64) error
+
+	GetIndustriesList(ctx context.Context) (map[string]string, error)
+	GetIndustryById(ctx context.Context, id uint64) (string, error)
 }
 
 type EmployeeApp interface {
