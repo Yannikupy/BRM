@@ -430,7 +430,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/companies/industries/:id": {
+        "/companies/industries/{id}": {
             "get": {
                 "security": [
                     {

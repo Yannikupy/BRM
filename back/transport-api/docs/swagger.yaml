@@ -871,7 +871,7 @@ paths:
       summary: Получение отраслей
       tags:
       - core/companies
-  /companies/industries/:id:
+  /companies/industries/{id}:
     get:
       description: Возвращает название отрасли по id
       produces:

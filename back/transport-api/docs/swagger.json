@@ -424,7 +424,7 @@
                 }
             }
         },
-        "/companies/industries/:id": {
+        "/companies/industries/{id}": {
             "get": {
                 "security": [
                     {

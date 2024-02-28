@@ -236,7 +236,7 @@ func GetIndustriesMap(a app.App) gin.HandlerFunc {
 // @Failure		500	{object}	industriesResponse	"Проблемы на стороне сервера"
 // @Failure		400	{object}	companyResponse		"Неверный формат входных данных"
 // @Failure		404	{object}	companyResponse		"Отрасль не найдена"
-// @Router			/companies/industries/:id [get]
+// @Router			/companies/industries/{id} [get]
 func GetIndustry(a app.App) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		industryId, err := strconv.ParseUint(c.Param("id"), 10, 64)
