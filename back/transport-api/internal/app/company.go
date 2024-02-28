@@ -16,3 +16,11 @@ func (a *appImpl) UpdateCompany(ctx context.Context, companyId uint64, ownerId u
 func (a *appImpl) DeleteCompany(ctx context.Context, companyId uint64, ownerId uint64) error {
 	return a.core.DeleteCompany(ctx, companyId, ownerId)
 }
+
+func (a *appImpl) GetIndustriesList(ctx context.Context) (map[string]string, error) {
+	return a.core.GetIndustriesList(ctx)
+}
+
+func (a *appImpl) GetIndustryById(ctx context.Context, id uint64) (string, error) {
+	return a.core.GetIndustryById(ctx, id)
+}

@@ -8,6 +8,7 @@ var (
 	ErrCompanyNotExists  = errors.New("company with required id does not exist")
 	ErrEmployeeNotExists = errors.New("employee with required id does not exist")
 	ErrContactNotExists  = errors.New("contact with required id does not exist")
+	ErrIndustryNotExists = errors.New("industry with required id does not exists")
 	ErrEmailRegistered   = errors.New("employee with this email is already registered")
 	ErrContactExist      = errors.New("this contact already exists")
 
