@@ -6,6 +6,7 @@ option go_package = "/pb";
 service CoreService {
   rpc GetCompany(GetCompanyRequest) returns (GetCompanyResponse) {}
   rpc GetEmployeeById(GetEmployeeByIdRequest) returns (GetEmployeeByIdResponse) {}
+  rpc GetIndustryById(GetIndustryByIdRequest) returns (GetIndustryByIdResponse) {}
 }
 
 message Company {
@@ -48,4 +49,12 @@ message GetEmployeeByIdRequest {
 
 message GetEmployeeByIdResponse {
   Employee employee = 1;
+}
+
+message GetIndustryByIdRequest {
+  uint64 id = 1;
+}
+
+message GetIndustryByIdResponse {
+  string industry = 1;
 }
