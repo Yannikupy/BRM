@@ -72,3 +72,8 @@ type companyData struct {
 	CreationDate int64   `json:"creation_date"`
 	IsDeleted    bool    `json:"is_deleted"`
 }
+
+type industriesResponse struct {
+	Data map[string]string `json:"data"`
+	Err  *string           `json:"error"`
+}

@@ -15,6 +15,37 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/companies/industries": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Возвращает словарь из отраслей и их id",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "core/companies"
+                ],
+                "summary": "Получение отраслей",
+                "responses": {
+                    "200": {
+                        "description": "Успешное получение данных",
+                        "schema": {
+                            "$ref": "#/definitions/httpserver.industriesResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Проблемы на стороне сервера",
+                        "schema": {
+                            "$ref": "#/definitions/httpserver.industriesResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/register": {
             "post": {
                 "description": "Добавляет новую компанию и её владельца, который является её первым сотрудником, одним запросом",
@@ -162,6 +193,20 @@ const docTemplate = `{
                 },
                 "rating": {
                     "type": "number"
+                }
+            }
+        },
+        "httpserver.industriesResponse": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "string"
+                    }
+                },
+                "error": {
+                    "type": "string"
                 }
             }
         },

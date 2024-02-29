@@ -64,6 +64,15 @@ definitions:
       rating:
         type: number
     type: object
+  httpserver.industriesResponse:
+    properties:
+      data:
+        additionalProperties:
+          type: string
+        type: object
+      error:
+        type: string
+    type: object
   httpserver.ownerData:
     properties:
       company_id:
@@ -92,6 +101,25 @@ info:
   title: BRM API
   version: "1.0"
 paths:
+  /companies/industries:
+    get:
+      description: Возвращает словарь из отраслей и их id
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Успешное получение данных
+          schema:
+            $ref: '#/definitions/httpserver.industriesResponse'
+        "500":
+          description: Проблемы на стороне сервера
+          schema:
+            $ref: '#/definitions/httpserver.industriesResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Получение отраслей
+      tags:
+      - core/companies
   /register:
     post:
       consumes:

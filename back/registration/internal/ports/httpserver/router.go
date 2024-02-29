@@ -12,4 +12,5 @@ func appRouter(r *gin.RouterGroup, a app.App, logs logger.Logger) {
 	r.Use(logMiddleware(logs))
 
 	r.POST("register", addCompanyWithOwner(a))
+	r.GET("companies/industries", getIndustriesMap(a))
 }
