@@ -46,6 +46,7 @@ func AddEmployee(a app.App) gin.HandlerFunc {
 			FirstName:    req.FirstName,
 			SecondName:   req.SecondName,
 			Email:        req.Email,
+			Password:     req.Password,
 			JobTitle:     req.JobTitle,
 			Department:   req.Department,
 			CreationDate: 0,
