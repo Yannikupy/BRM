@@ -26,3 +26,9 @@ make run_dev_front
 ```shell
 make run_dev_back
 ```
+
+## swagger-документация
+
+* [transport-api](http://localhost:8090/swagger/index.html)
+* [registration](http://localhost:8091/swagger/index.html)
+* [auth](http://localhost:8092/swagger/index.html)
