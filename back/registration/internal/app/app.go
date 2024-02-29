@@ -17,3 +17,7 @@ func NewApp(coreCli grpccore.CoreClient) App {
 func (a *appImpl) CreateCompanyAndOwner(ctx context.Context, company model.Company, owner model.Employee) (model.Company, model.Employee, error) {
 	return a.core.CreateCompanyAndOwner(ctx, company, owner)
 }
+
+func (a *appImpl) GetIndustriesList(ctx context.Context) (map[string]string, error) {
+	return a.core.GetIndustriesList(ctx)
+}

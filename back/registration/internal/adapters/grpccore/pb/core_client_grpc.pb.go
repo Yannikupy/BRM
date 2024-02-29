@@ -11,6 +11,7 @@ import (
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
+	emptypb "google.golang.org/protobuf/types/known/emptypb"
 )
 
 // This is a compile-time assertion to ensure that this generated file
@@ -23,6 +24,7 @@ const _ = grpc.SupportPackageIsVersion7
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type CoreServiceClient interface {
 	CreateCompanyAndOwner(ctx context.Context, in *CreateCompanyAndOwnerRequest, opts ...grpc.CallOption) (*CreateCompanyAndOwnerResponse, error)
+	GetIndustriesList(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*GetIndustriesListResponse, error)
 }
 
 type coreServiceClient struct {
@@ -42,11 +44,21 @@ func (c *coreServiceClient) CreateCompanyAndOwner(ctx context.Context, in *Creat
 	return out, nil
 }
 
+func (c *coreServiceClient) GetIndustriesList(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*GetIndustriesListResponse, error) {
+	out := new(GetIndustriesListResponse)
+	err := c.cc.Invoke(ctx, "/core.CoreService/GetIndustriesList", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // CoreServiceServer is the server API for CoreService service.
 // All implementations should embed UnimplementedCoreServiceServer
 // for forward compatibility
 type CoreServiceServer interface {
 	CreateCompanyAndOwner(context.Context, *CreateCompanyAndOwnerRequest) (*CreateCompanyAndOwnerResponse, error)
+	GetIndustriesList(context.Context, *emptypb.Empty) (*GetIndustriesListResponse, error)
 }
 
 // UnimplementedCoreServiceServer should be embedded to have forward compatible implementations.
@@ -55,6 +67,9 @@ type UnimplementedCoreServiceServer struct {
 
 func (UnimplementedCoreServiceServer) CreateCompanyAndOwner(context.Context, *CreateCompanyAndOwnerRequest) (*CreateCompanyAndOwnerResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateCompanyAndOwner not implemented")
+}
+func (UnimplementedCoreServiceServer) GetIndustriesList(context.Context, *emptypb.Empty) (*GetIndustriesListResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetIndustriesList not implemented")
 }
 
 // UnsafeCoreServiceServer may be embedded to opt out of forward compatibility for this service.
@@ -86,6 +101,24 @@ func _CoreService_CreateCompanyAndOwner_Handler(srv interface{}, ctx context.Con
 	return interceptor(ctx, in, info, handler)
 }
 
+func _CoreService_GetIndustriesList_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(emptypb.Empty)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(CoreServiceServer).GetIndustriesList(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/core.CoreService/GetIndustriesList",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(CoreServiceServer).GetIndustriesList(ctx, req.(*emptypb.Empty))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // CoreService_ServiceDesc is the grpc.ServiceDesc for CoreService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -96,6 +129,10 @@ var CoreService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "CreateCompanyAndOwner",
 			Handler:    _CoreService_CreateCompanyAndOwner_Handler,
+		},
+		{
+			MethodName: "GetIndustriesList",
+			Handler:    _CoreService_GetIndustriesList_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
