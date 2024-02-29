@@ -69,3 +69,29 @@ func addCompanyWithOwner(a app.App) gin.HandlerFunc {
 		}
 	}
 }
+
+// @Summary		Получение отраслей
+// @Description	Возвращает словарь из отраслей и их id
+// @Tags			core/companies
+// @Security		ApiKeyAuth
+// @Produce		json
+// @Success		200	{object}	industriesResponse	"Успешное получение данных"
+// @Failure		500	{object}	industriesResponse	"Проблемы на стороне сервера"
+// @Router			/companies/industries [get]
+func getIndustriesMap(a app.App) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		industries, err := a.GetIndustriesList(c)
+
+		switch {
+		case err == nil:
+			c.JSON(http.StatusOK, industriesResponse{
+				Data: industries,
+				Err:  nil,
+			})
+		case errors.Is(err, model.ErrCoreError):
+			c.AbortWithStatusJSON(http.StatusInternalServerError, errorResponse(model.ErrCoreError))
+		default:
+			c.AbortWithStatusJSON(http.StatusInternalServerError, errorResponse(model.ErrCoreUnknown))
+		}
+	}
+}

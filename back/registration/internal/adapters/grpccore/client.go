@@ -3,6 +3,7 @@ package grpccore
 import (
 	"context"
 	"fmt"
+	"github.com/golang/protobuf/ptypes/empty"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/credentials/insecure"
@@ -85,4 +86,18 @@ func (c *coreClientImpl) CreateCompanyAndOwner(ctx context.Context, company mode
 			CreationDate: resp.Owner.CreationDate,
 			IsDeleted:    resp.Owner.IsDeleted,
 		}, nil
+}
+
+func (c *coreClientImpl) GetIndustriesList(ctx context.Context) (map[string]string, error) {
+	resp, err := c.cli.GetIndustriesList(ctx, &empty.Empty{})
+	if err != nil {
+		code := status.Code(err)
+		switch code {
+		case codes.ResourceExhausted:
+			return map[string]string{}, model.ErrCoreError
+		default:
+			return map[string]string{}, model.ErrCoreUnknown
+		}
+	}
+	return resp.Data, nil
 }

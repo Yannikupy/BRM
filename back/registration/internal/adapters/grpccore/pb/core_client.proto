@@ -2,9 +2,11 @@ syntax = "proto3";
 
 package core;
 option go_package = "/pb";
+import "google/protobuf/empty.proto";
 
 service CoreService {
   rpc CreateCompanyAndOwner(CreateCompanyAndOwnerRequest) returns (CreateCompanyAndOwnerResponse) {}
+  rpc GetIndustriesList(google.protobuf.Empty) returns (GetIndustriesListResponse) {}
 }
 
 message Company {
@@ -39,4 +41,8 @@ message CreateCompanyAndOwnerRequest {
 message CreateCompanyAndOwnerResponse {
   Company company = 1;
   Employee owner = 2;
+}
+
+message GetIndustriesListResponse {
+  map <string, string> data = 1;
 }
