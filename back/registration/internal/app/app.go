@@ -18,6 +18,6 @@ func (a *appImpl) CreateCompanyAndOwner(ctx context.Context, company model.Compa
 	return a.core.CreateCompanyAndOwner(ctx, company, owner)
 }
 
-func (a *appImpl) GetIndustriesList(ctx context.Context) (map[string]string, error) {
+func (a *appImpl) GetIndustriesList(ctx context.Context) (map[string]uint64, error) {
 	return a.core.GetIndustriesList(ctx)
 }

@@ -72,8 +72,6 @@ func addCompanyWithOwner(a app.App) gin.HandlerFunc {
 
 // @Summary		Получение отраслей
 // @Description	Возвращает словарь из отраслей и их id
-// @Tags			core/companies
-// @Security		ApiKeyAuth
 // @Produce		json
 // @Success		200	{object}	industriesResponse	"Успешное получение данных"
 // @Failure		500	{object}	industriesResponse	"Проблемы на стороне сервера"

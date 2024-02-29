@@ -2222,7 +2222,7 @@ const docTemplate = `{
                 "data": {
                     "type": "object",
                     "additionalProperties": {
-                        "type": "string"
+                        "type": "integer"
                     }
                 },
                 "error": {

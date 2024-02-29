@@ -6,7 +6,6 @@ import (
 	"errors"
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgconn"
-	"strconv"
 )
 
 const (
@@ -147,19 +146,19 @@ func (c *coreRepoImpl) DeleteCompany(ctx context.Context, companyId uint64) erro
 	}
 }
 
-func (c *coreRepoImpl) GetIndustriesList(ctx context.Context) (map[string]string, error) {
+func (c *coreRepoImpl) GetIndustriesList(ctx context.Context) (map[string]uint64, error) {
 	rows, err := c.Query(ctx, getIndustriesListQuery)
 	if err != nil {
-		return map[string]string{}, model.ErrDatabaseError
+		return map[string]uint64{}, model.ErrDatabaseError
 	}
 	defer rows.Close()
 
-	industries := make(map[string]string)
+	industries := make(map[string]uint64)
 	for rows.Next() {
-		var id int
+		var id uint64
 		var industry string
 		_ = rows.Scan(&id, &industry)
-		industries[strconv.Itoa(id)] = industry
+		industries[industry] = id
 	}
 	return industries, nil
 }

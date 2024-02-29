@@ -16,7 +16,7 @@ type CoreCompany interface {
 	UpdateCompany(ctx context.Context, companyId uint64, ownerId uint64, upd core.UpdateCompany) (core.Company, error)
 	DeleteCompany(ctx context.Context, companyId uint64, ownerId uint64) error
 
-	GetIndustriesList(ctx context.Context) (map[string]string, error)
+	GetIndustriesList(ctx context.Context) (map[string]uint64, error)
 	GetIndustryById(ctx context.Context, id uint64) (string, error)
 }
 

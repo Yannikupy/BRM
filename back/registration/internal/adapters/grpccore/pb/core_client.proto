@@ -44,5 +44,5 @@ message CreateCompanyAndOwnerResponse {
 }
 
 message GetIndustriesListResponse {
-  map <string, string> data = 1;
+  map <string, uint64> data = 1;
 }

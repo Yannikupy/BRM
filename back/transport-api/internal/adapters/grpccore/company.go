@@ -96,15 +96,15 @@ func (c *coreClientImpl) DeleteCompany(ctx context.Context, companyId uint64, ow
 	return nil
 }
 
-func (c *coreClientImpl) GetIndustriesList(ctx context.Context) (map[string]string, error) {
+func (c *coreClientImpl) GetIndustriesList(ctx context.Context) (map[string]uint64, error) {
 	resp, err := c.cli.GetIndustriesList(ctx, &empty.Empty{})
 	if err != nil {
 		code := status.Code(err)
 		switch code {
 		case codes.ResourceExhausted:
-			return map[string]string{}, model.ErrCoreError
+			return map[string]uint64{}, model.ErrCoreError
 		default:
-			return map[string]string{}, model.ErrCoreUnknown
+			return map[string]uint64{}, model.ErrCoreUnknown
 		}
 	}
 	return resp.Data, nil
