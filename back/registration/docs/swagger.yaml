@@ -68,7 +68,7 @@ definitions:
     properties:
       data:
         additionalProperties:
-          type: string
+          type: integer
         type: object
       error:
         type: string
@@ -115,11 +115,7 @@ paths:
           description: Проблемы на стороне сервера
           schema:
             $ref: '#/definitions/httpserver.industriesResponse'
-      security:
-      - ApiKeyAuth: []
       summary: Получение отраслей
-      tags:
-      - core/companies
   /register:
     post:
       consumes:

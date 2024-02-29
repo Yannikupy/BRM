@@ -135,7 +135,7 @@ func (a *appImpl) DeleteCompany(ctx context.Context, companyId uint64, ownerId u
 	return err
 }
 
-func (a *appImpl) GetIndustriesList(ctx context.Context) (map[string]string, error) {
+func (a *appImpl) GetIndustriesList(ctx context.Context) (map[string]uint64, error) {
 	return a.coreRepo.GetIndustriesList(ctx)
 }
 

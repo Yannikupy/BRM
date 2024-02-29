@@ -74,6 +74,6 @@ type companyData struct {
 }
 
 type industriesResponse struct {
-	Data map[string]string `json:"data"`
+	Data map[string]uint64 `json:"data"`
 	Err  *string           `json:"error"`
 }

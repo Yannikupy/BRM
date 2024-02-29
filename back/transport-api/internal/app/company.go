@@ -17,7 +17,7 @@ func (a *appImpl) DeleteCompany(ctx context.Context, companyId uint64, ownerId u
 	return a.core.DeleteCompany(ctx, companyId, ownerId)
 }
 
-func (a *appImpl) GetIndustriesList(ctx context.Context) (map[string]string, error) {
+func (a *appImpl) GetIndustriesList(ctx context.Context) (map[string]uint64, error) {
 	return a.core.GetIndustriesList(ctx)
 }
 

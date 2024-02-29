@@ -17,17 +17,9 @@ const docTemplate = `{
     "paths": {
         "/companies/industries": {
             "get": {
-                "security": [
-                    {
-                        "ApiKeyAuth": []
-                    }
-                ],
                 "description": "Возвращает словарь из отраслей и их id",
                 "produces": [
                     "application/json"
-                ],
-                "tags": [
-                    "core/companies"
                 ],
                 "summary": "Получение отраслей",
                 "responses": {
@@ -202,7 +194,7 @@ const docTemplate = `{
                 "data": {
                     "type": "object",
                     "additionalProperties": {
-                        "type": "string"
+                        "type": "integer"
                     }
                 },
                 "error": {
