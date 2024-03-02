@@ -1,15 +1,62 @@
 package ads
 
+import "transport-api/internal/model/ads"
+
+func errorResponse(err error) adResponse {
+	if err == nil {
+		return adResponse{}
+	}
+	errStr := err.Error()
+	return adResponse{
+		Data: nil,
+		Err:  &errStr,
+	}
+}
+
 type adData struct {
-	AdId          int    `json:"ad_id"`
-	CompanyId     int    `json:"company_id"`
-	Title         string `json:"title"`
-	Text          string `json:"text"`
-	Price         int    `json:"price"`
-	Industry      string `json:"industry"`
-	CreatedAt     uint   `json:"created_at"`
-	CreatedId     int    `json:"created_id"`
-	ResponsibleId int    `json:"responsible_id"`
+	Id           uint64 `json:"id"`
+	CompanyId    uint64 `json:"company_id"`
+	Title        string `json:"title"`
+	Text         string `json:"text"`
+	Industry     uint64 `json:"industry"`
+	Price        uint   `json:"price"`
+	CreationDate int64  `json:"creation_date"`
+	CreatedBy    uint64 `json:"created_by"`
+	Responsible  uint64 `json:"responsible"`
+	IsDeleted    bool   `json:"is_deleted"`
+}
+
+func adToAdData(ad ads.Ad) adData {
+	return adData{
+		Id:           ad.Id,
+		CompanyId:    ad.CompanyId,
+		Title:        ad.Title,
+		Text:         ad.Text,
+		Industry:     ad.Industry,
+		Price:        ad.Price,
+		CreationDate: ad.CreationDate,
+		CreatedBy:    ad.CreatedBy,
+		Responsible:  ad.Responsible,
+		IsDeleted:    ad.IsDeleted,
+	}
+}
+
+type responseData struct {
+	Id           uint64 `json:"id"`
+	CompanyId    uint64 `json:"company_id"`
+	EmployeeId   uint64 `json:"employee_id"`
+	AdId         uint64 `json:"ad_id"`
+	CreationDate int64  `json:"creation_date"`
+}
+
+func responseToResponseData(resp ads.Response) responseData {
+	return responseData{
+		Id:           resp.Id,
+		CompanyId:    resp.CompanyId,
+		EmployeeId:   resp.EmployeeId,
+		AdId:         resp.AdId,
+		CreationDate: resp.CreationDate,
+	}
 }
 
 type adResponse struct {
@@ -20,4 +67,30 @@ type adResponse struct {
 type adListResponse struct {
 	Data []adData `json:"data"`
 	Err  *string  `json:"error"`
+}
+
+func adsToAdDataList(adList []ads.Ad) []adData {
+	data := make([]adData, len(adList))
+	for i, ad := range adList {
+		data[i] = adToAdData(ad)
+	}
+	return data
+}
+
+type responseResponse struct {
+	Data *responseData `json:"data"`
+	Err  *string       `json:"error"`
+}
+
+type responseListResponse struct {
+	Data []responseData `json:"data"`
+	Err  *string        `json:"error"`
+}
+
+func responsesToResponseDataList(resps []ads.Response) []responseData {
+	data := make([]responseData, len(resps))
+	for i, resp := range resps {
+		data[i] = responseToResponseData(resp)
+	}
+	return data
 }

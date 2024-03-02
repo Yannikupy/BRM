@@ -1,10 +1,29 @@
 package companies
 
-type companyData struct {
-	Title     string `json:"title"`
-	Industry  string `json:"industry"`
-	OwnerId   int    `json:"owner_id"`
-	CreatedAt uint   `json:"created_at"`
+import "transport-api/internal/model/core"
+
+func errorResponse(err error) companyResponse {
+	if err == nil {
+		return companyResponse{}
+	}
+	errStr := err.Error()
+	return companyResponse{
+		Data: nil,
+		Err:  &errStr,
+	}
+}
+
+func companyToCompanyData(company core.Company) companyData {
+	return companyData{
+		Id:           company.Id,
+		Name:         company.Name,
+		Description:  company.Description,
+		Industry:     company.Industry,
+		OwnerId:      company.OwnerId,
+		Rating:       company.Rating,
+		CreationDate: company.CreationDate,
+		IsDeleted:    company.IsDeleted,
+	}
 }
 
 type companyResponse struct {
@@ -12,19 +31,30 @@ type companyResponse struct {
 	Err  *string      `json:"error"`
 }
 
-type industryResponse struct {
-	Industries map[int]string `json:"data"`
-	Err        *string        `json:"error"`
+type companyData struct {
+	Id           uint64  `json:"id"`
+	Name         string  `json:"name"`
+	Description  string  `json:"description"`
+	Industry     uint64  `json:"industry"`
+	OwnerId      uint64  `json:"owner_id"`
+	Rating       float64 `json:"rating"`
+	CreationDate int64   `json:"creation_date"`
+	IsDeleted    bool    `json:"is_deleted"`
 }
 
-type mainPageStatsData struct {
-	ActiveLeadsAmount     int     `json:"active_leads_amount"`
-	ActiveLeadsPrice      int     `json:"active_leads_price"`
-	ClosedLeadsAmount     int     `json:"total_leads_amount"`
-	ClosedLeadsPrice      int     `json:"closed_leads_price"`
-	ActiveAdsAount        int     `json:"active_ads_aount"`
-	CompanyAbsoluteRating float64 `json:"company_absolute_rating"`
-	CompanyRelativeRating float64 `json:"company_relative_rating"`
+type industriesResponse struct {
+	Data map[string]uint64 `json:"data"`
+	Err  *string           `json:"error"`
+}
+
+type industryResponse struct {
+	Data string  `json:"data"`
+	Err  *string `json:"error"`
+}
+
+type mainPageResponse struct {
+	Data *mainPageData `json:"data"`
+	Err  *string       `json:"error"`
 }
 
 type mainPageData struct {
@@ -32,7 +62,12 @@ type mainPageData struct {
 	Stats mainPageStatsData `json:"stats"`
 }
 
-type mainPageResponse struct {
-	Data *mainPageData `json:"data"`
-	Err  *string       `json:"error"`
+type mainPageStatsData struct {
+	ActiveLeadsAmount     int     `json:"active_leads_amount"`
+	ActiveLeadsPrice      int     `json:"active_leads_price"`
+	ClosedLeadsAmount     int     `json:"total_leads_amount"`
+	ClosedLeadsPrice      int     `json:"closed_leads_price"`
+	ActiveAdsAmount       int     `json:"active_ads_aount"`
+	CompanyAbsoluteRating float64 `json:"company_absolute_rating"`
+	CompanyRelativeRating float64 `json:"company_relative_rating"`
 }

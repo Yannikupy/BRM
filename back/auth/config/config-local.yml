@@ -1,0 +1,24 @@
+"postgres-passwords":
+  "username": "root"
+  "host": "localhost"
+  "port": 5501
+  "dbname": "passwords-db"
+  "sslmode": "disable"
+
+"redis-tokens":
+  "host": "localhost"
+  "port": 6000
+  "db": 0
+
+"grpc-server":
+  "network": "tcp"
+  "port": 50001
+
+"http-server":
+  "host": "localhost"
+  "port": 8092
+
+"app":
+  "refresh-token-length": 32
+  "refresh-token-expiration": 15 * 86400 * 1000000000 # 15 days
+  "access-token-expiration": 15 * 3600 * 1000000000 # 15 hours

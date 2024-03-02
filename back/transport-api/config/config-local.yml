@@ -1,0 +1,11 @@
+"grpc-core-client":
+  "host": "localhost"
+  "port": 50000
+
+"grpc-ads-client":
+  "host": "localhost"
+  "port": 50002
+
+"http-server":
+  "host": "localhost"
+  "port": 8090

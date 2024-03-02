@@ -1,7 +1,8 @@
 package companies
 
 type updateCompanyRequest struct {
-	Title    string `json:"title"`
-	Industry int    `json:"industry"`
-	OwnerId  int    `json:"owner_id"`
+	Name        string `json:"name"`
+	Description string `json:"description"`
+	Industry    uint64 `json:"industry"`
+	OwnerId     uint64 `json:"owner_id"`
 }
