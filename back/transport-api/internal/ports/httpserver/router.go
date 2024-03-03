@@ -14,6 +14,7 @@ import (
 )
 
 func appRouter(r *gin.RouterGroup, a app.App, tkn tokenizer.Tokenizer, logs logger.Logger) {
+	r.Use(middleware.Cors())
 	r.Use(middleware.Panic(logs))
 	r.Use(middleware.Log(logs))
 	r.Use(middleware.Auth(tkn))
