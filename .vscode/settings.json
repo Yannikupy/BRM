@@ -1,0 +1,13 @@
+{
+    "sqltools.connections": [
+        {
+            "previewLimit": 50,
+            "server": "localhost",
+            "port": 5500,
+            "driver": "PostgreSQL",
+            "name": "BRM",
+            "database": "core-db",
+            "username": "root"
+        }
+    ]
+}
