@@ -3,7 +3,6 @@ package httpserver
 import (
 	"auth/internal/app"
 	"auth/pkg/logger"
-
 	"github.com/gin-gonic/gin"
 
 	_ "auth/docs"
