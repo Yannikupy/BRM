@@ -8,11 +8,13 @@ import { MediaMatcher } from '@angular/cdk/layout';
 import { RouterOutlet } from '@angular/router';
 import { AuthService } from '../services/auth.service';
 import { LoginComponent } from '../login/login.component';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-main-page',
   standalone: true,
   imports: [
+    CommonModule,
     MatSidenavModule,
     LeftMenuComponent,
     MatButtonModule,
@@ -35,6 +37,11 @@ export class MainPageComponent implements OnDestroy {
     this.mobileQuery = media.matchMedia('(max-width: 600px)');
     this._mobileQueryListener = () => changeDetectorRef.detectChanges();
     this.mobileQuery.addListener(this._mobileQueryListener);
+  }
+
+  logout(): void {
+    localStorage.setItem('token', '');
+    this.authService.currentUserSig.set(null);
   }
 
   ngOnDestroy(): void {

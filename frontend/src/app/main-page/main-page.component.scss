@@ -19,9 +19,16 @@
   }
 }
 
+.icons {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
 .example-is-computer {
   .example-toolbar {
     height: 100px;
+    justify-content: space-between;
   }
   .logo {
     width: 80px;
