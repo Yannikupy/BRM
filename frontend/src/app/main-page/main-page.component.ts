@@ -26,25 +26,4 @@ import { CommonModule } from '@angular/common';
   templateUrl: './main-page.component.html',
   styleUrl: './main-page.component.scss',
 })
-export class MainPageComponent implements OnDestroy {
-  mobileQuery: MediaQueryList;
-
-  authService = inject(AuthService);
-
-  private _mobileQueryListener: () => void;
-
-  constructor(changeDetectorRef: ChangeDetectorRef, media: MediaMatcher) {
-    this.mobileQuery = media.matchMedia('(max-width: 600px)');
-    this._mobileQueryListener = () => changeDetectorRef.detectChanges();
-    this.mobileQuery.addListener(this._mobileQueryListener);
-  }
-
-  logout(): void {
-    localStorage.setItem('token', '');
-    this.authService.currentUserSig.set(null);
-  }
-
-  ngOnDestroy(): void {
-    this.mobileQuery.removeListener(this._mobileQueryListener);
-  }
-}
+export class MainPageComponent {}
