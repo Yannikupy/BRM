@@ -2,6 +2,7 @@ package httpserver
 
 import (
 	"fmt"
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"registration/internal/model"
@@ -50,9 +51,8 @@ func panicMiddleware(logs logger.Logger) gin.HandlerFunc {
 	}
 }
 
-func corsMiddleware() gin.HandlerFunc {
-	return func(c *gin.Context) {
-		c.Writer.Header().Set("Access-Control-Allow-Origin", "*")
-		c.Next()
-	}
+func corsMiddleware(originAddr string) gin.HandlerFunc {
+	config := cors.DefaultConfig()
+	config.AllowOrigins = []string{originAddr}
+	return cors.New(config)
 }

@@ -9,3 +9,8 @@
 "http-server":
   "host": "transport-api"
   "port": 8090
+
+"origins":
+  "web":
+    "host": "localhost"
+    "port": 4200

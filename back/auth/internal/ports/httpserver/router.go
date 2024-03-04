@@ -10,7 +10,6 @@ import (
 )
 
 func appRouter(r *gin.RouterGroup, a app.App, logs logger.Logger) {
-	r.Use(corsMiddleware())
 	r.Use(panicMiddleware(logs))
 	r.Use(logMiddleware(logs))
 
