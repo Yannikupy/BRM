@@ -2,6 +2,7 @@ package httpserver
 
 import (
 	"fmt"
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"registration/internal/model"
@@ -50,16 +51,8 @@ func panicMiddleware(logs logger.Logger) gin.HandlerFunc {
 	}
 }
 
-func corsMiddleware() gin.HandlerFunc {
-	return func(c *gin.Context) {
-		c.Header("Access-Control-Allow-Origin", "*")
-		c.Header("Access-Control-Allow-Methods", "*")
-		c.Header("Access-Control-Allow-Headers", "*")
-		c.Header("Access-Control-Allow-Credentials", "true")
-		if c.Request.Method == http.MethodOptions {
-			c.AbortWithStatus(http.StatusOK)
-			return
-		}
-		c.Next()
-	}
+func corsMiddleware(originAddr string) gin.HandlerFunc {
+	config := cors.DefaultConfig()
+	config.AllowOrigins = []string{originAddr}
+	return cors.New(config)
 }

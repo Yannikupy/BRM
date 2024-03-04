@@ -5,3 +5,8 @@
 "http-server":
   "host": "localhost"
   "port": 8091
+
+"origins":
+  "web":
+    "host": "localhost"
+    "port": 4200

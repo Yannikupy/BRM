@@ -6,13 +6,15 @@ import (
 	ginSwagger "github.com/swaggo/gin-swagger"
 	"net/http"
 	"transport-api/internal/app"
+	"transport-api/internal/ports/httpserver/middleware"
 	"transport-api/pkg/logger"
 	"transport-api/pkg/tokenizer"
 )
 
-func New(addr string, a app.App, tkn tokenizer.Tokenizer, logs logger.Logger) *http.Server {
+func New(addr string, originAddr string, a app.App, tkn tokenizer.Tokenizer, logs logger.Logger) *http.Server {
 	gin.SetMode(gin.ReleaseMode)
 	router := gin.New()
+	router.Use(middleware.Cors(originAddr))
 
 	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 

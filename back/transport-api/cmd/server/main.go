@@ -74,9 +74,13 @@ func main() {
 	a := app.NewApp(coreClient, adsClient)
 	tkn := tokenizer.New(os.Getenv("SIGNKEY"))
 
-	srv := httpserver.New(fmt.Sprintf("%s:%d",
-		viper.GetString("http-server.host"),
-		viper.GetInt("http-server.port")),
+	srv := httpserver.New(
+		fmt.Sprintf("%s:%d",
+			viper.GetString("http-server.host"),
+			viper.GetInt("http-server.port")),
+		fmt.Sprintf("http://%s:%d",
+			viper.GetString("origins.web.host"),
+			viper.GetInt("origins.web.port")),
 		a, tkn, logs)
 
 	go func() {
