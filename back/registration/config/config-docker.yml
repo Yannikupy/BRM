@@ -5,3 +5,8 @@
 "http-server":
   "host": "registration"
   "port": 8091
+
+"origins":
+  "web":
+    "host": "localhost"
+    "port": 4200

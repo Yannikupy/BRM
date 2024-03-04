@@ -105,9 +105,13 @@ func main() {
 		}
 	}()
 
-	httpsrv := httpserver.New(fmt.Sprintf("%s:%d",
-		viper.GetString("http-server.host"),
-		viper.GetInt("http-server.port")),
+	httpsrv := httpserver.New(
+		fmt.Sprintf("%s:%d",
+			viper.GetString("http-server.host"),
+			viper.GetInt("http-server.port")),
+		fmt.Sprintf("http://%s:%d",
+			viper.GetString("origins.web.host"),
+			viper.GetInt("origins.web.port")),
 		a, logs)
 
 	go func() {
