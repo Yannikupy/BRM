@@ -55,6 +55,20 @@ services:
       - ./back/brm-ads/migrations/:/docker-entrypoint-initdb.d/
       - ads-data:/var/lib/postgresql/data
 
+  postgres-leads:
+    image: postgres:15.5
+    container_name: postgres-leads
+    environment:
+      POSTGRES_DB: leads-db
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: root
+    profiles: ["dev_front", "dev_back"]
+    ports:
+      - "5503:5432"
+    volumes:
+      - ./back/brm-leads/migrations/:/docker-entrypoint-initdb.d/
+      - leads-data:/var/lib/postgresql/data
+
   brm-core:
     build:
       context: back/brm-core
@@ -119,3 +133,4 @@ volumes:
   passwords-data:
   tokens-data:
   ads-data:
+  leads-data:
