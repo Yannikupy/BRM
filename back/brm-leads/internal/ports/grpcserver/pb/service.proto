@@ -9,7 +9,6 @@ service LeadsService {
   rpc GetLeads(GetLeadsRequest) returns (GetLeadsResponse) {}
   rpc GetLeadById(GetLeadByIdRequest) returns (GetLeadByIdResponse) {}
   rpc UpdateLead(UpdateLeadRequest) returns (UpdateLeadResponse) {}
-  rpc DeleteLead(DeleteLeadRequest) returns (google.protobuf.Empty) {}
 
   rpc GetStatuses(google.protobuf.Empty) returns (GetStatusesResponse) {}
   rpc GetStatusById(GetStatusByIdRequest) returns (GetStatusByIdResponse) {}
@@ -86,12 +85,6 @@ message UpdateLeadRequest {
 
 message UpdateLeadResponse {
   Lead lead = 1;
-}
-
-message DeleteLeadRequest {
-  uint64 company_id = 1;
-  uint64 employee_id = 2;
-  uint64 id = 3;
 }
 
 message GetStatusesResponse {

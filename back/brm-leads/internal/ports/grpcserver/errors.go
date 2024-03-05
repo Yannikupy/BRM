@@ -20,6 +20,12 @@ func mapErrors(err error) error {
 	case errors.Is(err, model.ErrCompanyNotExists):
 		c = codes.NotFound
 		resErr = model.ErrCompanyNotExists
+	case errors.Is(err, model.ErrEmployeeNotExists):
+		c = codes.NotFound
+		resErr = model.ErrEmployeeNotExists
+	case errors.Is(err, model.ErrStatusNotExists):
+		c = codes.NotFound
+		resErr = model.ErrStatusNotExists
 	case errors.Is(err, model.ErrAdNotExists):
 		c = codes.NotFound
 		resErr = model.ErrAdNotExists

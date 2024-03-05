@@ -7,6 +7,7 @@ var (
 	ErrCompanyNotExists  = errors.New("company with required id does not exist")
 	ErrEmployeeNotExists = errors.New("employee with required id does not exist")
 	ErrAdNotExists       = errors.New("ad with required id does not exist")
+	ErrStatusNotExists   = errors.New("status with required id does not exist")
 	ErrAuthorization     = errors.New("no rights to make operation")
 
 	ErrDatabaseError = errors.New("something wrong with the database")

@@ -4,7 +4,6 @@ import (
 	"brm-leads/internal/model"
 	"brm-leads/internal/ports/grpcserver/pb"
 	"context"
-	"github.com/golang/protobuf/ptypes/empty"
 	"google.golang.org/protobuf/types/known/emptypb"
 )
 
@@ -83,17 +82,6 @@ func (s *Server) UpdateLead(ctx context.Context, req *pb.UpdateLeadRequest) (*pb
 	return &pb.UpdateLeadResponse{
 		Lead: modelLeadToLead(lead),
 	}, nil
-}
-
-func (s *Server) DeleteLead(ctx context.Context, req *pb.DeleteLeadRequest) (*empty.Empty, error) {
-	if err := s.App.DeleteLead(ctx,
-		req.CompanyId,
-		req.EmployeeId,
-		req.Id,
-	); err != nil {
-		return nil, mapErrors(err)
-	}
-	return &empty.Empty{}, nil
 }
 
 func (s *Server) GetStatuses(ctx context.Context, _ *emptypb.Empty) (*pb.GetStatusesResponse, error) {

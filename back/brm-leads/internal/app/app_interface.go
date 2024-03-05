@@ -14,7 +14,6 @@ type App interface {
 	GetLeads(ctx context.Context, companyId uint64, employeeId uint64, filter model.Filter) ([]model.Lead, error)
 	GetLeadById(ctx context.Context, companyId uint64, employeeId uint64, leadId uint64) (model.Lead, error)
 	UpdateLead(ctx context.Context, companyId uint64, employeeId uint64, id uint64, upd model.UpdateLead) (model.Lead, error)
-	DeleteLead(ctx context.Context, companyId uint64, employeeId uint64, id uint64) error
 
 	GetStatuses(ctx context.Context) (map[string]uint64, error)
 	GetStatusById(ctx context.Context, id uint64) (string, error)
