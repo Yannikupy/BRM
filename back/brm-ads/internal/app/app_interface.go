@@ -2,6 +2,7 @@ package app
 
 import (
 	"brm-ads/internal/adapters/grpccore"
+	"brm-ads/internal/adapters/grpcleads"
 	"brm-ads/internal/model"
 	"brm-ads/internal/repo"
 	"brm-ads/pkg/logger"
@@ -19,10 +20,11 @@ type App interface {
 	GetResponses(ctx context.Context, companyId uint64, employeeId uint64, limit uint, offset uint) ([]model.Response, error)
 }
 
-func New(repo repo.AdRepo, core grpccore.CoreClient, logs logger.Logger) App {
+func New(repo repo.AdRepo, core grpccore.CoreClient, leads grpcleads.LeadsClient, logs logger.Logger) App {
 	return &appImpl{
-		repo: repo,
-		core: core,
-		logs: logs,
+		repo:  repo,
+		core:  core,
+		leads: leads,
+		logs:  logs,
 	}
 }
