@@ -91,6 +91,17 @@ services:
     depends_on:
       - postgres-ads
 
+  brm-leads:
+    build:
+      context: back/brm-leads
+      dockerfile: Dockerfile
+    command: ./brm-leads-app --docker
+    profiles: ["dev_front"]
+    ports:
+      - "50003:50003"
+    depends_on:
+      - postgres-leads
+
   transport-api:
     build:
       context: back/transport-api
