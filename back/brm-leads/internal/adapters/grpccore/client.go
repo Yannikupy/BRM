@@ -4,12 +4,25 @@ import (
 	"brm-leads/internal/adapters/grpccore/pb"
 	"brm-leads/internal/model"
 	"context"
+	"fmt"
+	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/credentials/insecure"
 	"google.golang.org/grpc/status"
 )
 
 type coreClientImpl struct {
 	cli pb.CoreServiceClient
+}
+
+func NewCoreClient(ctx context.Context, addr string) (CoreClient, error) {
+	if conn, err := grpc.DialContext(ctx, addr, grpc.WithTransportCredentials(insecure.NewCredentials())); err != nil {
+		return &coreClientImpl{}, fmt.Errorf("grpc core client: %w", err)
+	} else {
+		return &coreClientImpl{
+			cli: pb.NewCoreServiceClient(conn),
+		}, nil
+	}
 }
 
 func (c *coreClientImpl) GetCompanyName(ctx context.Context, id uint64) (string, error) {

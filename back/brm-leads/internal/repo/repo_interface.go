@@ -3,6 +3,7 @@ package repo
 import (
 	"brm-leads/internal/model"
 	"context"
+	"github.com/jackc/pgx/v5"
 )
 
 type LeadsRepo interface {
@@ -13,4 +14,10 @@ type LeadsRepo interface {
 
 	GetStatuses(ctx context.Context) (map[string]uint64, error)
 	GetStatusById(ctx context.Context, id uint64) (string, error)
+}
+
+func New(conn *pgx.Conn) LeadsRepo {
+	return &leadRepoImpl{
+		Conn: *conn,
+	}
 }
