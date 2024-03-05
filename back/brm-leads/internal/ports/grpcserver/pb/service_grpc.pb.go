@@ -27,7 +27,6 @@ type LeadsServiceClient interface {
 	GetLeads(ctx context.Context, in *GetLeadsRequest, opts ...grpc.CallOption) (*GetLeadsResponse, error)
 	GetLeadById(ctx context.Context, in *GetLeadByIdRequest, opts ...grpc.CallOption) (*GetLeadByIdResponse, error)
 	UpdateLead(ctx context.Context, in *UpdateLeadRequest, opts ...grpc.CallOption) (*UpdateLeadResponse, error)
-	DeleteLead(ctx context.Context, in *DeleteLeadRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	GetStatuses(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*GetStatusesResponse, error)
 	GetStatusById(ctx context.Context, in *GetStatusByIdRequest, opts ...grpc.CallOption) (*GetStatusByIdResponse, error)
 }
@@ -76,15 +75,6 @@ func (c *leadsServiceClient) UpdateLead(ctx context.Context, in *UpdateLeadReque
 	return out, nil
 }
 
-func (c *leadsServiceClient) DeleteLead(ctx context.Context, in *DeleteLeadRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
-	out := new(emptypb.Empty)
-	err := c.cc.Invoke(ctx, "/leads.LeadsService/DeleteLead", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
 func (c *leadsServiceClient) GetStatuses(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*GetStatusesResponse, error) {
 	out := new(GetStatusesResponse)
 	err := c.cc.Invoke(ctx, "/leads.LeadsService/GetStatuses", in, out, opts...)
@@ -111,7 +101,6 @@ type LeadsServiceServer interface {
 	GetLeads(context.Context, *GetLeadsRequest) (*GetLeadsResponse, error)
 	GetLeadById(context.Context, *GetLeadByIdRequest) (*GetLeadByIdResponse, error)
 	UpdateLead(context.Context, *UpdateLeadRequest) (*UpdateLeadResponse, error)
-	DeleteLead(context.Context, *DeleteLeadRequest) (*emptypb.Empty, error)
 	GetStatuses(context.Context, *emptypb.Empty) (*GetStatusesResponse, error)
 	GetStatusById(context.Context, *GetStatusByIdRequest) (*GetStatusByIdResponse, error)
 }
@@ -131,9 +120,6 @@ func (UnimplementedLeadsServiceServer) GetLeadById(context.Context, *GetLeadById
 }
 func (UnimplementedLeadsServiceServer) UpdateLead(context.Context, *UpdateLeadRequest) (*UpdateLeadResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdateLead not implemented")
-}
-func (UnimplementedLeadsServiceServer) DeleteLead(context.Context, *DeleteLeadRequest) (*emptypb.Empty, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method DeleteLead not implemented")
 }
 func (UnimplementedLeadsServiceServer) GetStatuses(context.Context, *emptypb.Empty) (*GetStatusesResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetStatuses not implemented")
@@ -225,24 +211,6 @@ func _LeadsService_UpdateLead_Handler(srv interface{}, ctx context.Context, dec 
 	return interceptor(ctx, in, info, handler)
 }
 
-func _LeadsService_DeleteLead_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(DeleteLeadRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(LeadsServiceServer).DeleteLead(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/leads.LeadsService/DeleteLead",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(LeadsServiceServer).DeleteLead(ctx, req.(*DeleteLeadRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
 func _LeadsService_GetStatuses_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(emptypb.Empty)
 	if err := dec(in); err != nil {
@@ -301,10 +269,6 @@ var LeadsService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "UpdateLead",
 			Handler:    _LeadsService_UpdateLead_Handler,
-		},
-		{
-			MethodName: "DeleteLead",
-			Handler:    _LeadsService_DeleteLead_Handler,
 		},
 		{
 			MethodName: "GetStatuses",
