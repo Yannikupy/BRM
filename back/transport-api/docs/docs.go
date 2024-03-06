@@ -2098,7 +2098,7 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "industry": {
-                    "type": "integer"
+                    "type": "string"
                 },
                 "price": {
                     "type": "integer"
@@ -2160,7 +2160,7 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "industry": {
-                    "type": "integer"
+                    "type": "string"
                 },
                 "price": {
                     "type": "integer"
@@ -2189,7 +2189,7 @@ const docTemplate = `{
                     "type": "integer"
                 },
                 "industry": {
-                    "type": "integer"
+                    "type": "string"
                 },
                 "is_deleted": {
                     "type": "boolean"
@@ -2285,7 +2285,7 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "industry": {
-                    "type": "integer"
+                    "type": "string"
                 },
                 "name": {
                     "type": "string"

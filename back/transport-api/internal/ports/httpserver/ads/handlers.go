@@ -164,11 +164,7 @@ func GetAdsList(a app.App) gin.HandlerFunc {
 				filter = nil
 			} else {
 				if filter.ByIndustry {
-					filter.Industry, err = strconv.ParseUint(c.Query("industry"), 10, 64)
-					if err != nil {
-						c.AbortWithStatusJSON(http.StatusBadRequest, errorResponse(model.ErrInvalidInput))
-						return
-					}
+					filter.Industry = c.Query("industry")
 				}
 				if filter.ByCompany {
 					filter.CompanyId, err = strconv.ParseUint(c.Query("company_id"), 10, 64)

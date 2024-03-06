@@ -72,7 +72,7 @@ func (s *Server) UpdateCompany(ctx context.Context, req *pb.UpdateCompanyRequest
 		model.UpdateCompany{
 			Name:        req.Upd.Name,
 			Description: req.Upd.Description,
-			Industry:    uint64(req.Upd.Industry),
+			Industry:    req.Upd.Industry,
 			OwnerId:     req.Upd.OwnerId,
 		},
 	)
@@ -107,5 +107,13 @@ func (s *Server) GetIndustryById(ctx context.Context, req *pb.GetIndustryByIdReq
 		return nil, mapErrors(err)
 	} else {
 		return &pb.GetIndustryByIdResponse{Industry: industry}, nil
+	}
+}
+
+func (s *Server) GetIndustryId(ctx context.Context, req *pb.GetIndustryIdRequest) (*pb.GetIndustryIdResponse, error) {
+	if id, err := s.App.GetIndustryId(ctx, req.Industry); err != nil {
+		return nil, mapErrors(err)
+	} else {
+		return &pb.GetIndustryIdResponse{Id: id}, nil
 	}
 }

@@ -24,7 +24,7 @@ const _ = grpc.SupportPackageIsVersion7
 type CoreServiceClient interface {
 	GetCompany(ctx context.Context, in *GetCompanyRequest, opts ...grpc.CallOption) (*GetCompanyResponse, error)
 	GetEmployeeById(ctx context.Context, in *GetEmployeeByIdRequest, opts ...grpc.CallOption) (*GetEmployeeByIdResponse, error)
-	GetIndustryById(ctx context.Context, in *GetIndustryByIdRequest, opts ...grpc.CallOption) (*GetIndustryByIdResponse, error)
+	GetIndustryId(ctx context.Context, in *GetIndustryIdRequest, opts ...grpc.CallOption) (*GetIndustryIdResponse, error)
 }
 
 type coreServiceClient struct {
@@ -53,9 +53,9 @@ func (c *coreServiceClient) GetEmployeeById(ctx context.Context, in *GetEmployee
 	return out, nil
 }
 
-func (c *coreServiceClient) GetIndustryById(ctx context.Context, in *GetIndustryByIdRequest, opts ...grpc.CallOption) (*GetIndustryByIdResponse, error) {
-	out := new(GetIndustryByIdResponse)
-	err := c.cc.Invoke(ctx, "/core.CoreService/GetIndustryById", in, out, opts...)
+func (c *coreServiceClient) GetIndustryId(ctx context.Context, in *GetIndustryIdRequest, opts ...grpc.CallOption) (*GetIndustryIdResponse, error) {
+	out := new(GetIndustryIdResponse)
+	err := c.cc.Invoke(ctx, "/core.CoreService/GetIndustryId", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -68,7 +68,7 @@ func (c *coreServiceClient) GetIndustryById(ctx context.Context, in *GetIndustry
 type CoreServiceServer interface {
 	GetCompany(context.Context, *GetCompanyRequest) (*GetCompanyResponse, error)
 	GetEmployeeById(context.Context, *GetEmployeeByIdRequest) (*GetEmployeeByIdResponse, error)
-	GetIndustryById(context.Context, *GetIndustryByIdRequest) (*GetIndustryByIdResponse, error)
+	GetIndustryId(context.Context, *GetIndustryIdRequest) (*GetIndustryIdResponse, error)
 }
 
 // UnimplementedCoreServiceServer should be embedded to have forward compatible implementations.
@@ -81,8 +81,8 @@ func (UnimplementedCoreServiceServer) GetCompany(context.Context, *GetCompanyReq
 func (UnimplementedCoreServiceServer) GetEmployeeById(context.Context, *GetEmployeeByIdRequest) (*GetEmployeeByIdResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetEmployeeById not implemented")
 }
-func (UnimplementedCoreServiceServer) GetIndustryById(context.Context, *GetIndustryByIdRequest) (*GetIndustryByIdResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetIndustryById not implemented")
+func (UnimplementedCoreServiceServer) GetIndustryId(context.Context, *GetIndustryIdRequest) (*GetIndustryIdResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetIndustryId not implemented")
 }
 
 // UnsafeCoreServiceServer may be embedded to opt out of forward compatibility for this service.
@@ -132,20 +132,20 @@ func _CoreService_GetEmployeeById_Handler(srv interface{}, ctx context.Context, 
 	return interceptor(ctx, in, info, handler)
 }
 
-func _CoreService_GetIndustryById_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GetIndustryByIdRequest)
+func _CoreService_GetIndustryId_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetIndustryIdRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(CoreServiceServer).GetIndustryById(ctx, in)
+		return srv.(CoreServiceServer).GetIndustryId(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/core.CoreService/GetIndustryById",
+		FullMethod: "/core.CoreService/GetIndustryId",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(CoreServiceServer).GetIndustryById(ctx, req.(*GetIndustryByIdRequest))
+		return srv.(CoreServiceServer).GetIndustryId(ctx, req.(*GetIndustryIdRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -166,8 +166,8 @@ var CoreService_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _CoreService_GetEmployeeById_Handler,
 		},
 		{
-			MethodName: "GetIndustryById",
-			Handler:    _CoreService_GetIndustryById_Handler,
+			MethodName: "GetIndustryId",
+			Handler:    _CoreService_GetIndustryId_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

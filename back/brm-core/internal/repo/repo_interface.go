@@ -27,6 +27,7 @@ type CompanyRepo interface {
 
 	GetIndustriesList(ctx context.Context) (map[string]uint64, error)
 	GetIndustryById(ctx context.Context, id uint64) (string, error)
+	GetIndustryId(ctx context.Context, industry string) (uint64, error)
 }
 
 type EmployeeRepo interface {

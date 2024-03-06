@@ -41,7 +41,12 @@ func (a *appImpl) GetAdsList(ctx context.Context, params model.AdsListParams) ([
 	}()
 	if params.Filter != nil && params.Filter.ByCompany {
 		if _, err = a.core.GetCompany(ctx, params.Filter.CompanyId); err != nil {
-			return nil, err
+			return []model.Ad{}, err
+		}
+	}
+	if params.Filter != nil && params.Filter.ByIndustry {
+		if params.Filter.IndustryId, err = a.core.GetIndustryId(ctx, params.Filter.Industry); err != nil {
+			return []model.Ad{}, err
 		}
 	}
 
@@ -59,7 +64,7 @@ func (a *appImpl) CreateAd(ctx context.Context, companyId uint64, employeeId uin
 		}, err)
 	}()
 
-	if _, err = a.core.GetIndustryById(ctx, ad.Industry); err != nil {
+	if ad.IndustryId, err = a.core.GetIndustryId(ctx, ad.Industry); err != nil {
 		return model.Ad{}, err
 	}
 
@@ -97,7 +102,7 @@ func (a *appImpl) UpdateAd(ctx context.Context, companyId uint64, employeeId uin
 	} else if newResponsibleCompanyId != ad.CompanyId {
 		return model.Ad{}, model.ErrAuthorization
 	}
-	if _, err = a.core.GetIndustryById(ctx, upd.Industry); err != nil {
+	if upd.IndustryId, err = a.core.GetIndustryId(ctx, upd.Industry); err != nil {
 		return model.Ad{}, err
 	}
 

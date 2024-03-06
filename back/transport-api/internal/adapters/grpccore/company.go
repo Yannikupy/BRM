@@ -50,7 +50,7 @@ func (c *coreClientImpl) UpdateCompany(ctx context.Context, companyId uint64, ow
 		Upd: &pb.UpdateCompanyFields{
 			Name:        upd.Name,
 			Description: upd.Description,
-			Industry:    int64(upd.Industry),
+			Industry:    upd.Industry,
 			OwnerId:     upd.OwnerId,
 		},
 	})
@@ -59,9 +59,12 @@ func (c *coreClientImpl) UpdateCompany(ctx context.Context, companyId uint64, ow
 		switch code {
 		case codes.NotFound:
 			// костыль, ну а чё поделать
-			if strings.Contains(err.Error(), "company") {
+			switch {
+			case strings.Contains(err.Error(), "company"):
 				return core.Company{}, model.ErrCompanyNotExists
-			} else {
+			case strings.Contains(err.Error(), "employee"):
+				return core.Company{}, model.ErrEmployeeNotExists
+			case strings.Contains(err.Error(), "industry"):
 				return core.Company{}, model.ErrIndustryNotExists
 			}
 		case codes.PermissionDenied:

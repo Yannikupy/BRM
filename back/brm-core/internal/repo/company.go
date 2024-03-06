@@ -10,12 +10,13 @@ import (
 
 const (
 	getCompanyQuery = `
-		SELECT * FROM "companies"
-		WHERE "id" = $1 AND (NOT "is_deleted");`
+		SELECT "companies"."id", "companies"."name", "description", "industries"."name", "owner_id", "rating", "creation_date", "is_deleted" FROM "companies"
+		INNER JOIN "industries" ON "companies"."industry" = "industries"."id"
+		WHERE "companies"."id" = $1 AND (NOT "is_deleted");`
 
 	createCompanyQuery = `
 		INSERT INTO "companies" ("name", "description", "industry", "owner_id", "rating", "creation_date", "is_deleted") 
-		VALUES ($1, $2, $3, $4, $5, $6, $7)
+		VALUES ($1, $2, (SELECT "id" FROM "industries" WHERE "name" = $3), $4, $5, $6, $7)
 		RETURNING "id";`
 
 	createOwnerQuery = `
@@ -32,7 +33,7 @@ const (
 		UPDATE "companies"
 		SET "name" = $2,
 		    "description" = $3,
-		    "industry" = $4,
+		    "industry" = (SELECT "id" FROM "industries" WHERE "name" = $4),
 		    "owner_id" = $5
 		WHERE "id" = $1 AND (NOT "is_deleted");`
 
@@ -47,6 +48,10 @@ const (
 	getIndustryByIdQuery = `
 		SELECT "name" FROM "industries"
 		WHERE "id" = $1;`
+
+	getIndustryIdQuery = `
+		SELECT "id" FROM "industries"
+		WHERE "name" = $1;`
 )
 
 func (c *coreRepoImpl) GetCompany(ctx context.Context, id uint64) (model.Company, error) {
@@ -119,14 +124,20 @@ func (c *coreRepoImpl) CreateCompanyAndOwner(ctx context.Context, company model.
 }
 
 func (c *coreRepoImpl) UpdateCompany(ctx context.Context, companyId uint64, upd model.UpdateCompany) (model.Company, error) {
+	var pgErr *pgconn.PgError
 	if e, err := c.Exec(ctx, updateCompanyQuery,
 		companyId,
 		upd.Name,
 		upd.Description,
 		upd.Industry,
 		upd.OwnerId,
-	); err != nil {
-		return model.Company{}, errors.Join(model.ErrDatabaseError, err)
+	); errors.As(err, &pgErr) {
+		switch pgErr.Code {
+		case "23502": // null column industry
+			return model.Company{}, model.ErrIndustryNotExists
+		default:
+			return model.Company{}, errors.Join(model.ErrDatabaseError, err)
+		}
 	} else if e.RowsAffected() == 0 {
 		return model.Company{}, model.ErrCompanyNotExists
 	} else {
@@ -172,5 +183,17 @@ func (c *coreRepoImpl) GetIndustryById(ctx context.Context, id uint64) (string, 
 		return "", errors.Join(model.ErrDatabaseError, err)
 	} else {
 		return industry, nil
+	}
+}
+
+func (c *coreRepoImpl) GetIndustryId(ctx context.Context, industry string) (uint64, error) {
+	row := c.QueryRow(ctx, getIndustryIdQuery, industry)
+	var id uint64
+	if err := row.Scan(&id); errors.Is(err, pgx.ErrNoRows) {
+		return 0, model.ErrIndustryNotExists
+	} else if err != nil {
+		return 0, errors.Join(model.ErrDatabaseError, err)
+	} else {
+		return id, nil
 	}
 }

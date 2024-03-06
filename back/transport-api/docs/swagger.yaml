@@ -42,7 +42,7 @@ definitions:
   ads.addAdRequest:
     properties:
       industry:
-        type: integer
+        type: string
       price:
         type: integer
       text:
@@ -82,7 +82,7 @@ definitions:
   ads.updateAdRequest:
     properties:
       industry:
-        type: integer
+        type: string
       price:
         type: integer
       responsible:
@@ -101,7 +101,7 @@ definitions:
       id:
         type: integer
       industry:
-        type: integer
+        type: string
       is_deleted:
         type: boolean
       name:
@@ -163,7 +163,7 @@ definitions:
       description:
         type: string
       industry:
-        type: integer
+        type: string
       name:
         type: string
       owner_id:

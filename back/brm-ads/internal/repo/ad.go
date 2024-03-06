@@ -44,7 +44,7 @@ func (a *adRepoImpl) CreateAd(ctx context.Context, ad model.Ad) (model.Ad, error
 		ad.CompanyId,
 		ad.Title,
 		ad.Text,
-		ad.Industry,
+		ad.IndustryId,
 		ad.Price,
 		ad.CreationDate,
 		ad.CreatedBy,
@@ -63,7 +63,7 @@ func (a *adRepoImpl) UpdateAd(ctx context.Context, adId uint64, upd model.Update
 		adId,
 		upd.Title,
 		upd.Text,
-		upd.Industry,
+		upd.IndustryId,
 		upd.Price,
 		upd.Responsible,
 	); err != nil {
@@ -95,7 +95,7 @@ func (a *adRepoImpl) GetAdById(ctx context.Context, id uint64) (model.Ad, error)
 		&ad.CompanyId,
 		&ad.Title,
 		&ad.Text,
-		&ad.Industry,
+		&ad.IndustryId,
 		&ad.Price,
 		&ad.CreationDate,
 		&ad.CreatedBy,
@@ -129,7 +129,7 @@ func (a *adRepoImpl) GetAdsList(ctx context.Context, params model.AdsListParams)
 				&ad.CompanyId,
 				&ad.Title,
 				&ad.Text,
-				&ad.Industry,
+				&ad.IndustryId,
 				&ad.Price,
 				&ad.CreationDate,
 				&ad.CreatedBy,
@@ -144,7 +144,7 @@ func (a *adRepoImpl) GetAdsList(ctx context.Context, params model.AdsListParams)
 				ByCompany:  false,
 				CompanyId:  0,
 				ByIndustry: false,
-				Industry:   0,
+				Industry:   "",
 			}
 		}
 		getAdsQuery := fmt.Sprintf(`
@@ -159,7 +159,7 @@ func (a *adRepoImpl) GetAdsList(ctx context.Context, params model.AdsListParams)
 			params.Filter.ByCompany,
 			params.Filter.CompanyId,
 			params.Filter.ByIndustry,
-			params.Filter.Industry,
+			params.Filter.IndustryId,
 			params.Limit,
 			params.Offset)
 		if err != nil {
@@ -175,7 +175,7 @@ func (a *adRepoImpl) GetAdsList(ctx context.Context, params model.AdsListParams)
 				&ad.CompanyId,
 				&ad.Title,
 				&ad.Text,
-				&ad.Industry,
+				&ad.IndustryId,
 				&ad.Price,
 				&ad.CreationDate,
 				&ad.CreatedBy,

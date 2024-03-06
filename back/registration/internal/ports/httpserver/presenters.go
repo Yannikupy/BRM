@@ -8,7 +8,7 @@ type addCompanyAndOwnerRequest struct {
 type addCompanyData struct {
 	Name        string `json:"name"`
 	Description string `json:"description"`
-	Industry    uint64 `json:"industry"`
+	Industry    string `json:"industry"`
 }
 
 type addOwnerData struct {
