@@ -8,6 +8,7 @@
 * [auth](back/auth/config)
 * [brm-ads](back/brm-ads/config)
 * [brm-core](back/brm-core/config)
+* [brm-leads](back/brm-leads/config)
 * [transport-api](back/transport-api/config)
 
 В эти директории нужно добавить `.env` файлы, которые соответствуют схеме, 
