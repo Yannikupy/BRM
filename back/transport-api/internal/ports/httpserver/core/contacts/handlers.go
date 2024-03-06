@@ -14,9 +14,7 @@ import (
 // @Summary		Добавление нового контакта
 // @Description	Добавляет новый контакт в список контактов сотрудника
 // @Tags			core/contacts
-//
 // @Security		ApiKeyAuth
-//
 // @Accept			json
 // @Produce		json
 // @Param			input	body		addContactRequest	true	"id сотрудника, которого добавляют в контакты"
@@ -69,9 +67,7 @@ func AddContact(a app.App) gin.HandlerFunc {
 // @Summary		Получение списка контактов
 // @Description	Получает список контактов сотрудника с использованием фильтрации и пагинации
 // @Tags			core/contacts
-//
 // @Security		ApiKeyAuth
-//
 // @Produce		json
 // @Param			limit	query		int				true	"Limit"
 // @Param			offset	query		int				true	"Offset"
@@ -130,9 +126,7 @@ func GetContactsList(a app.App) gin.HandlerFunc {
 // @Summary		Получение контакта
 // @Description	Получает контакт по id
 // @Tags			core/contacts
-//
 // @Security		ApiKeyAuth
-//
 // @Produce		json
 // @Param			id	path		int				true	"id контакта"
 // @Success		200	{object}	contactResponse	"Успешное получение контакта"
@@ -181,9 +175,7 @@ func GetContact(a app.App) gin.HandlerFunc {
 // @Summary		Редактирование контакта
 // @Description	Изменяет одно или несколько полей контакта
 // @Tags			core/contacts
-//
 // @Security		ApiKeyAuth
-//
 // @Accept			json
 // @Produce		json
 // @Param			id		path		int						true	"id контакта"
@@ -245,9 +237,7 @@ func UpdateContact(a app.App) gin.HandlerFunc {
 // @Summary		Удаление контакта
 // @Description	Безвозвратно удаляет контакт и все его поля
 // @Tags			core/contacts
-//
 // @Security		ApiKeyAuth
-//
 // @Produce		json
 // @Param			id	path		int				true	"id контакта"
 // @Success		200	{object}	contactResponse	"Успешное удаление контакта"

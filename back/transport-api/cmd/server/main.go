@@ -15,6 +15,7 @@ import (
 	"time"
 	"transport-api/internal/adapters/grpcads"
 	"transport-api/internal/adapters/grpccore"
+	"transport-api/internal/adapters/grpcleads"
 	"transport-api/internal/app"
 	"transport-api/internal/ports/httpserver"
 	"transport-api/pkg/logger"
@@ -71,7 +72,15 @@ func main() {
 		logs.Fatal(nil, fmt.Sprintf("create ads core client: %s", err.Error()))
 	}
 
-	a := app.NewApp(coreClient, adsClient)
+	leadsClient, err := grpcleads.NewLeadsClient(ctx, fmt.Sprintf("%s:%d",
+		viper.GetString("grpc-leads-client.host"),
+		viper.GetInt("grpc-leads-client.port"),
+	))
+	if err != nil {
+		logs.Fatal(nil, fmt.Sprintf("create leads core client: %s", err.Error()))
+	}
+
+	a := app.NewApp(coreClient, adsClient, leadsClient)
 	tkn := tokenizer.New(os.Getenv("SIGNKEY"))
 
 	srv := httpserver.New(

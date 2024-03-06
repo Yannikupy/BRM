@@ -1,63 +1,138 @@
 package leads
 
 import (
+	"errors"
 	"github.com/gin-gonic/gin"
+	"net/http"
+	"strconv"
 	"transport-api/internal/app"
+	"transport-api/internal/model"
+	"transport-api/internal/model/leads"
+	"transport-api/internal/ports/httpserver/middleware"
 )
-
-// @Summary		Добавление новой сделки
-// @Description	Добавляет новую сделку
-// @Tags			leads
-// @Accept			json
-// @Produce		json
-// @Param			input	body		addLeadRequest	true	"Новая сделка в JSON"
-// @Success		200		{object}	leadResponse	"Успешное добавление задачи"
-// @Failure		500		{object}	leadResponse	"Проблемы на стороне сервера"
-// @Failure		400		{object}	leadResponse	"Неверный формат входных данных"
-// @Router			/leads [post]
-func AddLead(a app.App) gin.HandlerFunc {
-	return func(c *gin.Context) {
-		// TODO implement
-	}
-}
 
 // @Summary		Получение сделки
 // @Description	Получает сделку по id
 // @Tags			leads
+// @Security		ApiKeyAuth
 // @Produce		json
 // @Param			id	path		int				true	"id сделки"
 // @Success		200	{object}	leadResponse	"Успешное получение сделки"
 // @Failure		500	{object}	leadResponse	"Проблемы на стороне сервера"
 // @Failure		400	{object}	leadResponse	"Неверный формат входных данных"
-// @Failure		404	{object}	leadResponse	"Задача не найдена"
+// @Failure		404	{object}	leadResponse	"Сделка не найдена"
+// @Failure		401	{object}	leadResponse	"Ошибка авторизации"
 // @Router			/leads/{id} [get]
 func GetLead(a app.App) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		// TODO implement
+		employeeId, companyId, ok := middleware.GetAuthData(c)
+		if !ok {
+			c.AbortWithStatusJSON(http.StatusUnauthorized, errorResponse(model.ErrUnauthorized))
+			return
+		}
+
+		id, err := strconv.ParseUint(c.Param("id"), 10, 64)
+		if err != nil {
+			c.AbortWithStatusJSON(http.StatusBadRequest, errorResponse(model.ErrInvalidInput))
+			return
+		}
+
+		lead, err := a.GetLeadById(c, companyId, employeeId, id)
+
+		switch {
+		case err == nil:
+			data := leadToLeadData(lead)
+			c.JSON(http.StatusOK, leadResponse{
+				Data: &data,
+				Err:  nil,
+			})
+		case errors.Is(err, model.ErrLeadNotExists):
+			c.AbortWithStatusJSON(http.StatusNotFound, errorResponse(model.ErrLeadNotExists))
+		case errors.Is(err, model.ErrPermissionDenied):
+			c.AbortWithStatusJSON(http.StatusForbidden, errorResponse(model.ErrPermissionDenied))
+		case errors.Is(err, model.ErrLeadsError):
+			c.AbortWithStatusJSON(http.StatusInternalServerError, errorResponse(model.ErrLeadsError))
+		default:
+			c.AbortWithStatusJSON(http.StatusInternalServerError, errorResponse(model.ErrLeadsError))
+		}
 	}
 }
 
 // @Summary		Получение списка сделок
 // @Description	Получает список сделок с использованием фильтрации и пагинации
 // @Tags			leads
+// @Security		ApiKeyAuth
 // @Produce		json
-// @Param			limit	query		int					true	"Limit"
-// @Param			offset	query		int					true	"Offset"
-// @Param			name	query		string				true	"Поиск по названию/тексту"
-// @Param			stage	query		int					true	"Поиск по этапу"
-// @Success		200		{object}	leadListResponse	"Успешное получение сделок"
-// @Failure		500		{object}	leadListResponse	"Проблемы на стороне сервера"
-// @Failure		400		{object}	leadListResponse	"Неверный формат входных данных"
+// @Param			limit		query		int					true	"Limit"
+// @Param			offset		query		int					true	"Offset"
+// @Param			responsible	query		int					false	"Фильтрация по id ответственного"
+// @Param			status		query		int					false	"Фильтрация по статусу"
+// @Success		200			{object}	leadsListResponse	"Успешное получение сделок"
+// @Failure		500			{object}	leadsListResponse	"Проблемы на стороне сервера"
+// @Failure		400			{object}	leadsListResponse	"Неверный формат входных данных"
+// @Failure		401			{object}	leadResponse		"Ошибка авторизации"
 // @Router			/leads [get]
 func GetLeadsList(a app.App) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		// TODO implement
+		employeeId, companyId, ok := middleware.GetAuthData(c)
+		if !ok {
+			c.AbortWithStatusJSON(http.StatusUnauthorized, errorResponse(model.ErrUnauthorized))
+			return
+		}
+
+		limit, err := strconv.Atoi(c.Query("limit"))
+		if err != nil {
+			c.AbortWithStatusJSON(http.StatusBadRequest, errorResponse(model.ErrInvalidInput))
+			return
+		}
+		offset, err := strconv.Atoi(c.Query("offset"))
+		if err != nil {
+			c.AbortWithStatusJSON(http.StatusBadRequest, errorResponse(model.ErrInvalidInput))
+			return
+		}
+
+		var filter leads.Filter
+		filter.Limit = uint(limit)
+		filter.Offset = uint(offset)
+
+		if responsibleStr, ok := c.GetQuery("responsible"); ok {
+			filter.ByResponsible = true
+			filter.Responsible, err = strconv.ParseUint(responsibleStr, 10, 64)
+			if err != nil {
+				c.AbortWithStatusJSON(http.StatusBadRequest, errorResponse(model.ErrInvalidInput))
+				return
+			}
+		}
+
+		if statusStr, ok := c.GetQuery("status"); ok {
+			filter.ByStatus = true
+			filter.Status, err = strconv.ParseUint(statusStr, 10, 64)
+			if err != nil {
+				c.AbortWithStatusJSON(http.StatusBadRequest, errorResponse(model.ErrInvalidInput))
+				return
+			}
+		}
+
+		leadsList, err := a.GetLeads(c, companyId, employeeId, filter)
+		switch {
+		case err == nil:
+			data := leadsToLeadsDataList(leadsList)
+			c.JSON(http.StatusOK, leadsListResponse{
+				Data: data,
+				Err:  nil,
+			})
+		case errors.Is(err, model.ErrLeadsError):
+			c.AbortWithStatusJSON(http.StatusInternalServerError, errorResponse(model.ErrLeadsError))
+		default:
+			c.AbortWithStatusJSON(http.StatusInternalServerError, errorResponse(model.ErrLeadsError))
+		}
 	}
 }
 
 // @Summary		Редактирование сделки
 // @Description	Изменяет одно или несколько полей сделки
 // @Tags			leads
+// @Security		ApiKeyAuth
 // @Accept			json
 // @Produce		json
 // @Param			id		path		int					true	"id сделки"
@@ -66,39 +141,131 @@ func GetLeadsList(a app.App) gin.HandlerFunc {
 // @Failure		500		{object}	leadResponse		"Проблемы на стороне сервера"
 // @Failure		400		{object}	leadResponse		"Неверный формат входных данных"
 // @Failure		404		{object}	leadResponse		"Сделка не найдена"
+// @Failure		403		{object}	leadResponse		"Нет прав на редактрование сделки"
+// @Failure		401		{object}	leadResponse		"Ошибка авторизации"
 // @Router			/leads/{id} [put]
 func UpdateLead(a app.App) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		// TODO implement
+		employeeId, companyId, ok := middleware.GetAuthData(c)
+		if !ok {
+			c.AbortWithStatusJSON(http.StatusUnauthorized, errorResponse(model.ErrUnauthorized))
+			return
+		}
+
+		var req updateLeadRequest
+		if err := c.BindJSON(&req); err != nil {
+			c.AbortWithStatusJSON(http.StatusBadRequest, errorResponse(model.ErrInvalidInput))
+			return
+		}
+
+		id, err := strconv.ParseUint(c.Param("id"), 10, 64)
+		if err != nil {
+			c.AbortWithStatusJSON(http.StatusBadRequest, errorResponse(model.ErrInvalidInput))
+			return
+		}
+
+		lead, err := a.UpdateLead(c, companyId, employeeId, id, leads.UpdateLead{
+			Title:       req.Title,
+			Description: req.Description,
+			Price:       req.Price,
+			Status:      req.Status,
+			Responsible: req.Responsible,
+		})
+
+		switch {
+		case err == nil:
+			data := leadToLeadData(lead)
+			c.JSON(http.StatusOK, leadResponse{
+				Data: &data,
+				Err:  nil,
+			})
+		case errors.Is(err, model.ErrEmployeeNotExists):
+			c.AbortWithStatusJSON(http.StatusNotFound, errorResponse(model.ErrEmployeeNotExists))
+		case errors.Is(err, model.ErrStatusNotExists):
+			c.AbortWithStatusJSON(http.StatusNotFound, errorResponse(model.ErrStatusNotExists))
+		case errors.Is(err, model.ErrLeadNotExists):
+			c.AbortWithStatusJSON(http.StatusNotFound, errorResponse(model.ErrLeadNotExists))
+		case errors.Is(err, model.ErrPermissionDenied):
+			c.AbortWithStatusJSON(http.StatusForbidden, errorResponse(model.ErrPermissionDenied))
+		case errors.Is(err, model.ErrLeadsError):
+			c.AbortWithStatusJSON(http.StatusInternalServerError, errorResponse(model.ErrLeadsError))
+		default:
+			c.AbortWithStatusJSON(http.StatusInternalServerError, errorResponse(model.ErrLeadsError))
+		}
 	}
 }
 
-// @Summary		Удаление сделки
-// @Description	Безвозвратно удаляет сделку
+// @Summary		Получение статусов и их id
+// @Description	Возвращает мапу со статусами и их id
 // @Tags			leads
+// @Security		ApiKeyAuth
 // @Produce		json
-// @Param			id	path		int				true	"id сделки"
-// @Success		200	{object}	leadResponse	"Успешное удаление сделки"
-// @Failure		500	{object}	leadResponse	"Проблемы на стороне сервера"
-// @Failure		400	{object}	leadResponse	"Неверный формат входных данных"
-// @Failure		404	{object}	leadResponse	"Сделка не найдена"
-// @Router			/leads/{id} [delete]
-func DeleteLead(a app.App) gin.HandlerFunc {
+// @Success		200	{object}	statusesResponse	"Успешное получение"
+// @Failure		500	{object}	statusesResponse	"Проблемы на стороне сервера"
+// @Failure		401	{object}	statusesResponse	"Ошибка авторизации"
+// @Router			/statuses [get]
+func GetStatuses(a app.App) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		// TODO implement
+		_, _, ok := middleware.GetAuthData(c)
+		if !ok {
+			c.AbortWithStatusJSON(http.StatusUnauthorized, errorResponse(model.ErrUnauthorized))
+			return
+		}
+
+		statuses, err := a.GetStatuses(c)
+
+		switch {
+		case err == nil:
+			c.JSON(http.StatusOK, statusesResponse{
+				Data: statuses,
+				Err:  nil,
+			})
+		case errors.Is(err, model.ErrLeadsError):
+			c.AbortWithStatusJSON(http.StatusInternalServerError, errorResponse(model.ErrLeadsError))
+		default:
+			c.AbortWithStatusJSON(http.StatusInternalServerError, errorResponse(model.ErrLeadsError))
+		}
 	}
 }
 
-// @Summary		Получение этапов сделки
-// @Description	Возвращает словарь из этапов и их id
+// @Summary		Получение статуса по id
+// @Description	Возвращает статус с заданным id
 // @Tags			leads
 // @Produce		json
-// @Success		200	{object}	stageResponse	"Успешное получение данных"
-// @Failure		500	{object}	stageResponse	"Проблемы на стороне сервера"
-// @Failure		400	{object}	stageResponse	"Неверный формат входных данных"
-// @Router			/leads/stages [get]
-func GetStagesMap(a app.App) gin.HandlerFunc {
+// @Param			id	path		int				true	"id статуса"
+// @Success		200	{object}	statusResponse	"Успешное получение"
+// @Failure		500	{object}	statusResponse	"Проблемы на стороне сервера"
+// @Failure		404	{object}	statusResponse	"Статуса не существует"
+// @Failure		401	{object}	statusResponse	"Ошибка авторизации"
+// @Router			/statuses/{id} [get]
+func GetStatusById(a app.App) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		// TODO implement
+		_, _, ok := middleware.GetAuthData(c)
+		if !ok {
+			c.AbortWithStatusJSON(http.StatusUnauthorized, errorResponse(model.ErrUnauthorized))
+			return
+		}
+
+		id, err := strconv.ParseUint(c.Param("id"), 10, 64)
+		if err != nil {
+			c.AbortWithStatusJSON(http.StatusBadRequest, errorResponse(model.ErrInvalidInput))
+			return
+		}
+
+		status, err := a.GetStatusById(c, id)
+
+		switch {
+		case err == nil:
+			c.JSON(http.StatusOK, statusResponse{
+				Data: status,
+				Err:  nil,
+			})
+		case errors.Is(err, model.ErrStatusNotExists):
+			c.AbortWithStatusJSON(http.StatusNotFound, errorResponse(model.ErrStatusNotExists))
+		case errors.Is(err, model.ErrLeadsError):
+			c.AbortWithStatusJSON(http.StatusInternalServerError, errorResponse(model.ErrLeadsError))
+		default:
+			c.AbortWithStatusJSON(http.StatusInternalServerError, errorResponse(model.ErrLeadsError))
+		}
 	}
 }

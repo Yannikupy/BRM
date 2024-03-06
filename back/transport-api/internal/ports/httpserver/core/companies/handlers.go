@@ -48,9 +48,7 @@ func GetCompanyMainPage(a app.App) gin.HandlerFunc {
 // @Summary		Получение информации о компании
 // @Description	Возвращает поля компании для страницы редактирования
 // @Tags			core/companies
-//
 // @Security		ApiKeyAuth
-//
 // @Produce		json
 // @Param			id	path		int				true	"id компании"
 // @Success		200	{object}	companyResponse	"Успешное получение данных"
@@ -94,9 +92,7 @@ func GetCompany(a app.App) gin.HandlerFunc {
 // @Summary		Редактирование полей компании
 // @Description	Изменяет одно или несколько полей компании
 // @Tags			core/companies
-//
 // @Security		ApiKeyAuth
-//
 // @Produce		json
 // @Param			id		path		int						true	"id компании"
 // @Param			input	body		updateCompanyRequest	true	"Новые поля"
@@ -159,9 +155,7 @@ func UpdateCompany(a app.App) gin.HandlerFunc {
 // @Summary		Удаление компании
 // @Description	Безвозвратно удаляет компанию и всё, что с этой компанией связано
 // @Tags			core/companies
-//
 // @Security		ApiKeyAuth
-//
 // @Produce		json
 // @Param			id	path		int				true	"id компании"
 // @Success		200	{object}	companyResponse	"Успешное удаление компании"

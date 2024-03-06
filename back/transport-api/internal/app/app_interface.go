@@ -4,6 +4,7 @@ import (
 	"context"
 	"transport-api/internal/model/ads"
 	"transport-api/internal/model/core"
+	"transport-api/internal/model/leads"
 )
 
 type App interface {
@@ -11,6 +12,7 @@ type App interface {
 	CoreEmployee
 	CoreContact
 	Ads
+	Leads
 }
 
 type CoreCompany interface {
@@ -48,4 +50,13 @@ type Ads interface {
 
 	CreateResponse(ctx context.Context, companyId uint64, employeeId uint64, adId uint64) (ads.Response, error)
 	GetResponses(ctx context.Context, companyId uint64, employeeId uint64, limit uint, offset uint) ([]ads.Response, error)
+}
+
+type Leads interface {
+	GetLeads(ctx context.Context, companyId uint64, employeeId uint64, filter leads.Filter) ([]leads.Lead, error)
+	GetLeadById(ctx context.Context, companyId uint64, employeeId uint64, leadId uint64) (leads.Lead, error)
+	UpdateLead(ctx context.Context, companyId uint64, employeeId uint64, id uint64, upd leads.UpdateLead) (leads.Lead, error)
+
+	GetStatuses(ctx context.Context) (map[string]uint64, error)
+	GetStatusById(ctx context.Context, id uint64) (string, error)
 }

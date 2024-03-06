@@ -2,6 +2,7 @@ package app
 
 import (
 	"brm-ads/internal/adapters/grpccore"
+	"brm-ads/internal/adapters/grpcleads"
 	"brm-ads/internal/model"
 	"brm-ads/internal/repo"
 	"brm-ads/pkg/logger"
@@ -11,8 +12,9 @@ import (
 )
 
 type appImpl struct {
-	repo repo.AdRepo
-	core grpccore.CoreClient
+	repo  repo.AdRepo
+	core  grpccore.CoreClient
+	leads grpcleads.LeadsClient
 
 	logs logger.Logger
 }
@@ -151,7 +153,9 @@ func (a *appImpl) CreateResponse(ctx context.Context, companyId uint64, employee
 		CreationDate: time.Now().UTC(),
 	})
 
-	// TODO add lead creation
+	if a.leads.CreateLead(ctx, adId, companyId, employeeId) != nil {
+		return model.Response{}, model.ErrLeadsServiceError
+	}
 
 	return resp, err
 }

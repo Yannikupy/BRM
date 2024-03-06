@@ -14,9 +14,7 @@ import (
 // @Summary		Добавление нового сотрудника
 // @Description	Добавляет нового сотрудника в компанию
 // @Tags			core/employees
-//
 // @Security		ApiKeyAuth
-//
 // @Accept			json
 // @Produce		json
 // @Param			input	body		addEmployeeRequest	true	"id сотрудника, которого добавляют в контакты"
@@ -81,9 +79,7 @@ func AddEmployee(a app.App) gin.HandlerFunc {
 // @Summary		Получение списка сотрудников
 // @Description	Получает список сотрудников компании с использованием фильтрации и пагинации
 // @Tags			core/employees
-//
 // @Security		ApiKeyAuth
-//
 // @Produce		json
 // @Param			limit		query		int						true	"Limit"
 // @Param			offset		query		int						true	"Offset"
@@ -162,9 +158,7 @@ func GetEmployeesList(a app.App) gin.HandlerFunc {
 // @Summary		Получение сотрудника
 // @Description	Получает сотрудника по id
 // @Tags			core/employees
-//
 // @Security		ApiKeyAuth
-//
 // @Produce		json
 // @Param			id	path		int					true	"id сотрудника"
 // @Success		200	{object}	employeeResponse	"Успешное получение сотрудника"
@@ -217,9 +211,7 @@ func GetEmployee(a app.App) gin.HandlerFunc {
 // @Summary		Редактирование сотрудника
 // @Description	Изменяет одно или несколько полей сотрудника
 // @Tags			core/employees
-//
 // @Security		ApiKeyAuth
-//
 // @Accept			json
 // @Produce		json
 // @Param			id		path		int						true	"id сотрудника"
@@ -286,9 +278,7 @@ func UpdateEmployee(a app.App) gin.HandlerFunc {
 // @Summary		Удаление сотрудника
 // @Description	Безвозвратно удаляет сотрудника и все его поля
 // @Tags			core/employees
-//
 // @Security		ApiKeyAuth
-//
 // @Produce		json
 // @Param			id	path		int					true	"id сотрудника"
 // @Success		200	{object}	employeeResponse	"Успешное удаление контакта"
