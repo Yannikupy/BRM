@@ -6,6 +6,10 @@
   "host": "localhost"
   "port": 50002
 
+"grpc-leads-client":
+  "host": "localhost"
+  "port": 50003
+
 "http-server":
   "host": "localhost"
   "port": 8090

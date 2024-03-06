@@ -6,6 +6,10 @@
   "host": "brm-ads"
   "port": 50002
 
+"grpc-leads-client":
+  "host": "brm-leads"
+  "port": 50003
+
 "http-server":
   "host": "transport-api"
   "port": 8090
