@@ -36,7 +36,7 @@ func (a *appImpl) CreateLead(ctx context.Context, adId uint64, clientCompany uin
 		return model.Lead{}, err
 	}
 
-	title, err := a.core.GetCompanyName(ctx, data.CompanyId)
+	title, err := a.core.GetCompanyName(ctx, clientCompany)
 	if err != nil {
 		return model.Lead{}, err
 	}

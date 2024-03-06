@@ -1439,15 +1439,13 @@ const docTemplate = `{
                         "type": "integer",
                         "description": "Фильтрация по id ответственного",
                         "name": "responsible",
-                        "in": "query",
-                        "required": true
+                        "in": "query"
                     },
                     {
                         "type": "integer",
                         "description": "Фильтрация по статусу",
                         "name": "status",
-                        "in": "query",
-                        "required": true
+                        "in": "query"
                     }
                 ],
                 "responses": {
@@ -1664,6 +1662,43 @@ const docTemplate = `{
             }
         },
         "/statuses": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Возвращает мапу со статусами и их id",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "leads"
+                ],
+                "summary": "Получение статусов и их id",
+                "responses": {
+                    "200": {
+                        "description": "Успешное получение",
+                        "schema": {
+                            "$ref": "#/definitions/leads.statusesResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Ошибка авторизации",
+                        "schema": {
+                            "$ref": "#/definitions/leads.statusesResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Проблемы на стороне сервера",
+                        "schema": {
+                            "$ref": "#/definitions/leads.statusesResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/statuses/{id}": {
             "get": {
                 "description": "Возвращает статус с заданным id",
                 "produces": [

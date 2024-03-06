@@ -1351,12 +1351,10 @@ paths:
       - description: Фильтрация по id ответственного
         in: query
         name: responsible
-        required: true
         type: integer
       - description: Фильтрация по статусу
         in: query
         name: status
-        required: true
         type: integer
       produces:
       - application/json
@@ -1502,6 +1500,29 @@ paths:
       tags:
       - ads
   /statuses:
+    get:
+      description: Возвращает мапу со статусами и их id
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Успешное получение
+          schema:
+            $ref: '#/definitions/leads.statusesResponse'
+        "401":
+          description: Ошибка авторизации
+          schema:
+            $ref: '#/definitions/leads.statusesResponse'
+        "500":
+          description: Проблемы на стороне сервера
+          schema:
+            $ref: '#/definitions/leads.statusesResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Получение статусов и их id
+      tags:
+      - leads
+  /statuses/{id}:
     get:
       description: Возвращает статус с заданным id
       parameters:

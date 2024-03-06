@@ -65,8 +65,8 @@ func GetLead(a app.App) gin.HandlerFunc {
 // @Produce		json
 // @Param			limit		query		int					true	"Limit"
 // @Param			offset		query		int					true	"Offset"
-// @Param			responsible	query		int					true	"Фильтрация по id ответственного"
-// @Param			status		query		int					true	"Фильтрация по статусу"
+// @Param			responsible	query		int					false	"Фильтрация по id ответственного"
+// @Param			status		query		int					false	"Фильтрация по статусу"
 // @Success		200			{object}	leadsListResponse	"Успешное получение сделок"
 // @Failure		500			{object}	leadsListResponse	"Проблемы на стороне сервера"
 // @Failure		400			{object}	leadsListResponse	"Неверный формат входных данных"
