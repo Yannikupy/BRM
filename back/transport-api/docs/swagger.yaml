@@ -290,49 +290,31 @@ definitions:
       second_name:
         type: string
     type: object
-  leads.addLeadRequest:
-    properties:
-      consumer_id:
-        type: integer
-      price:
-        type: integer
-      producer_id:
-        type: integer
-      responsible_id:
-        type: integer
-      text:
-        type: string
-      title:
-        type: string
-    type: object
   leads.leadData:
     properties:
-      consumer_id:
+      ad_id:
         type: integer
-      created_at:
+      client_company:
         type: integer
-      lead_id:
+      client_employee:
         type: integer
+      company_id:
+        type: integer
+      creation_date:
+        type: integer
+      description:
+        type: string
+      id:
+        type: integer
+      is_deleted:
+        type: boolean
       price:
         type: integer
-      producer_id:
-        type: integer
-      responsible_id:
+      responsible:
         type: integer
       status:
         type: integer
-      text:
-        type: string
       title:
-        type: string
-    type: object
-  leads.leadListResponse:
-    properties:
-      data:
-        items:
-          $ref: '#/definitions/leads.leadData'
-        type: array
-      error:
         type: string
     type: object
   leads.leadResponse:
@@ -342,25 +324,41 @@ definitions:
       error:
         type: string
     type: object
-  leads.stageResponse:
+  leads.leadsListResponse:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/leads.leadData'
+        type: array
+      error:
+        type: string
+    type: object
+  leads.statusResponse:
+    properties:
+      data:
+        type: string
+      error:
+        type: string
+    type: object
+  leads.statusesResponse:
     properties:
       data:
         additionalProperties:
-          type: string
+          type: integer
         type: object
       error:
         type: string
     type: object
   leads.updateLeadRequest:
     properties:
+      description:
+        type: string
       price:
         type: integer
-      responsible_id:
+      responsible:
         type: integer
       status:
         type: integer
-      text:
-        type: string
       title:
         type: string
     type: object
@@ -1350,14 +1348,14 @@ paths:
         name: offset
         required: true
         type: integer
-      - description: Поиск по названию/тексту
+      - description: Фильтрация по id ответственного
         in: query
-        name: name
+        name: responsible
         required: true
-        type: string
-      - description: Поиск по этапу
+        type: integer
+      - description: Фильтрация по статусу
         in: query
-        name: stage
+        name: status
         required: true
         type: integer
       produces:
@@ -1366,78 +1364,25 @@ paths:
         "200":
           description: Успешное получение сделок
           schema:
-            $ref: '#/definitions/leads.leadListResponse'
+            $ref: '#/definitions/leads.leadsListResponse'
         "400":
           description: Неверный формат входных данных
           schema:
-            $ref: '#/definitions/leads.leadListResponse'
+            $ref: '#/definitions/leads.leadsListResponse'
+        "401":
+          description: Ошибка авторизации
+          schema:
+            $ref: '#/definitions/leads.leadResponse'
         "500":
           description: Проблемы на стороне сервера
           schema:
-            $ref: '#/definitions/leads.leadListResponse'
+            $ref: '#/definitions/leads.leadsListResponse'
+      security:
+      - ApiKeyAuth: []
       summary: Получение списка сделок
       tags:
       - leads
-    post:
-      consumes:
-      - application/json
-      description: Добавляет новую сделку
-      parameters:
-      - description: Новая сделка в JSON
-        in: body
-        name: input
-        required: true
-        schema:
-          $ref: '#/definitions/leads.addLeadRequest'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: Успешное добавление задачи
-          schema:
-            $ref: '#/definitions/leads.leadResponse'
-        "400":
-          description: Неверный формат входных данных
-          schema:
-            $ref: '#/definitions/leads.leadResponse'
-        "500":
-          description: Проблемы на стороне сервера
-          schema:
-            $ref: '#/definitions/leads.leadResponse'
-      summary: Добавление новой сделки
-      tags:
-      - leads
   /leads/{id}:
-    delete:
-      description: Безвозвратно удаляет сделку
-      parameters:
-      - description: id сделки
-        in: path
-        name: id
-        required: true
-        type: integer
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: Успешное удаление сделки
-          schema:
-            $ref: '#/definitions/leads.leadResponse'
-        "400":
-          description: Неверный формат входных данных
-          schema:
-            $ref: '#/definitions/leads.leadResponse'
-        "404":
-          description: Сделка не найдена
-          schema:
-            $ref: '#/definitions/leads.leadResponse'
-        "500":
-          description: Проблемы на стороне сервера
-          schema:
-            $ref: '#/definitions/leads.leadResponse'
-      summary: Удаление сделки
-      tags:
-      - leads
     get:
       description: Получает сделку по id
       parameters:
@@ -1457,14 +1402,20 @@ paths:
           description: Неверный формат входных данных
           schema:
             $ref: '#/definitions/leads.leadResponse'
+        "401":
+          description: Ошибка авторизации
+          schema:
+            $ref: '#/definitions/leads.leadResponse'
         "404":
-          description: Задача не найдена
+          description: Сделка не найдена
           schema:
             $ref: '#/definitions/leads.leadResponse'
         "500":
           description: Проблемы на стороне сервера
           schema:
             $ref: '#/definitions/leads.leadResponse'
+      security:
+      - ApiKeyAuth: []
       summary: Получение сделки
       tags:
       - leads
@@ -1495,6 +1446,14 @@ paths:
           description: Неверный формат входных данных
           schema:
             $ref: '#/definitions/leads.leadResponse'
+        "401":
+          description: Ошибка авторизации
+          schema:
+            $ref: '#/definitions/leads.leadResponse'
+        "403":
+          description: Нет прав на редактрование сделки
+          schema:
+            $ref: '#/definitions/leads.leadResponse'
         "404":
           description: Сделка не найдена
           schema:
@@ -1503,28 +1462,9 @@ paths:
           description: Проблемы на стороне сервера
           schema:
             $ref: '#/definitions/leads.leadResponse'
+      security:
+      - ApiKeyAuth: []
       summary: Редактирование сделки
-      tags:
-      - leads
-  /leads/stages:
-    get:
-      description: Возвращает словарь из этапов и их id
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: Успешное получение данных
-          schema:
-            $ref: '#/definitions/leads.stageResponse'
-        "400":
-          description: Неверный формат входных данных
-          schema:
-            $ref: '#/definitions/leads.stageResponse'
-        "500":
-          description: Проблемы на стороне сервера
-          schema:
-            $ref: '#/definitions/leads.stageResponse'
-      summary: Получение этапов сделки
       tags:
       - leads
   /responses:
@@ -1561,6 +1501,37 @@ paths:
       summary: Получение списка откликов на объявления
       tags:
       - ads
+  /statuses:
+    get:
+      description: Возвращает статус с заданным id
+      parameters:
+      - description: id статуса
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Успешное получение
+          schema:
+            $ref: '#/definitions/leads.statusResponse'
+        "401":
+          description: Ошибка авторизации
+          schema:
+            $ref: '#/definitions/leads.statusResponse'
+        "404":
+          description: Статуса не существует
+          schema:
+            $ref: '#/definitions/leads.statusResponse'
+        "500":
+          description: Проблемы на стороне сервера
+          schema:
+            $ref: '#/definitions/leads.statusResponse'
+      summary: Получение статуса по id
+      tags:
+      - leads
   /tasks:
     get:
       description: Получает список задач с использованием фильтрации и пагинации

@@ -9,6 +9,10 @@
   "host": "localhost"
   "port": 50000
 
+"grpc-leads-client":
+  "host": "localhost"
+  "port": 50003
+
 "grpc-server":
   "network": "tcp"
   "port": 50002
