@@ -421,7 +421,7 @@ func GetResponsesList(a app.App) gin.HandlerFunc {
 
 // @Summary		Получение отраслей
 // @Description	Возвращает словарь из возможных отраслей объявлений и их id
-// @Tags			core/ads
+// @Tags			ads
 // @Security		ApiKeyAuth
 // @Produce		json
 // @Success		200	{object}	industriesResponse	"Успешное получение данных"

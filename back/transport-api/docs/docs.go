@@ -183,7 +183,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "core/ads"
+                    "ads"
                 ],
                 "summary": "Получение отраслей",
                 "responses": {

@@ -704,7 +704,7 @@ paths:
       - ApiKeyAuth: []
       summary: Получение отраслей
       tags:
-      - core/ads
+      - ads
   /companies/{id}:
     delete:
       description: Безвозвратно удаляет компанию и всё, что с этой компанией связано
