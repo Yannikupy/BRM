@@ -21,37 +21,7 @@ CREATE TABLE employees (
     "is_deleted" BOOLEAN NOT NULL
 );
 
-CREATE TABLE contact_shard01 (
-    "id" SERIAL PRIMARY KEY,
-    "owner_id" INTEGER NOT NULL,
-    "employee_id" INTEGER NOT NULL,
-    "notes" VARCHAR(500),
-    "creation_date" DATE NOT NULL,
-    "is_deleted" BOOLEAN NOT NULL,
-    UNIQUE ("owner_id", "employee_id")
-);
-
-CREATE TABLE contact_shard02 (
-    "id" SERIAL PRIMARY KEY,
-    "owner_id" INTEGER NOT NULL,
-    "employee_id" INTEGER NOT NULL,
-    "notes" VARCHAR(500),
-    "creation_date" DATE NOT NULL,
-    "is_deleted" BOOLEAN NOT NULL,
-    UNIQUE ("owner_id", "employee_id")
-);
-
-CREATE TABLE contact_shard03 (
-    "id" SERIAL PRIMARY KEY,
-    "owner_id" INTEGER NOT NULL,
-    "employee_id" INTEGER NOT NULL,
-    "notes" VARCHAR(500),
-    "creation_date" DATE NOT NULL,
-    "is_deleted" BOOLEAN NOT NULL,
-    UNIQUE ("owner_id", "employee_id")
-);
-
-CREATE TABLE contact_shard04 (
+CREATE TABLE contacts (
     "id" SERIAL PRIMARY KEY,
     "owner_id" INTEGER NOT NULL,
     "employee_id" INTEGER NOT NULL,
@@ -62,7 +32,7 @@ CREATE TABLE contact_shard04 (
 );
 
 CREATE TABLE industries (
-    "id" SERIAL PRIMARY KEY,
+    "id" SERIAL,
     "name" VARCHAR(100) PRIMARY KEY
 );
 

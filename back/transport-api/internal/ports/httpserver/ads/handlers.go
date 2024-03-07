@@ -118,7 +118,7 @@ func GetAd(a app.App) gin.HandlerFunc {
 // @Param			offset			query		int				true	"Offset"
 // @Param			pattern			query		string			false	"Поиск по названию/тексту"
 // @Param			company_id		query		int				false	"Поиск по компании"
-// @Param			industry		query		int				false	"Поиск по отрасли"
+// @Param			industry		query		string			false	"Поиск по отрасли"
 // @Param			by_price		query		bool			false	"Сортировка по возрастанию цены"
 // @Param			by_price_desc	query		bool			false	"Сортировка по убыванию цены"
 // @Param			by_date			query		bool			false	"Сортировка по возрастанию даты создания"
@@ -415,6 +415,32 @@ func GetResponsesList(a app.App) gin.HandlerFunc {
 			c.AbortWithStatusJSON(http.StatusInternalServerError, errorResponse(model.ErrAdsError))
 		default:
 			c.AbortWithStatusJSON(http.StatusInternalServerError, errorResponse(model.ErrAdsUnknown))
+		}
+	}
+}
+
+// @Summary		Получение отраслей
+// @Description	Возвращает словарь из возможных отраслей объявлений и их id
+// @Tags			core/ads
+// @Security		ApiKeyAuth
+// @Produce		json
+// @Success		200	{object}	industriesResponse	"Успешное получение данных"
+// @Failure		500	{object}	industriesResponse	"Проблемы на стороне сервера"
+// @Router			/ads/industries [get]
+func GetIndustriesMap(a app.App) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		industries, err := a.GetAdsIndustries(c)
+
+		switch {
+		case err == nil:
+			c.JSON(http.StatusOK, industriesResponse{
+				Data: industries,
+				Err:  nil,
+			})
+		case errors.Is(err, model.ErrCoreError):
+			c.AbortWithStatusJSON(http.StatusInternalServerError, errorResponse(model.ErrCoreError))
+		default:
+			c.AbortWithStatusJSON(http.StatusInternalServerError, errorResponse(model.ErrCoreUnknown))
 		}
 	}
 }

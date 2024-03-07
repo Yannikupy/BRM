@@ -8,7 +8,6 @@ type Ad struct {
 	Title        string
 	Text         string
 	Industry     string
-	IndustryId   uint64
 	Price        uint
 	CreationDate time.Time
 	CreatedBy    uint64
@@ -20,7 +19,6 @@ type UpdateAd struct {
 	Title       string
 	Text        string
 	Industry    string
-	IndustryId  uint64
 	Price       uint
 	Responsible uint64
 }
@@ -43,7 +41,6 @@ type AdFilter struct {
 
 	ByIndustry bool
 	Industry   string
-	IndustryId uint64
 }
 
 type AdSorter struct {

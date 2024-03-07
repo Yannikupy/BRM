@@ -30,6 +30,7 @@ type AdsServiceClient interface {
 	DeleteAd(ctx context.Context, in *DeleteAdRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	CreateResponse(ctx context.Context, in *CreateResponseRequest, opts ...grpc.CallOption) (*CreateResponseResponse, error)
 	GetResponses(ctx context.Context, in *GetResponsesRequest, opts ...grpc.CallOption) (*GetResponsesResponse, error)
+	GetIndustries(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*GetIndustriesResponse, error)
 }
 
 type adsServiceClient struct {
@@ -103,6 +104,15 @@ func (c *adsServiceClient) GetResponses(ctx context.Context, in *GetResponsesReq
 	return out, nil
 }
 
+func (c *adsServiceClient) GetIndustries(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*GetIndustriesResponse, error) {
+	out := new(GetIndustriesResponse)
+	err := c.cc.Invoke(ctx, "/ads.AdsService/GetIndustries", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // AdsServiceServer is the server API for AdsService service.
 // All implementations should embed UnimplementedAdsServiceServer
 // for forward compatibility
@@ -114,6 +124,7 @@ type AdsServiceServer interface {
 	DeleteAd(context.Context, *DeleteAdRequest) (*emptypb.Empty, error)
 	CreateResponse(context.Context, *CreateResponseRequest) (*CreateResponseResponse, error)
 	GetResponses(context.Context, *GetResponsesRequest) (*GetResponsesResponse, error)
+	GetIndustries(context.Context, *emptypb.Empty) (*GetIndustriesResponse, error)
 }
 
 // UnimplementedAdsServiceServer should be embedded to have forward compatible implementations.
@@ -140,6 +151,9 @@ func (UnimplementedAdsServiceServer) CreateResponse(context.Context, *CreateResp
 }
 func (UnimplementedAdsServiceServer) GetResponses(context.Context, *GetResponsesRequest) (*GetResponsesResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetResponses not implemented")
+}
+func (UnimplementedAdsServiceServer) GetIndustries(context.Context, *emptypb.Empty) (*GetIndustriesResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetIndustries not implemented")
 }
 
 // UnsafeAdsServiceServer may be embedded to opt out of forward compatibility for this service.
@@ -279,6 +293,24 @@ func _AdsService_GetResponses_Handler(srv interface{}, ctx context.Context, dec 
 	return interceptor(ctx, in, info, handler)
 }
 
+func _AdsService_GetIndustries_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(emptypb.Empty)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AdsServiceServer).GetIndustries(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/ads.AdsService/GetIndustries",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AdsServiceServer).GetIndustries(ctx, req.(*emptypb.Empty))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // AdsService_ServiceDesc is the grpc.ServiceDesc for AdsService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -313,6 +345,10 @@ var AdsService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetResponses",
 			Handler:    _AdsService_GetResponses_Handler,
+		},
+		{
+			MethodName: "GetIndustries",
+			Handler:    _AdsService_GetIndustries_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

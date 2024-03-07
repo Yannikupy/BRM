@@ -81,7 +81,7 @@ func (a *appImpl) GetLeadById(ctx context.Context, companyId uint64, _ uint64, l
 		}, err)
 	}()
 
-	lead, err := a.leadsRepo.GetLeadById(ctx, companyId, leadId)
+	lead, err := a.leadsRepo.GetLeadById(ctx, leadId)
 	if err != nil {
 		return model.Lead{}, err
 	} else if lead.CompanyId != companyId {
@@ -100,7 +100,7 @@ func (a *appImpl) UpdateLead(ctx context.Context, companyId uint64, employeeId u
 		}, err)
 	}()
 
-	lead, err := a.leadsRepo.GetLeadById(ctx, companyId, id)
+	lead, err := a.leadsRepo.GetLeadById(ctx, id)
 	if err != nil {
 		return model.Lead{}, err
 	} else if lead.CompanyId != companyId {
@@ -114,7 +114,7 @@ func (a *appImpl) UpdateLead(ctx context.Context, companyId uint64, employeeId u
 		return model.Lead{}, model.ErrAuthorization
 	}
 
-	lead, err = a.leadsRepo.UpdateLead(ctx, companyId, id, upd)
+	lead, err = a.leadsRepo.UpdateLead(ctx, id, upd)
 	return lead, err
 }
 
@@ -128,18 +128,6 @@ func (a *appImpl) GetStatuses(ctx context.Context) (map[string]uint64, error) {
 
 	statuses, err := a.leadsRepo.GetStatuses(ctx)
 	return statuses, err
-}
-
-func (a *appImpl) GetStatusById(ctx context.Context, id uint64) (string, error) {
-	var err error
-	defer func() {
-		a.writeLog(logger.Fields{
-			"Method": "GetStatusById",
-		}, err)
-	}()
-
-	status, err := a.leadsRepo.GetStatusById(ctx, id)
-	return status, err
 }
 
 func (a *appImpl) writeLog(fields logger.Fields, err error) {

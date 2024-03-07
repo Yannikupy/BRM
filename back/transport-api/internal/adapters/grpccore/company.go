@@ -99,8 +99,8 @@ func (c *coreClientImpl) DeleteCompany(ctx context.Context, companyId uint64, ow
 	return nil
 }
 
-func (c *coreClientImpl) GetIndustriesList(ctx context.Context) (map[string]uint64, error) {
-	resp, err := c.cli.GetIndustriesList(ctx, &empty.Empty{})
+func (c *coreClientImpl) GetIndustries(ctx context.Context) (map[string]uint64, error) {
+	resp, err := c.cli.GetIndustries(ctx, &empty.Empty{})
 	if err != nil {
 		code := status.Code(err)
 		switch code {
@@ -111,20 +111,4 @@ func (c *coreClientImpl) GetIndustriesList(ctx context.Context) (map[string]uint
 		}
 	}
 	return resp.Data, nil
-}
-
-func (c *coreClientImpl) GetIndustryById(ctx context.Context, id uint64) (string, error) {
-	resp, err := c.cli.GetIndustryById(ctx, &pb.GetIndustryByIdRequest{Id: id})
-	if err != nil {
-		code := status.Code(err)
-		switch code {
-		case codes.NotFound:
-			return "", model.ErrIndustryNotExists
-		case codes.ResourceExhausted:
-			return "", model.ErrCoreError
-		default:
-			return "", model.ErrCoreUnknown
-		}
-	}
-	return resp.Industry, nil
 }

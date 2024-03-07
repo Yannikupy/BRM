@@ -39,9 +39,6 @@ func (a *appImpl) CreateCompanyAndOwner(ctx context.Context, company model.Compa
 		}, err)
 	}()
 
-	/*if _, err = a.GetIndustryById(ctx, company.Industry); errors.Is(err, model.ErrIndustryNotExists) {
-		return model.Company{}, model.Employee{}, model.ErrIndustryNotExists
-	} else */
 	if err != nil {
 		return model.Company{}, model.Employee{}, errors.Join(model.ErrDatabaseError, err)
 	}
@@ -105,14 +102,6 @@ func (a *appImpl) UpdateCompany(ctx context.Context, companyId uint64, ownerId u
 		}
 	}
 
-	/*if _, err = a.GetIndustryById(ctx, upd.Industry); errors.Is(err, model.ErrIndustryNotExists) {
-		return model.Company{}, model.ErrIndustryNotExists
-	} else */
-
-	if err != nil {
-		return model.Company{}, errors.Join(model.ErrDatabaseError, err)
-	}
-
 	company, err = a.coreRepo.UpdateCompany(ctx, companyId, upd)
 	return company, err
 }
@@ -138,16 +127,8 @@ func (a *appImpl) DeleteCompany(ctx context.Context, companyId uint64, ownerId u
 	return err
 }
 
-func (a *appImpl) GetIndustriesList(ctx context.Context) (map[string]uint64, error) {
-	return a.coreRepo.GetIndustriesList(ctx)
-}
-
-func (a *appImpl) GetIndustryById(ctx context.Context, id uint64) (string, error) {
-	return a.coreRepo.GetIndustryById(ctx, id)
-}
-
-func (a *appImpl) GetIndustryId(ctx context.Context, industry string) (uint64, error) {
-	return a.coreRepo.GetIndustryId(ctx, industry)
+func (a *appImpl) GetIndustries(ctx context.Context) (map[string]uint64, error) {
+	return a.coreRepo.GetIndustries(ctx)
 }
 
 func (a *appImpl) CreateEmployee(ctx context.Context, companyId uint64, ownerId uint64, employee model.Employee) (model.Employee, error) {

@@ -13,6 +13,8 @@ service AdsService {
 
   rpc CreateResponse(CreateResponseRequest) returns (CreateResponseResponse) {}
   rpc GetResponses(GetResponsesRequest) returns (GetResponsesResponse) {}
+
+  rpc GetIndustries(google.protobuf.Empty) returns (GetIndustriesResponse) {}
 }
 
 message Ad {
@@ -132,4 +134,8 @@ message GetResponsesRequest {
 
 message GetResponsesResponse {
   repeated Response list = 1;
+}
+
+message GetIndustriesResponse {
+  map <string, uint64> data = 1;
 }

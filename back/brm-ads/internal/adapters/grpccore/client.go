@@ -58,17 +58,3 @@ func (c *coreClientImpl) GetEmployeeById(ctx context.Context, companyId uint64, 
 	}
 	return resp.Employee.CompanyId, resp.Employee.Id, nil
 }
-
-func (c *coreClientImpl) GetIndustryId(ctx context.Context, industry string) (uint64, error) {
-	resp, err := c.cli.GetIndustryId(ctx, &pb.GetIndustryIdRequest{Industry: industry})
-	if err != nil {
-		code := status.Code(err)
-		switch code {
-		case codes.NotFound:
-			return 0, model.ErrIndustryNotExists
-		default:
-			return 0, model.ErrCoreError
-		}
-	}
-	return resp.Id, nil
-}

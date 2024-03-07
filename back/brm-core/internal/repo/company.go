@@ -42,16 +42,8 @@ const (
 		SET "is_deleted" = true
 		WHERE "id" = $1 AND (NOT "is_deleted");`
 
-	getIndustriesListQuery = `
+	getIndustriesQuery = `
 		SELECT * FROM "industries";`
-
-	getIndustryByIdQuery = `
-		SELECT "name" FROM "industries"
-		WHERE "id" = $1;`
-
-	getIndustryIdQuery = `
-		SELECT "id" FROM "industries"
-		WHERE "name" = $1;`
 )
 
 func (c *coreRepoImpl) GetCompany(ctx context.Context, id uint64) (model.Company, error) {
@@ -162,8 +154,8 @@ func (c *coreRepoImpl) DeleteCompany(ctx context.Context, companyId uint64) erro
 	}
 }
 
-func (c *coreRepoImpl) GetIndustriesList(ctx context.Context) (map[string]uint64, error) {
-	rows, err := c.Query(ctx, getIndustriesListQuery)
+func (c *coreRepoImpl) GetIndustries(ctx context.Context) (map[string]uint64, error) {
+	rows, err := c.Query(ctx, getIndustriesQuery)
 	if err != nil {
 		return map[string]uint64{}, model.ErrDatabaseError
 	}
@@ -177,28 +169,4 @@ func (c *coreRepoImpl) GetIndustriesList(ctx context.Context) (map[string]uint64
 		industries[industry] = id
 	}
 	return industries, nil
-}
-
-func (c *coreRepoImpl) GetIndustryById(ctx context.Context, id uint64) (string, error) {
-	row := c.QueryRow(ctx, getIndustryByIdQuery, id)
-	var industry string
-	if err := row.Scan(&industry); errors.Is(err, pgx.ErrNoRows) {
-		return "", model.ErrIndustryNotExists
-	} else if err != nil {
-		return "", errors.Join(model.ErrDatabaseError, err)
-	} else {
-		return industry, nil
-	}
-}
-
-func (c *coreRepoImpl) GetIndustryId(ctx context.Context, industry string) (uint64, error) {
-	row := c.QueryRow(ctx, getIndustryIdQuery, industry)
-	var id uint64
-	if err := row.Scan(&id); errors.Is(err, pgx.ErrNoRows) {
-		return 0, model.ErrIndustryNotExists
-	} else if err != nil {
-		return 0, errors.Join(model.ErrDatabaseError, err)
-	} else {
-		return id, nil
-	}
 }

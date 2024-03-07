@@ -32,3 +32,7 @@ func (a *appImpl) CreateResponse(ctx context.Context, companyId uint64, employee
 func (a *appImpl) GetResponses(ctx context.Context, companyId uint64, employeeId uint64, limit uint, offset uint) ([]ads.Response, error) {
 	return a.ads.GetResponses(ctx, companyId, employeeId, limit, offset)
 }
+
+func (a *appImpl) GetAdsIndustries(ctx context.Context) (map[string]uint64, error) {
+	return a.ads.GetIndustries(ctx)
+}

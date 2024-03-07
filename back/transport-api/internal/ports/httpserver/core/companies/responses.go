@@ -47,11 +47,6 @@ type industriesResponse struct {
 	Err  *string           `json:"error"`
 }
 
-type industryResponse struct {
-	Data string  `json:"data"`
-	Err  *string `json:"error"`
-}
-
 type mainPageResponse struct {
 	Data *mainPageData `json:"data"`
 	Err  *string       `json:"error"`

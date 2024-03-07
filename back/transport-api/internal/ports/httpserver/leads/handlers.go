@@ -66,7 +66,7 @@ func GetLead(a app.App) gin.HandlerFunc {
 // @Param			limit		query		int					true	"Limit"
 // @Param			offset		query		int					true	"Offset"
 // @Param			responsible	query		int					false	"Фильтрация по id ответственного"
-// @Param			status		query		int					false	"Фильтрация по статусу"
+// @Param			status		query		string				false	"Фильтрация по статусу"
 // @Success		200			{object}	leadsListResponse	"Успешное получение сделок"
 // @Failure		500			{object}	leadsListResponse	"Проблемы на стороне сервера"
 // @Failure		400			{object}	leadsListResponse	"Неверный формат входных данных"
@@ -196,7 +196,7 @@ func UpdateLead(a app.App) gin.HandlerFunc {
 // @Success		200	{object}	statusesResponse	"Успешное получение"
 // @Failure		500	{object}	statusesResponse	"Проблемы на стороне сервера"
 // @Failure		401	{object}	statusesResponse	"Ошибка авторизации"
-// @Router			/statuses [get]
+// @Router			/leads/statuses [get]
 func GetStatuses(a app.App) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		_, _, ok := middleware.GetAuthData(c)

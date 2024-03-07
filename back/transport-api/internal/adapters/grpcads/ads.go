@@ -2,6 +2,7 @@ package grpcads
 
 import (
 	"context"
+	"github.com/golang/protobuf/ptypes/empty"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 	"strings"
@@ -177,4 +178,18 @@ func (a *adsClientImpl) DeleteAd(ctx context.Context, companyId uint64, employee
 		}
 	}
 	return nil
+}
+
+func (a *adsClientImpl) GetIndustries(ctx context.Context) (map[string]uint64, error) {
+	resp, err := a.cli.GetIndustries(ctx, &empty.Empty{})
+	if err != nil {
+		code := status.Code(err)
+		switch code {
+		case codes.ResourceExhausted:
+			return map[string]uint64{}, model.ErrCoreError
+		default:
+			return map[string]uint64{}, model.ErrCoreUnknown
+		}
+	}
+	return resp.Data, nil
 }

@@ -44,11 +44,6 @@ func (a *appImpl) GetAdsList(ctx context.Context, params model.AdsListParams) ([
 			return []model.Ad{}, err
 		}
 	}
-	if params.Filter != nil && params.Filter.ByIndustry {
-		if params.Filter.IndustryId, err = a.core.GetIndustryId(ctx, params.Filter.Industry); err != nil {
-			return []model.Ad{}, err
-		}
-	}
 
 	ads, err := a.repo.GetAdsList(ctx, params)
 	return ads, err
@@ -63,10 +58,6 @@ func (a *appImpl) CreateAd(ctx context.Context, companyId uint64, employeeId uin
 			"Method":      "CreateAd",
 		}, err)
 	}()
-
-	if ad.IndustryId, err = a.core.GetIndustryId(ctx, ad.Industry); err != nil {
-		return model.Ad{}, err
-	}
 
 	// setting ad fields
 	ad.CompanyId = companyId
@@ -101,9 +92,6 @@ func (a *appImpl) UpdateAd(ctx context.Context, companyId uint64, employeeId uin
 		return model.Ad{}, err
 	} else if newResponsibleCompanyId != ad.CompanyId {
 		return model.Ad{}, model.ErrAuthorization
-	}
-	if upd.IndustryId, err = a.core.GetIndustryId(ctx, upd.Industry); err != nil {
-		return model.Ad{}, err
 	}
 
 	ad, err = a.repo.UpdateAd(ctx, adId, upd)
@@ -177,6 +165,10 @@ func (a *appImpl) GetResponses(ctx context.Context, companyId uint64, employeeId
 
 	resps, err := a.repo.GetResponses(ctx, companyId, limit, offset)
 	return resps, err
+}
+
+func (a *appImpl) GetIndustries(ctx context.Context) (map[string]uint64, error) {
+	return a.repo.GetIndustries(ctx)
 }
 
 func (a *appImpl) writeLog(fields logger.Fields, err error) {

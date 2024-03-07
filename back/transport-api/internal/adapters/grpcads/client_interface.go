@@ -14,4 +14,6 @@ type AdsClient interface {
 
 	CreateResponse(ctx context.Context, companyId uint64, employeeId uint64, adId uint64) (ads.Response, error)
 	GetResponses(ctx context.Context, companyId uint64, employeeId uint64, limit uint, offset uint) ([]ads.Response, error)
+
+	GetIndustries(ctx context.Context) (map[string]uint64, error)
 }

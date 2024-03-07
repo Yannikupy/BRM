@@ -11,7 +11,7 @@ definitions:
       id:
         type: integer
       industry:
-        type: integer
+        type: string
       is_deleted:
         type: boolean
       price:
@@ -48,6 +48,15 @@ definitions:
       text:
         type: string
       title:
+        type: string
+    type: object
+  ads.industriesResponse:
+    properties:
+      data:
+        additionalProperties:
+          type: integer
+        type: object
+      error:
         type: string
     type: object
   ads.responseData:
@@ -455,7 +464,7 @@ paths:
       - description: Поиск по отрасли
         in: query
         name: industry
-        type: integer
+        type: string
       - description: Сортировка по возрастанию цены
         in: query
         name: by_price
@@ -677,6 +686,25 @@ paths:
       summary: Откликнуться на объявление
       tags:
       - ads
+  /ads/industries:
+    get:
+      description: Возвращает словарь из возможных отраслей объявлений и их id
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Успешное получение данных
+          schema:
+            $ref: '#/definitions/ads.industriesResponse'
+        "500":
+          description: Проблемы на стороне сервера
+          schema:
+            $ref: '#/definitions/ads.industriesResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Получение отраслей
+      tags:
+      - core/ads
   /companies/{id}:
     delete:
       description: Безвозвратно удаляет компанию и всё, что с этой компанией связано
@@ -845,7 +873,7 @@ paths:
       - core/companies
   /companies/industries:
     get:
-      description: Возвращает словарь из отраслей и их id
+      description: Возвращает словарь из возможных отраслей компаний и их id
       produces:
       - application/json
       responses:
@@ -860,33 +888,6 @@ paths:
       security:
       - ApiKeyAuth: []
       summary: Получение отраслей
-      tags:
-      - core/companies
-  /companies/industries/{id}:
-    get:
-      description: Возвращает название отрасли по id
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: Успешное получение данных
-          schema:
-            $ref: '#/definitions/companies.industriesResponse'
-        "400":
-          description: Неверный формат входных данных
-          schema:
-            $ref: '#/definitions/companies.companyResponse'
-        "404":
-          description: Отрасль не найдена
-          schema:
-            $ref: '#/definitions/companies.companyResponse'
-        "500":
-          description: Проблемы на стороне сервера
-          schema:
-            $ref: '#/definitions/companies.industriesResponse'
-      security:
-      - ApiKeyAuth: []
-      summary: Получение отрасли по id
       tags:
       - core/companies
   /contacts:
@@ -1348,7 +1349,7 @@ paths:
       - description: Фильтрация по статусу
         in: query
         name: status
-        type: integer
+        type: string
       produces:
       - application/json
       responses:
@@ -1458,6 +1459,29 @@ paths:
       summary: Редактирование сделки
       tags:
       - leads
+  /leads/statuses:
+    get:
+      description: Возвращает мапу со статусами и их id
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Успешное получение
+          schema:
+            $ref: '#/definitions/leads.statusesResponse'
+        "401":
+          description: Ошибка авторизации
+          schema:
+            $ref: '#/definitions/leads.statusesResponse'
+        "500":
+          description: Проблемы на стороне сервера
+          schema:
+            $ref: '#/definitions/leads.statusesResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Получение статусов и их id
+      tags:
+      - leads
   /responses:
     get:
       description: Возвращает список откликов компании на объявления
@@ -1492,29 +1516,6 @@ paths:
       summary: Получение списка откликов на объявления
       tags:
       - ads
-  /statuses:
-    get:
-      description: Возвращает мапу со статусами и их id
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: Успешное получение
-          schema:
-            $ref: '#/definitions/leads.statusesResponse'
-        "401":
-          description: Ошибка авторизации
-          schema:
-            $ref: '#/definitions/leads.statusesResponse'
-        "500":
-          description: Проблемы на стороне сервера
-          schema:
-            $ref: '#/definitions/leads.statusesResponse'
-      security:
-      - ApiKeyAuth: []
-      summary: Получение статусов и их id
-      tags:
-      - leads
   /tasks:
     get:
       description: Получает список задач с использованием фильтрации и пагинации

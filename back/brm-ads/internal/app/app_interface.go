@@ -18,6 +18,8 @@ type App interface {
 
 	CreateResponse(ctx context.Context, companyId uint64, employeeId uint64, adId uint64) (model.Response, error)
 	GetResponses(ctx context.Context, companyId uint64, employeeId uint64, limit uint, offset uint) ([]model.Response, error)
+
+	GetIndustries(ctx context.Context) (map[string]uint64, error)
 }
 
 func New(repo repo.AdRepo, core grpccore.CoreClient, leads grpcleads.LeadsClient, logs logger.Logger) App {

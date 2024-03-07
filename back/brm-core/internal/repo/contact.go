@@ -4,15 +4,42 @@ import (
 	"brm-core/internal/model"
 	"context"
 	"errors"
-	"fmt"
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgconn"
+)
+
+const (
+	createContactQuery = `
+		INSERT INTO "contacts" ("owner_id", "employee_id", "notes", "creation_date", "is_deleted") 
+		VALUES ($1, $2, $3, $4, $5)
+		RETURNING "id";`
+
+	updateContactQuery = `
+		UPDATE "contacts"
+		SET "notes" = $2
+		WHERE "id" = $1 AND (NOT "is_deleted");`
+
+	deleteContactQuery = `
+		UPDATE "contacts"
+		SET "is_deleted" = true
+		WHERE "id" = $1 AND (NOT "is_deleted");`
+
+	getContactsQuery = `
+		SELECT * FROM "contacts"
+		INNER JOIN "employees" ON "employee_id" = "employees"."id"
+		WHERE "owner_id" = $1 AND (NOT "contacts"."is_deleted")
+		LIMIT $2 OFFSET $3;`
+
+	getContactByIdQuery = `
+		SELECT * FROM "contacts"
+		INNER JOIN "employees" ON "employee_id" = "employees"."id"
+		WHERE "contacts"."id" = $1 AND (NOT "contacts"."is_deleted");`
 )
 
 func (c *coreRepoImpl) CreateContact(ctx context.Context, contact model.Contact) (model.Contact, error) {
 	var contactId uint64
 	var pgErr *pgconn.PgError
-	if err := c.QueryRow(ctx, getCreateContactQuery(contact.OwnerId),
+	if err := c.QueryRow(ctx, createContactQuery,
 		contact.OwnerId,
 		contact.EmployeeId,
 		contact.Notes,
@@ -40,15 +67,8 @@ func (c *coreRepoImpl) CreateContact(ctx context.Context, contact model.Contact)
 	return contact, nil
 }
 
-func getCreateContactQuery(ownerId uint64) string {
-	return fmt.Sprintf(`
-	INSERT INTO %s ("owner_id", "employee_id", "notes", "creation_date", "is_deleted")
-	VALUES ($1, $2, $3, $4, $5)
-	RETURNING "id";`, getShardName(ownerId))
-}
-
 func (c *coreRepoImpl) UpdateContact(ctx context.Context, ownerId uint64, contactId uint64, upd model.UpdateContact) (model.Contact, error) {
-	if e, err := c.Exec(ctx, getUpdateContactQuery(ownerId),
+	if e, err := c.Exec(ctx, updateContactQuery,
 		contactId,
 		upd.Notes,
 	); err != nil {
@@ -60,15 +80,8 @@ func (c *coreRepoImpl) UpdateContact(ctx context.Context, ownerId uint64, contac
 	return c.GetContactById(ctx, ownerId, contactId)
 }
 
-func getUpdateContactQuery(ownerId uint64) string {
-	return fmt.Sprintf(`
-		UPDATE %s
-		SET "notes" = $2
-		WHERE "id" = $1 AND (NOT "is_deleted");`, getShardName(ownerId))
-}
-
-func (c *coreRepoImpl) DeleteContact(ctx context.Context, ownerId uint64, contactId uint64) error {
-	if e, err := c.Exec(ctx, getDeleteContactQuery(ownerId),
+func (c *coreRepoImpl) DeleteContact(ctx context.Context, _ uint64, contactId uint64) error {
+	if e, err := c.Exec(ctx, deleteContactQuery,
 		contactId,
 	); err != nil {
 		return errors.Join(model.ErrDatabaseError, err)
@@ -79,15 +92,8 @@ func (c *coreRepoImpl) DeleteContact(ctx context.Context, ownerId uint64, contac
 	}
 }
 
-func getDeleteContactQuery(ownerId uint64) string {
-	return fmt.Sprintf(`
-		UPDATE %s
-		SET "is_deleted" = true
-		WHERE "id" = $1 AND (NOT "is_deleted");`, getShardName(ownerId))
-}
-
 func (c *coreRepoImpl) GetContacts(ctx context.Context, ownerId uint64, pagination model.GetContacts) ([]model.Contact, error) {
-	rows, err := c.Query(ctx, getGetContactsQuery(ownerId),
+	rows, err := c.Query(ctx, getContactsQuery,
 		ownerId,
 		pagination.Limit,
 		pagination.Offset,
@@ -123,17 +129,8 @@ func (c *coreRepoImpl) GetContacts(ctx context.Context, ownerId uint64, paginati
 	return contacts, nil
 }
 
-func getGetContactsQuery(ownerId uint64) string {
-	shardName := getShardName(ownerId)
-	return fmt.Sprintf(`
-		SELECT * FROM %s
-		INNER JOIN "employees" ON "employee_id" = "employees"."id"
-		WHERE "owner_id" = $1 AND (NOT "%s"."is_deleted")
-		LIMIT $2 OFFSET $3;`, shardName, shardName)
-}
-
-func (c *coreRepoImpl) GetContactById(ctx context.Context, ownerId uint64, contactId uint64) (model.Contact, error) {
-	row := c.QueryRow(ctx, getGetContactByIdQuery(ownerId),
+func (c *coreRepoImpl) GetContactById(ctx context.Context, _ uint64, contactId uint64) (model.Contact, error) {
+	row := c.QueryRow(ctx, getContactByIdQuery,
 		contactId,
 	)
 	var contact model.Contact
@@ -160,28 +157,4 @@ func (c *coreRepoImpl) GetContactById(ctx context.Context, ownerId uint64, conta
 	}
 
 	return contact, nil
-}
-
-func getGetContactByIdQuery(ownerId uint64) string {
-	shardName := getShardName(ownerId)
-	return fmt.Sprintf(`
-		SELECT * FROM %s
-		INNER JOIN "employees" ON "employee_id" = "employees"."id"
-		WHERE "id" = $1 AND (NOT "%s"."is_deleted");`, shardName, shardName)
-}
-
-func getShardName(ownerId uint64) string {
-	switch ownerId % 4 {
-	case 0:
-		return "contact_shard01"
-	case 1:
-		return "contact_shard02"
-	case 2:
-		return "contact_shard03"
-	case 3:
-		return "contact_shard04"
-	default:
-		// ахуеть как ты вообще попал сюда?
-		return ""
-	}
 }
