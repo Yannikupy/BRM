@@ -86,8 +86,13 @@ func (c *coreRepoImpl) CreateCompanyAndOwner(ctx context.Context, company model.
 		company.Rating,
 		company.CreationDate,
 		company.IsDeleted,
-	).Scan(&companyId); err != nil {
-		return model.Company{}, model.Employee{}, errors.Join(model.ErrDatabaseError, err)
+	).Scan(&companyId); errors.As(err, &pgErr) {
+		switch pgErr.Code {
+		case "23502":
+			return model.Company{}, model.Employee{}, model.ErrIndustryNotExists
+		default:
+			return model.Company{}, model.Employee{}, errors.Join(model.ErrDatabaseError, err)
+		}
 	}
 
 	company.Id = companyId

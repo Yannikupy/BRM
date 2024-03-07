@@ -91,11 +91,3 @@ func (s *Server) GetStatuses(ctx context.Context, _ *emptypb.Empty) (*pb.GetStat
 		return &pb.GetStatusesResponse{Data: statuses}, nil
 	}
 }
-
-func (s *Server) GetStatusById(ctx context.Context, req *pb.GetStatusByIdRequest) (*pb.GetStatusByIdResponse, error) {
-	if status, err := s.App.GetStatusById(ctx, req.Id); err != nil {
-		return nil, mapErrors(err)
-	} else {
-		return &pb.GetStatusByIdResponse{Status: status}, nil
-	}
-}

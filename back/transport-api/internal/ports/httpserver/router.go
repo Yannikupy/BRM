@@ -58,5 +58,4 @@ func appRouter(r *gin.RouterGroup, a app.App, tkn tokenizer.Tokenizer, logs logg
 	r.GET("/leads", leads.GetLeadsList(a))
 	r.PUT("/leads/:id", leads.UpdateLead(a))
 	r.GET("/statuses", leads.GetStatuses(a))
-	r.GET("/statuses/:id", leads.GetStatusById(a))
 }

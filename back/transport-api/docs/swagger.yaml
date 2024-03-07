@@ -313,7 +313,7 @@ definitions:
       responsible:
         type: integer
       status:
-        type: integer
+        type: string
       title:
         type: string
     type: object
@@ -330,13 +330,6 @@ definitions:
         items:
           $ref: '#/definitions/leads.leadData'
         type: array
-      error:
-        type: string
-    type: object
-  leads.statusResponse:
-    properties:
-      data:
-        type: string
       error:
         type: string
     type: object
@@ -358,7 +351,7 @@ definitions:
       responsible:
         type: integer
       status:
-        type: integer
+        type: string
       title:
         type: string
     type: object
@@ -1520,37 +1513,6 @@ paths:
       security:
       - ApiKeyAuth: []
       summary: Получение статусов и их id
-      tags:
-      - leads
-  /statuses/{id}:
-    get:
-      description: Возвращает статус с заданным id
-      parameters:
-      - description: id статуса
-        in: path
-        name: id
-        required: true
-        type: integer
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: Успешное получение
-          schema:
-            $ref: '#/definitions/leads.statusResponse'
-        "401":
-          description: Ошибка авторизации
-          schema:
-            $ref: '#/definitions/leads.statusResponse'
-        "404":
-          description: Статуса не существует
-          schema:
-            $ref: '#/definitions/leads.statusResponse'
-        "500":
-          description: Проблемы на стороне сервера
-          schema:
-            $ref: '#/definitions/leads.statusResponse'
-      summary: Получение статуса по id
       tags:
       - leads
   /tasks:

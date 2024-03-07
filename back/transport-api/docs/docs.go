@@ -1698,53 +1698,6 @@ const docTemplate = `{
                 }
             }
         },
-        "/statuses/{id}": {
-            "get": {
-                "description": "Возвращает статус с заданным id",
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "leads"
-                ],
-                "summary": "Получение статуса по id",
-                "parameters": [
-                    {
-                        "type": "integer",
-                        "description": "id статуса",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Успешное получение",
-                        "schema": {
-                            "$ref": "#/definitions/leads.statusResponse"
-                        }
-                    },
-                    "401": {
-                        "description": "Ошибка авторизации",
-                        "schema": {
-                            "$ref": "#/definitions/leads.statusResponse"
-                        }
-                    },
-                    "404": {
-                        "description": "Статуса не существует",
-                        "schema": {
-                            "$ref": "#/definitions/leads.statusResponse"
-                        }
-                    },
-                    "500": {
-                        "description": "Проблемы на стороне сервера",
-                        "schema": {
-                            "$ref": "#/definitions/leads.statusResponse"
-                        }
-                    }
-                }
-            }
-        },
         "/tasks": {
             "get": {
                 "description": "Получает список задач с использованием фильтрации и пагинации",
@@ -2515,7 +2468,7 @@ const docTemplate = `{
                     "type": "integer"
                 },
                 "status": {
-                    "type": "integer"
+                    "type": "string"
                 },
                 "title": {
                     "type": "string"
@@ -2541,17 +2494,6 @@ const docTemplate = `{
                     "items": {
                         "$ref": "#/definitions/leads.leadData"
                     }
-                },
-                "error": {
-                    "type": "string"
-                }
-            }
-        },
-        "leads.statusResponse": {
-            "type": "object",
-            "properties": {
-                "data": {
-                    "type": "string"
                 },
                 "error": {
                     "type": "string"
@@ -2585,7 +2527,7 @@ const docTemplate = `{
                     "type": "integer"
                 },
                 "status": {
-                    "type": "integer"
+                    "type": "string"
                 },
                 "title": {
                     "type": "string"

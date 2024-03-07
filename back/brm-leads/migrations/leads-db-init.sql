@@ -1,66 +1,66 @@
 CREATE TABLE leads_shard01 (
     "id" SERIAL PRIMARY KEY,
-    "ad_id" INTEGER,
-    "title" VARCHAR(200),
+    "ad_id" INTEGER NOT NULL,
+    "title" VARCHAR(200) NOT NULL,
     "description" VARCHAR(1000),
-    "price" INTEGER,
-    "status" INTEGER,
-    "responsible" INTEGER,
-    "company_id" INTEGER,
-    "client_company" INTEGER,
-    "client_employee" INTEGER,
-    "creation_date" DATE,
-    "is_deleted" BOOLEAN
+    "price" INTEGER NOT NULL,
+    "status" INTEGER NOT NULL,
+    "responsible" INTEGER NOT NULL,
+    "company_id" INTEGER NOT NULL,
+    "client_company" INTEGER NOT NULL,
+    "client_employee" INTEGER NOT NULL,
+    "creation_date" DATE NOT NULL,
+    "is_deleted" BOOLEAN NOT NULL
 );
 
 CREATE TABLE leads_shard02 (
     "id" SERIAL PRIMARY KEY,
-    "ad_id" INTEGER,
-    "title" VARCHAR(200),
+    "ad_id" INTEGER NOT NULL,
+    "title" VARCHAR(200) NOT NULL,
     "description" VARCHAR(1000),
-    "price" INTEGER,
-    "status" INTEGER,
-    "responsible" INTEGER,
-    "company_id" INTEGER,
-    "client_company" INTEGER,
-    "client_employee" INTEGER,
-    "creation_date" DATE,
-    "is_deleted" BOOLEAN
+    "price" INTEGER NOT NULL,
+    "status" INTEGER NOT NULL,
+    "responsible" INTEGER NOT NULL,
+    "company_id" INTEGER NOT NULL,
+    "client_company" INTEGER NOT NULL,
+    "client_employee" INTEGER NOT NULL,
+    "creation_date" DATE NOT NULL,
+    "is_deleted" BOOLEAN NOT NULL
 );
 
 CREATE TABLE leads_shard03 (
     "id" SERIAL PRIMARY KEY,
-    "ad_id" INTEGER,
-    "title" VARCHAR(200),
+    "ad_id" INTEGER NOT NULL,
+    "title" VARCHAR(200) NOT NULL,
     "description" VARCHAR(1000),
-    "price" INTEGER,
-    "status" INTEGER,
-    "responsible" INTEGER,
-    "company_id" INTEGER,
-    "client_company" INTEGER,
-    "client_employee" INTEGER,
-    "creation_date" DATE,
-    "is_deleted" BOOLEAN
+    "price" INTEGER NOT NULL,
+    "status" INTEGER NOT NULL,
+    "responsible" INTEGER NOT NULL,
+    "company_id" INTEGER NOT NULL,
+    "client_company" INTEGER NOT NULL,
+    "client_employee" INTEGER NOT NULL,
+    "creation_date" DATE NOT NULL,
+    "is_deleted" BOOLEAN NOT NULL
 );
 
 CREATE TABLE leads_shard04 (
     "id" SERIAL PRIMARY KEY,
-    "ad_id" INTEGER,
-    "title" VARCHAR(200),
+    "ad_id" INTEGER NOT NULL,
+    "title" VARCHAR(200) NOT NULL,
     "description" VARCHAR(1000),
-    "price" INTEGER,
-    "status" INTEGER,
-    "responsible" INTEGER,
-    "company_id" INTEGER,
-    "client_company" INTEGER,
-    "client_employee" INTEGER,
-    "creation_date" DATE,
-    "is_deleted" BOOLEAN
+    "price" INTEGER NOT NULL,
+    "status" INTEGER NOT NULL,
+    "responsible" INTEGER NOT NULL,
+    "company_id" INTEGER NOT NULL,
+    "client_company" INTEGER NOT NULL,
+    "client_employee" INTEGER NOT NULL,
+    "creation_date" DATE NOT NULL,
+    "is_deleted" BOOLEAN NOT NULL
 );
 
-CREATE TABLE status (
+CREATE TABLE statuses (
     "id" INTEGER PRIMARY KEY,
-    "name" VARCHAR(100)
+    "name" VARCHAR(100) PRIMARY KEY
 );
 
 INSERT INTO status (id, name)

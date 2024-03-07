@@ -28,7 +28,6 @@ type LeadsServiceClient interface {
 	GetLeadById(ctx context.Context, in *GetLeadByIdRequest, opts ...grpc.CallOption) (*GetLeadByIdResponse, error)
 	UpdateLead(ctx context.Context, in *UpdateLeadRequest, opts ...grpc.CallOption) (*UpdateLeadResponse, error)
 	GetStatuses(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*GetStatusesResponse, error)
-	GetStatusById(ctx context.Context, in *GetStatusByIdRequest, opts ...grpc.CallOption) (*GetStatusByIdResponse, error)
 }
 
 type leadsServiceClient struct {
@@ -84,15 +83,6 @@ func (c *leadsServiceClient) GetStatuses(ctx context.Context, in *emptypb.Empty,
 	return out, nil
 }
 
-func (c *leadsServiceClient) GetStatusById(ctx context.Context, in *GetStatusByIdRequest, opts ...grpc.CallOption) (*GetStatusByIdResponse, error) {
-	out := new(GetStatusByIdResponse)
-	err := c.cc.Invoke(ctx, "/leads.LeadsService/GetStatusById", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
 // LeadsServiceServer is the server API for LeadsService service.
 // All implementations should embed UnimplementedLeadsServiceServer
 // for forward compatibility
@@ -102,7 +92,6 @@ type LeadsServiceServer interface {
 	GetLeadById(context.Context, *GetLeadByIdRequest) (*GetLeadByIdResponse, error)
 	UpdateLead(context.Context, *UpdateLeadRequest) (*UpdateLeadResponse, error)
 	GetStatuses(context.Context, *emptypb.Empty) (*GetStatusesResponse, error)
-	GetStatusById(context.Context, *GetStatusByIdRequest) (*GetStatusByIdResponse, error)
 }
 
 // UnimplementedLeadsServiceServer should be embedded to have forward compatible implementations.
@@ -123,9 +112,6 @@ func (UnimplementedLeadsServiceServer) UpdateLead(context.Context, *UpdateLeadRe
 }
 func (UnimplementedLeadsServiceServer) GetStatuses(context.Context, *emptypb.Empty) (*GetStatusesResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetStatuses not implemented")
-}
-func (UnimplementedLeadsServiceServer) GetStatusById(context.Context, *GetStatusByIdRequest) (*GetStatusByIdResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetStatusById not implemented")
 }
 
 // UnsafeLeadsServiceServer may be embedded to opt out of forward compatibility for this service.
@@ -229,24 +215,6 @@ func _LeadsService_GetStatuses_Handler(srv interface{}, ctx context.Context, dec
 	return interceptor(ctx, in, info, handler)
 }
 
-func _LeadsService_GetStatusById_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GetStatusByIdRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(LeadsServiceServer).GetStatusById(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/leads.LeadsService/GetStatusById",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(LeadsServiceServer).GetStatusById(ctx, req.(*GetStatusByIdRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
 // LeadsService_ServiceDesc is the grpc.ServiceDesc for LeadsService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -273,10 +241,6 @@ var LeadsService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetStatuses",
 			Handler:    _LeadsService_GetStatuses_Handler,
-		},
-		{
-			MethodName: "GetStatusById",
-			Handler:    _LeadsService_GetStatusById_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

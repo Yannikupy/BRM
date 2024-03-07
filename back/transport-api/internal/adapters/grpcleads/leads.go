@@ -136,17 +136,3 @@ func (l *leadsClientImpl) GetStatuses(ctx context.Context) (map[string]uint64, e
 	}
 	return resp.Data, nil
 }
-
-func (l *leadsClientImpl) GetStatusById(ctx context.Context, id uint64) (string, error) {
-	resp, err := l.cli.GetStatusById(ctx, &pb.GetStatusByIdRequest{Id: id})
-	if err != nil {
-		code := status.Code(err)
-		switch code {
-		case codes.ResourceExhausted:
-			return "", model.ErrLeadsError
-		default:
-			return "", model.ErrLeadsError
-		}
-	}
-	return resp.Status, nil
-}

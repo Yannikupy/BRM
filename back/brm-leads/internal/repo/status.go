@@ -9,10 +9,10 @@ import (
 
 const (
 	getStatusesQuery = `
-		SELECT * FROM "status";`
+		SELECT * FROM "statuses";`
 
 	getStatusByIdQuery = `
-		SELECT "name" FROM "status"
+		SELECT "name" FROM "statuses"
 		WHERE "id" = $1;`
 )
 

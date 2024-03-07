@@ -20,7 +20,3 @@ func (a *appImpl) UpdateLead(ctx context.Context, companyId uint64, employeeId u
 func (a *appImpl) GetStatuses(ctx context.Context) (map[string]uint64, error) {
 	return a.leads.GetStatuses(ctx)
 }
-
-func (a *appImpl) GetStatusById(ctx context.Context, id uint64) (string, error) {
-	return a.leads.GetStatusById(ctx, id)
-}

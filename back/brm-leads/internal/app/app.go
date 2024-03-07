@@ -17,7 +17,7 @@ type appImpl struct {
 	core grpccore.CoreClient
 	ads  grpcads.AdsClient
 
-	newLeadDefaultStatus uint64
+	newLeadDefaultStatus string
 
 	logs logger.Logger
 }
