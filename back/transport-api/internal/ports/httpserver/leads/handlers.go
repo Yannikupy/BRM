@@ -66,7 +66,7 @@ func GetLead(a app.App) gin.HandlerFunc {
 // @Param			limit		query		int					true	"Limit"
 // @Param			offset		query		int					true	"Offset"
 // @Param			responsible	query		int					false	"Фильтрация по id ответственного"
-// @Param			status		query		int					false	"Фильтрация по статусу"
+// @Param			status		query		string				false	"Фильтрация по статусу"
 // @Success		200			{object}	leadsListResponse	"Успешное получение сделок"
 // @Failure		500			{object}	leadsListResponse	"Проблемы на стороне сервера"
 // @Failure		400			{object}	leadsListResponse	"Неверный формат входных данных"
@@ -104,14 +104,7 @@ func GetLeadsList(a app.App) gin.HandlerFunc {
 			}
 		}
 
-		if statusStr, ok := c.GetQuery("status"); ok {
-			filter.ByStatus = true
-			filter.Status, err = strconv.ParseUint(statusStr, 10, 64)
-			if err != nil {
-				c.AbortWithStatusJSON(http.StatusBadRequest, errorResponse(model.ErrInvalidInput))
-				return
-			}
-		}
+		filter.Status, filter.ByStatus = c.GetQuery("status")
 
 		leadsList, err := a.GetLeads(c, companyId, employeeId, filter)
 		switch {
@@ -203,7 +196,7 @@ func UpdateLead(a app.App) gin.HandlerFunc {
 // @Success		200	{object}	statusesResponse	"Успешное получение"
 // @Failure		500	{object}	statusesResponse	"Проблемы на стороне сервера"
 // @Failure		401	{object}	statusesResponse	"Ошибка авторизации"
-// @Router			/statuses [get]
+// @Router			/leads/statuses [get]
 func GetStatuses(a app.App) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		_, _, ok := middleware.GetAuthData(c)
@@ -220,48 +213,6 @@ func GetStatuses(a app.App) gin.HandlerFunc {
 				Data: statuses,
 				Err:  nil,
 			})
-		case errors.Is(err, model.ErrLeadsError):
-			c.AbortWithStatusJSON(http.StatusInternalServerError, errorResponse(model.ErrLeadsError))
-		default:
-			c.AbortWithStatusJSON(http.StatusInternalServerError, errorResponse(model.ErrLeadsError))
-		}
-	}
-}
-
-// @Summary		Получение статуса по id
-// @Description	Возвращает статус с заданным id
-// @Tags			leads
-// @Produce		json
-// @Param			id	path		int				true	"id статуса"
-// @Success		200	{object}	statusResponse	"Успешное получение"
-// @Failure		500	{object}	statusResponse	"Проблемы на стороне сервера"
-// @Failure		404	{object}	statusResponse	"Статуса не существует"
-// @Failure		401	{object}	statusResponse	"Ошибка авторизации"
-// @Router			/statuses/{id} [get]
-func GetStatusById(a app.App) gin.HandlerFunc {
-	return func(c *gin.Context) {
-		_, _, ok := middleware.GetAuthData(c)
-		if !ok {
-			c.AbortWithStatusJSON(http.StatusUnauthorized, errorResponse(model.ErrUnauthorized))
-			return
-		}
-
-		id, err := strconv.ParseUint(c.Param("id"), 10, 64)
-		if err != nil {
-			c.AbortWithStatusJSON(http.StatusBadRequest, errorResponse(model.ErrInvalidInput))
-			return
-		}
-
-		status, err := a.GetStatusById(c, id)
-
-		switch {
-		case err == nil:
-			c.JSON(http.StatusOK, statusResponse{
-				Data: status,
-				Err:  nil,
-			})
-		case errors.Is(err, model.ErrStatusNotExists):
-			c.AbortWithStatusJSON(http.StatusNotFound, errorResponse(model.ErrStatusNotExists))
 		case errors.Is(err, model.ErrLeadsError):
 			c.AbortWithStatusJSON(http.StatusInternalServerError, errorResponse(model.ErrLeadsError))
 		default:

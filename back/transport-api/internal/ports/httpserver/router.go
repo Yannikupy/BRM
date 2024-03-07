@@ -24,7 +24,6 @@ func appRouter(r *gin.RouterGroup, a app.App, tkn tokenizer.Tokenizer, logs logg
 	r.PUT("/companies/:id", companies.UpdateCompany(a))
 	r.DELETE("/companies/:id", companies.DeleteCompany(a))
 	r.GET("/companies/industries", companies.GetIndustriesMap(a))
-	r.GET("/companies/industries/:id", companies.GetIndustry(a))
 
 	r.POST("/employees", employees.AddEmployee(a))
 	r.GET("/employees/:id", employees.GetEmployee(a))
@@ -50,13 +49,12 @@ func appRouter(r *gin.RouterGroup, a app.App, tkn tokenizer.Tokenizer, logs logg
 	r.GET("/ads", ads.GetAdsList(a))
 	r.PUT("/ads/:id", ads.UpdateAd(a))
 	r.DELETE("/ads/:id", ads.DeleteAd(a))
-
 	r.POST("/ads/:id/response", ads.AddResponse(a))
 	r.GET("/responses", ads.GetResponsesList(a))
+	r.GET("/ads/industries", ads.GetIndustriesMap(a))
 
 	r.GET("/leads/:id", leads.GetLead(a))
 	r.GET("/leads", leads.GetLeadsList(a))
 	r.PUT("/leads/:id", leads.UpdateLead(a))
-	r.GET("/statuses", leads.GetStatuses(a))
-	r.GET("/statuses/:id", leads.GetStatusById(a))
+	r.GET("/leads/statuses", leads.GetStatuses(a))
 }

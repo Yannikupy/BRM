@@ -17,10 +17,6 @@ func (a *appImpl) DeleteCompany(ctx context.Context, companyId uint64, ownerId u
 	return a.core.DeleteCompany(ctx, companyId, ownerId)
 }
 
-func (a *appImpl) GetIndustriesList(ctx context.Context) (map[string]uint64, error) {
-	return a.core.GetIndustriesList(ctx)
-}
-
-func (a *appImpl) GetIndustryById(ctx context.Context, id uint64) (string, error) {
-	return a.core.GetIndustryById(ctx, id)
+func (a *appImpl) GetCompanyIndustries(ctx context.Context) (map[string]uint64, error) {
+	return a.core.GetIndustries(ctx)
 }

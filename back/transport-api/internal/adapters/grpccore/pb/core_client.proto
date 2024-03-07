@@ -8,8 +8,7 @@ service CoreService {
   rpc GetCompany(GetCompanyRequest) returns (GetCompanyResponse) {}
   rpc UpdateCompany(UpdateCompanyRequest) returns (UpdateCompanyResponse) {}
   rpc DeleteCompany(DeleteCompanyRequest) returns (google.protobuf.Empty) {}
-  rpc GetIndustriesList(google.protobuf.Empty) returns (GetIndustriesListResponse) {}
-  rpc GetIndustryById(GetIndustryByIdRequest) returns (GetIndustryByIdResponse) {}
+  rpc GetIndustries(google.protobuf.Empty) returns (GetIndustriesResponse) {}
 
   rpc CreateEmployee(CreateEmployeeRequest) returns (CreateEmployeeResponse) {}
   rpc UpdateEmployee(UpdateEmployeeRequest) returns (UpdateEmployeeResponse) {}
@@ -29,7 +28,7 @@ message Company {
   uint64 id = 1;
   string name = 2;
   string description = 3;
-  uint64 industry = 4;
+  string industry = 4;
   uint64 owner_id = 5;
   double rating = 6;
   int64 creation_date = 7;
@@ -76,7 +75,7 @@ message UpdateCompanyRequest {
 message UpdateCompanyFields {
   string name = 1;
   string description = 2;
-  int64 industry = 3;
+  string industry = 3;
   uint64 owner_id = 4;
 }
 
@@ -89,16 +88,8 @@ message DeleteCompanyRequest {
   uint64 owner_id = 2;
 }
 
-message GetIndustriesListResponse {
+message GetIndustriesResponse {
   map <string, uint64> data = 1;
-}
-
-message GetIndustryByIdRequest {
-  uint64 id = 1;
-}
-
-message GetIndustryByIdResponse {
-  string industry = 1;
 }
 
 message CreateEmployeeRequest {

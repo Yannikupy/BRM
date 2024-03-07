@@ -12,7 +12,7 @@ definitions:
       description:
         type: string
       industry:
-        type: integer
+        type: string
       name:
         type: string
     type: object
@@ -54,7 +54,7 @@ definitions:
       id:
         type: integer
       industry:
-        type: integer
+        type: string
       is_deleted:
         type: boolean
       name:

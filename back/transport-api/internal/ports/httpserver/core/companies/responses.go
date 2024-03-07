@@ -35,7 +35,7 @@ type companyData struct {
 	Id           uint64  `json:"id"`
 	Name         string  `json:"name"`
 	Description  string  `json:"description"`
-	Industry     uint64  `json:"industry"`
+	Industry     string  `json:"industry"`
 	OwnerId      uint64  `json:"owner_id"`
 	Rating       float64 `json:"rating"`
 	CreationDate int64   `json:"creation_date"`
@@ -45,11 +45,6 @@ type companyData struct {
 type industriesResponse struct {
 	Data map[string]uint64 `json:"data"`
 	Err  *string           `json:"error"`
-}
-
-type industryResponse struct {
-	Data string  `json:"data"`
-	Err  *string `json:"error"`
 }
 
 type mainPageResponse struct {

@@ -8,7 +8,7 @@ type Lead struct {
 	Title          string
 	Description    string
 	Price          uint
-	Status         uint64
+	Status         string
 	Responsible    uint64
 	CompanyId      uint64
 	ClientCompany  uint64
@@ -21,7 +21,7 @@ type Filter struct {
 	Limit  uint
 	Offset uint
 
-	Status   uint64
+	Status   string
 	ByStatus bool
 
 	Responsible   uint64
@@ -32,7 +32,7 @@ type UpdateLead struct {
 	Title       string
 	Description string
 	Price       uint
-	Status      uint64
+	Status      string
 	Responsible uint64
 }
 

@@ -16,7 +16,6 @@ type App interface {
 	UpdateLead(ctx context.Context, companyId uint64, employeeId uint64, id uint64, upd model.UpdateLead) (model.Lead, error)
 
 	GetStatuses(ctx context.Context) (map[string]uint64, error)
-	GetStatusById(ctx context.Context, id uint64) (string, error)
 }
 
 func New(repo repo.LeadsRepo, core grpccore.CoreClient, ads grpcads.AdsClient, logs logger.Logger) App {
@@ -24,7 +23,7 @@ func New(repo repo.LeadsRepo, core grpccore.CoreClient, ads grpcads.AdsClient, l
 		leadsRepo:            repo,
 		core:                 core,
 		ads:                  ads,
-		newLeadDefaultStatus: 1,
+		newLeadDefaultStatus: "Новая сделка",
 		logs:                 logs,
 	}
 }

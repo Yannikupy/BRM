@@ -4,13 +4,68 @@ import (
 	"brm-leads/internal/model"
 	"context"
 	"errors"
-	"fmt"
 	"github.com/jackc/pgx/v5"
+	"github.com/jackc/pgx/v5/pgconn"
+)
+
+const (
+	createLeadQuery = `
+		INSERT INTO "leads" ("ad_id", "title", "description", "price", "status", "responsible", "company_id", "client_company", "client_employee", "creation_date", "is_deleted")
+		VALUES ($1, $2, $3, $4, (SELECT "id" FROM "statuses" WHERE "name" = $5), $6, $7, $8, $9, $10, $11)
+		RETURNING "id";`
+
+	getLeadsQuery = `
+		SELECT  "leads"."id", 
+		        "ad_id", 
+		        "title", 
+		        "description", 
+		        "price", 
+		        "statuses"."name", 
+		        "responsible", 
+		        "company_id",
+		        "client_company",
+		        "client_employee",
+		        "creation_date",
+		        "is_deleted" 
+		FROM "leads"
+		INNER JOIN "statuses" ON "leads"."status" = "statuses"."id"                      
+		WHERE "company_id" = $1 AND (NOT "is_deleted")
+			AND ((NOT $2) OR "status" = (SELECT "id" FROM "statuses" WHERE "name" = $3))
+			AND ((NOT $4) OR "responsible" = $5)
+		ORDER BY "creation_date" DESC
+		LIMIT $6 OFFSET $7;`
+
+	getLeadByIdQuery = `
+		SELECT  "leads"."id", 
+		        "ad_id", 
+		        "title", 
+		        "description", 
+		        "price", 
+		        "statuses"."name", 
+		        "responsible", 
+		        "company_id",
+		        "client_company",
+		        "client_employee",
+		        "creation_date",
+		        "is_deleted" 
+		FROM "leads"
+		INNER JOIN "statuses" ON "leads"."status" = "statuses"."id" 
+		WHERE "leads"."id" = $1 AND (NOT "is_deleted");`
+
+	updateLeadQuery = `
+		UPDATE "leads"
+		SET "title" = $2,
+			"description" = $3,
+			"price" = $4,
+			"status" = (SELECT "id" FROM "statuses" WHERE "name" = $5),
+			"responsible" = $6
+		WHERE "id" = $1 AND (NOT "is_deleted");`
 )
 
 func (l *leadRepoImpl) CreateLead(ctx context.Context, lead model.Lead) (model.Lead, error) {
 	var leadId uint64
-	if err := l.QueryRow(ctx, createLeadQuery(lead.CompanyId),
+	var pgErr *pgconn.PgError
+	if err := l.QueryRow(ctx, createLeadQuery,
 		lead.AdId,
 		lead.Title,
 		lead.Description,
@@ -22,23 +77,21 @@ func (l *leadRepoImpl) CreateLead(ctx context.Context, lead model.Lead) (model.L
 		lead.ClientEmployee,
 		lead.CreationDate,
 		lead.IsDeleted,
-	).Scan(&leadId); err != nil {
-		return model.Lead{}, errors.Join(model.ErrDatabaseError, err)
+	).Scan(&leadId); errors.As(err, &pgErr) {
+		switch pgErr.Code {
+		case "23502": // null column status
+			return model.Lead{}, model.ErrStatusNotExists
+		default:
+			return model.Lead{}, errors.Join(model.ErrDatabaseError, err)
+		}
 	} else {
 		lead.Id = leadId
 		return lead, nil
 	}
 }
 
-func createLeadQuery(companyId uint64) string {
-	return fmt.Sprintf(`
-		INSERT INTO %s ("ad_id", "title", "description", "price", "status", "responsible", "company_id", "client_company", "client_employee", "creation_date", "is_deleted")
-		VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
-		RETURNING "id";`, getShardName(companyId))
-}
-
 func (l *leadRepoImpl) GetLeads(ctx context.Context, companyId uint64, filter model.Filter) ([]model.Lead, error) {
-	rows, err := l.Query(ctx, getLeadsQuery(companyId),
+	rows, err := l.Query(ctx, getLeadsQuery,
 		companyId,
 		filter.ByStatus,
 		filter.Status,
@@ -74,18 +127,8 @@ func (l *leadRepoImpl) GetLeads(ctx context.Context, companyId uint64, filter mo
 	return leads, nil
 }
 
-func getLeadsQuery(companyId uint64) string {
-	return fmt.Sprintf(`
-		SELECT * FROM %s
-		WHERE "company_id" = $1 AND (NOT "is_deleted")
-			AND ((NOT $2) OR "status" = $3)
-			AND ((NOT $4) OR "responsible" = $5)
-		ORDER BY "creation_date" DESC
-		LIMIT $6 OFFSET $7;`, getShardName(companyId))
-}
-
-func (l *leadRepoImpl) GetLeadById(ctx context.Context, companyId uint64, id uint64) (model.Lead, error) {
-	row := l.QueryRow(ctx, getLeadByIdQuery(companyId), id)
+func (l *leadRepoImpl) GetLeadById(ctx context.Context, id uint64) (model.Lead, error) {
+	row := l.QueryRow(ctx, getLeadByIdQuery, id)
 	var lead model.Lead
 	if err := row.Scan(
 		&lead.Id,
@@ -109,51 +152,25 @@ func (l *leadRepoImpl) GetLeadById(ctx context.Context, companyId uint64, id uin
 	}
 }
 
-func getLeadByIdQuery(companyId uint64) string {
-	return fmt.Sprintf(`
-		SELECT * FROM %s
-		WHERE "id" = $1 AND (NOT "is_deleted");`, getShardName(companyId))
-}
-
-func (l *leadRepoImpl) UpdateLead(ctx context.Context, companyId uint64, id uint64, upd model.UpdateLead) (model.Lead, error) {
-	if e, err := l.Exec(ctx, updateLeadQuery(companyId),
+func (l *leadRepoImpl) UpdateLead(ctx context.Context, id uint64, upd model.UpdateLead) (model.Lead, error) {
+	var pgErr *pgconn.PgError
+	if e, err := l.Exec(ctx, updateLeadQuery,
 		id,
 		upd.Title,
 		upd.Description,
 		upd.Price,
 		upd.Status,
 		upd.Responsible,
-	); err != nil {
-		return model.Lead{}, errors.Join(model.ErrDatabaseError, err)
+	); errors.As(err, &pgErr) {
+		switch pgErr.Code {
+		case "23502":
+			return model.Lead{}, model.ErrStatusNotExists
+		default:
+			return model.Lead{}, errors.Join(model.ErrDatabaseError, err)
+		}
 	} else if e.RowsAffected() == 0 {
 		return model.Lead{}, model.ErrLeadNotExists
 	} else {
-		return l.GetLeadById(ctx, companyId, id)
-	}
-}
-
-func updateLeadQuery(companyId uint64) string {
-	return fmt.Sprintf(`
-		UPDATE %s
-		SET "title" = $2,
-			"description" = $3,
-			"price" = $4,
-			"status" = $5,
-			"responsible" = $6
-		WHERE "id" = $1 AND (NOT "is_deleted");`, getShardName(companyId))
-}
-
-func getShardName(companyId uint64) string {
-	switch companyId % 4 {
-	case 0:
-		return "leads_shard01"
-	case 1:
-		return "leads_shard02"
-	case 2:
-		return "leads_shard03"
-	case 3:
-		return "leads_shard04"
-	default:
-		return ""
+		return l.GetLeadById(ctx, id)
 	}
 }

@@ -101,7 +101,7 @@
                     "type": "string"
                 },
                 "industry": {
-                    "type": "integer"
+                    "type": "string"
                 },
                 "name": {
                     "type": "string"
@@ -166,7 +166,7 @@
                     "type": "integer"
                 },
                 "industry": {
-                    "type": "integer"
+                    "type": "string"
                 },
                 "is_deleted": {
                     "type": "boolean"

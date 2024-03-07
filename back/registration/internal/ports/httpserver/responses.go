@@ -66,7 +66,7 @@ type companyData struct {
 	Id           uint64  `json:"id"`
 	Name         string  `json:"name"`
 	Description  string  `json:"description"`
-	Industry     uint64  `json:"industry"`
+	Industry     string  `json:"industry"`
 	OwnerId      uint64  `json:"owner_id"`
 	Rating       float64 `json:"rating"`
 	CreationDate int64   `json:"creation_date"`

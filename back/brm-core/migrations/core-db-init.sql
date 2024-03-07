@@ -1,69 +1,39 @@
 CREATE TABLE companies (
     "id" SERIAL PRIMARY KEY,
-    "name" VARCHAR(100),
+    "name" VARCHAR(100) NOT NULL,
     "description" VARCHAR(1000),
-    "industry" INTEGER,
-    "owner_id" INTEGER,
-    "rating" FLOAT,
-    "creation_date" DATE,
-    "is_deleted" BOOLEAN
+    "industry" INTEGER NOT NULL,
+    "owner_id" INTEGER NOT NULL,
+    "rating" FLOAT NOT NULL,
+    "creation_date" DATE NOT NULL,
+    "is_deleted" BOOLEAN NOT NULL
 );
 
 CREATE TABLE employees (
     "id" SERIAL PRIMARY KEY,
-    "company_id" INTEGER,
-    "first_name" VARCHAR(100),
+    "company_id" INTEGER NOT NULL,
+    "first_name" VARCHAR(100) NOT NULL,
     "second_name" VARCHAR(100),
-    "email" VARCHAR(100) UNIQUE,
+    "email" VARCHAR(100) UNIQUE NOT NULL,
     "job_title" VARCHAR(100),
     "department" VARCHAR(100),
-    "creation_date" DATE,
-    "is_deleted" BOOLEAN
+    "creation_date" DATE NOT NULL,
+    "is_deleted" BOOLEAN NOT NULL
 );
 
-CREATE TABLE contact_shard01 (
+CREATE TABLE contacts (
     "id" SERIAL PRIMARY KEY,
-    "owner_id" INTEGER,
-    "employee_id" INTEGER,
+    "owner_id" INTEGER NOT NULL,
+    "employee_id" INTEGER NOT NULL,
     "notes" VARCHAR(500),
-    "creation_date" DATE,
-    "is_deleted" BOOLEAN,
-    UNIQUE ("owner_id", "employee_id")
-);
-
-CREATE TABLE contact_shard02 (
-    "id" SERIAL PRIMARY KEY,
-    "owner_id" INTEGER,
-    "employee_id" INTEGER,
-    "notes" VARCHAR(500),
-    "creation_date" DATE,
-    "is_deleted" BOOLEAN,
-    UNIQUE ("owner_id", "employee_id")
-);
-
-CREATE TABLE contact_shard03 (
-    "id" SERIAL PRIMARY KEY,
-    "owner_id" INTEGER,
-    "employee_id" INTEGER,
-    "notes" VARCHAR(500),
-    "creation_date" DATE,
-    "is_deleted" BOOLEAN,
-    UNIQUE ("owner_id", "employee_id")
-);
-
-CREATE TABLE contact_shard04 (
-    "id" SERIAL PRIMARY KEY,
-    "owner_id" INTEGER,
-    "employee_id" INTEGER,
-    "notes" VARCHAR(500),
-    "creation_date" DATE,
-    "is_deleted" BOOLEAN,
+    "creation_date" DATE NOT NULL,
+    "is_deleted" BOOLEAN NOT NULL,
     UNIQUE ("owner_id", "employee_id")
 );
 
 CREATE TABLE industries (
-    "id" SERIAL PRIMARY KEY,
-    "name" VARCHAR(100)
+    "id" SERIAL,
+    "name" VARCHAR(100) PRIMARY KEY
 );
 
 INSERT INTO "industries" (name)

@@ -4,7 +4,7 @@ type Company struct {
 	Id           uint64
 	Name         string
 	Description  string
-	Industry     uint64
+	Industry     string
 	OwnerId      uint64
 	Rating       float64
 	CreationDate int64
@@ -14,6 +14,6 @@ type Company struct {
 type UpdateCompany struct {
 	Name        string
 	Description string
-	Industry    uint64
+	Industry    string
 	OwnerId     uint64
 }

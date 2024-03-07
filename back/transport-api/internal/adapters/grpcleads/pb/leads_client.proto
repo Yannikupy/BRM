@@ -10,7 +10,6 @@ service LeadsService {
   rpc UpdateLead(UpdateLeadRequest) returns (UpdateLeadResponse) {}
 
   rpc GetStatuses(google.protobuf.Empty) returns (GetStatusesResponse) {}
-  rpc GetStatusById(GetStatusByIdRequest) returns (GetStatusByIdResponse) {}
 }
 
 message Lead {
@@ -19,7 +18,7 @@ message Lead {
   string title = 3;
   string description = 4;
   uint64 price = 5;
-  uint64 status = 6;
+  string status = 6;
   uint64 responsible = 7;
   uint64 company_id = 8;
   uint64 client_company = 9;
@@ -31,7 +30,7 @@ message Lead {
 message Filter {
   uint64 limit = 1;
   uint64 offset = 2;
-  uint64 status = 3;
+  string status = 3;
   bool by_status = 4;
   uint64 responsible = 5;
   bool by_responsible = 6;
@@ -41,7 +40,7 @@ message UpdateLead {
   string title = 1;
   string description = 2;
   uint64 price = 3;
-  uint64 status = 4;
+  string status = 4;
   uint64 responsible = 5;
 }
 
@@ -78,12 +77,4 @@ message UpdateLeadResponse {
 
 message GetStatusesResponse {
   map <string, uint64> data = 1;
-}
-
-message GetStatusByIdRequest {
-  uint64 id = 1;
-}
-
-message GetStatusByIdResponse {
-  string status = 1;
 }

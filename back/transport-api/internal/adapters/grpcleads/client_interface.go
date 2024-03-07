@@ -11,5 +11,4 @@ type LeadsClient interface {
 	UpdateLead(ctx context.Context, companyId uint64, employeeId uint64, id uint64, upd leads.UpdateLead) (leads.Lead, error)
 
 	GetStatuses(ctx context.Context) (map[string]uint64, error)
-	GetStatusById(ctx context.Context, id uint64) (string, error)
 }

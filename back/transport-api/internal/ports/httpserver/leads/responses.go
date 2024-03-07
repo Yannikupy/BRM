@@ -19,7 +19,7 @@ type leadData struct {
 	Title          string `json:"title"`
 	Description    string `json:"description"`
 	Price          uint   `json:"price"`
-	Status         uint64 `json:"status"`
+	Status         string `json:"status"`
 	Responsible    uint64 `json:"responsible"`
 	CompanyId      uint64 `json:"company_id"`
 	ClientCompany  uint64 `json:"client_company"`

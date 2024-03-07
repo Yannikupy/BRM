@@ -24,7 +24,6 @@ const _ = grpc.SupportPackageIsVersion7
 type CoreServiceClient interface {
 	GetCompany(ctx context.Context, in *GetCompanyRequest, opts ...grpc.CallOption) (*GetCompanyResponse, error)
 	GetEmployeeById(ctx context.Context, in *GetEmployeeByIdRequest, opts ...grpc.CallOption) (*GetEmployeeByIdResponse, error)
-	GetIndustryById(ctx context.Context, in *GetIndustryByIdRequest, opts ...grpc.CallOption) (*GetIndustryByIdResponse, error)
 }
 
 type coreServiceClient struct {
@@ -53,22 +52,12 @@ func (c *coreServiceClient) GetEmployeeById(ctx context.Context, in *GetEmployee
 	return out, nil
 }
 
-func (c *coreServiceClient) GetIndustryById(ctx context.Context, in *GetIndustryByIdRequest, opts ...grpc.CallOption) (*GetIndustryByIdResponse, error) {
-	out := new(GetIndustryByIdResponse)
-	err := c.cc.Invoke(ctx, "/core.CoreService/GetIndustryById", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
 // CoreServiceServer is the server API for CoreService service.
 // All implementations should embed UnimplementedCoreServiceServer
 // for forward compatibility
 type CoreServiceServer interface {
 	GetCompany(context.Context, *GetCompanyRequest) (*GetCompanyResponse, error)
 	GetEmployeeById(context.Context, *GetEmployeeByIdRequest) (*GetEmployeeByIdResponse, error)
-	GetIndustryById(context.Context, *GetIndustryByIdRequest) (*GetIndustryByIdResponse, error)
 }
 
 // UnimplementedCoreServiceServer should be embedded to have forward compatible implementations.
@@ -80,9 +69,6 @@ func (UnimplementedCoreServiceServer) GetCompany(context.Context, *GetCompanyReq
 }
 func (UnimplementedCoreServiceServer) GetEmployeeById(context.Context, *GetEmployeeByIdRequest) (*GetEmployeeByIdResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetEmployeeById not implemented")
-}
-func (UnimplementedCoreServiceServer) GetIndustryById(context.Context, *GetIndustryByIdRequest) (*GetIndustryByIdResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetIndustryById not implemented")
 }
 
 // UnsafeCoreServiceServer may be embedded to opt out of forward compatibility for this service.
@@ -132,24 +118,6 @@ func _CoreService_GetEmployeeById_Handler(srv interface{}, ctx context.Context, 
 	return interceptor(ctx, in, info, handler)
 }
 
-func _CoreService_GetIndustryById_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GetIndustryByIdRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(CoreServiceServer).GetIndustryById(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/core.CoreService/GetIndustryById",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(CoreServiceServer).GetIndustryById(ctx, req.(*GetIndustryByIdRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
 // CoreService_ServiceDesc is the grpc.ServiceDesc for CoreService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -164,10 +132,6 @@ var CoreService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetEmployeeById",
 			Handler:    _CoreService_GetEmployeeById_Handler,
-		},
-		{
-			MethodName: "GetIndustryById",
-			Handler:    _CoreService_GetIndustryById_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

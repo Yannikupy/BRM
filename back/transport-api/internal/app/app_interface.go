@@ -20,8 +20,7 @@ type CoreCompany interface {
 	UpdateCompany(ctx context.Context, companyId uint64, ownerId uint64, upd core.UpdateCompany) (core.Company, error)
 	DeleteCompany(ctx context.Context, companyId uint64, ownerId uint64) error
 
-	GetIndustriesList(ctx context.Context) (map[string]uint64, error)
-	GetIndustryById(ctx context.Context, id uint64) (string, error)
+	GetCompanyIndustries(ctx context.Context) (map[string]uint64, error)
 }
 
 type CoreEmployee interface {
@@ -50,6 +49,8 @@ type Ads interface {
 
 	CreateResponse(ctx context.Context, companyId uint64, employeeId uint64, adId uint64) (ads.Response, error)
 	GetResponses(ctx context.Context, companyId uint64, employeeId uint64, limit uint, offset uint) ([]ads.Response, error)
+
+	GetAdsIndustries(ctx context.Context) (map[string]uint64, error)
 }
 
 type Leads interface {
@@ -58,5 +59,4 @@ type Leads interface {
 	UpdateLead(ctx context.Context, companyId uint64, employeeId uint64, id uint64, upd leads.UpdateLead) (leads.Lead, error)
 
 	GetStatuses(ctx context.Context) (map[string]uint64, error)
-	GetStatusById(ctx context.Context, id uint64) (string, error)
 }

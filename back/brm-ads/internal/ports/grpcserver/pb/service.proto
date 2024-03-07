@@ -13,6 +13,8 @@ service AdsService {
 
   rpc CreateResponse(CreateResponseRequest) returns (CreateResponseResponse) {}
   rpc GetResponses(GetResponsesRequest) returns (GetResponsesResponse) {}
+
+  rpc GetIndustries(google.protobuf.Empty) returns (GetIndustriesResponse) {}
 }
 
 message Ad {
@@ -20,7 +22,7 @@ message Ad {
   uint64 company_id = 2;
   string title = 3;
   string text = 4;
-  uint64 industry = 5;
+  string industry = 5;
   uint64 price = 6;
   int64 creation_date = 7;
   uint64 created_by = 8;
@@ -64,7 +66,7 @@ message AdFilter {
   bool by_company = 1;
   uint64 company_id = 2;
   bool by_industry = 3;
-  uint64 industry = 4;
+  string industry = 4;
 }
 
 message AdSorter {
@@ -98,7 +100,7 @@ message UpdateAdRequest {
 message UpdateAdFields {
   string title = 1;
   string text = 2;
-  uint64 industry = 3;
+  string industry = 3;
   uint64 price = 4;
   uint64 responsible = 5;
 }
@@ -132,4 +134,8 @@ message GetResponsesRequest {
 
 message GetResponsesResponse {
   repeated Response list = 1;
+}
+
+message GetIndustriesResponse {
+  map <string, uint64> data = 1;
 }

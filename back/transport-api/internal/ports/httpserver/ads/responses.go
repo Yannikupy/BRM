@@ -18,7 +18,7 @@ type adData struct {
 	CompanyId    uint64 `json:"company_id"`
 	Title        string `json:"title"`
 	Text         string `json:"text"`
-	Industry     uint64 `json:"industry"`
+	Industry     string `json:"industry"`
 	Price        uint   `json:"price"`
 	CreationDate int64  `json:"creation_date"`
 	CreatedBy    uint64 `json:"created_by"`
@@ -93,4 +93,9 @@ func responsesToResponseDataList(resps []ads.Response) []responseData {
 		data[i] = responseToResponseData(resp)
 	}
 	return data
+}
+
+type industriesResponse struct {
+	Data map[string]uint64 `json:"data"`
+	Err  *string           `json:"error"`
 }

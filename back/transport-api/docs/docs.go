@@ -58,7 +58,7 @@ const docTemplate = `{
                         "in": "query"
                     },
                     {
-                        "type": "integer",
+                        "type": "string",
                         "description": "Поиск по отрасли",
                         "name": "industry",
                         "in": "query"
@@ -166,6 +166,37 @@ const docTemplate = `{
                         "description": "Проблемы на стороне сервера",
                         "schema": {
                             "$ref": "#/definitions/ads.adResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/ads/industries": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Возвращает словарь из возможных отраслей объявлений и их id",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "ads"
+                ],
+                "summary": "Получение отраслей",
+                "responses": {
+                    "200": {
+                        "description": "Успешное получение данных",
+                        "schema": {
+                            "$ref": "#/definitions/ads.industriesResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Проблемы на стороне сервера",
+                        "schema": {
+                            "$ref": "#/definitions/ads.industriesResponse"
                         }
                     }
                 }
@@ -406,7 +437,7 @@ const docTemplate = `{
                         "ApiKeyAuth": []
                     }
                 ],
-                "description": "Возвращает словарь из отраслей и их id",
+                "description": "Возвращает словарь из возможных отраслей компаний и их id",
                 "produces": [
                     "application/json"
                 ],
@@ -419,49 +450,6 @@ const docTemplate = `{
                         "description": "Успешное получение данных",
                         "schema": {
                             "$ref": "#/definitions/companies.industriesResponse"
-                        }
-                    },
-                    "500": {
-                        "description": "Проблемы на стороне сервера",
-                        "schema": {
-                            "$ref": "#/definitions/companies.industriesResponse"
-                        }
-                    }
-                }
-            }
-        },
-        "/companies/industries/{id}": {
-            "get": {
-                "security": [
-                    {
-                        "ApiKeyAuth": []
-                    }
-                ],
-                "description": "Возвращает название отрасли по id",
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "core/companies"
-                ],
-                "summary": "Получение отрасли по id",
-                "responses": {
-                    "200": {
-                        "description": "Успешное получение данных",
-                        "schema": {
-                            "$ref": "#/definitions/companies.industriesResponse"
-                        }
-                    },
-                    "400": {
-                        "description": "Неверный формат входных данных",
-                        "schema": {
-                            "$ref": "#/definitions/companies.companyResponse"
-                        }
-                    },
-                    "404": {
-                        "description": "Отрасль не найдена",
-                        "schema": {
-                            "$ref": "#/definitions/companies.companyResponse"
                         }
                     },
                     "500": {
@@ -1442,7 +1430,7 @@ const docTemplate = `{
                         "in": "query"
                     },
                     {
-                        "type": "integer",
+                        "type": "string",
                         "description": "Фильтрация по статусу",
                         "name": "status",
                         "in": "query"
@@ -1471,6 +1459,43 @@ const docTemplate = `{
                         "description": "Проблемы на стороне сервера",
                         "schema": {
                             "$ref": "#/definitions/leads.leadsListResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/leads/statuses": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Возвращает мапу со статусами и их id",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "leads"
+                ],
+                "summary": "Получение статусов и их id",
+                "responses": {
+                    "200": {
+                        "description": "Успешное получение",
+                        "schema": {
+                            "$ref": "#/definitions/leads.statusesResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Ошибка авторизации",
+                        "schema": {
+                            "$ref": "#/definitions/leads.statusesResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Проблемы на стороне сервера",
+                        "schema": {
+                            "$ref": "#/definitions/leads.statusesResponse"
                         }
                     }
                 }
@@ -1656,90 +1681,6 @@ const docTemplate = `{
                         "description": "Проблемы на стороне сервера",
                         "schema": {
                             "$ref": "#/definitions/ads.responseListResponse"
-                        }
-                    }
-                }
-            }
-        },
-        "/statuses": {
-            "get": {
-                "security": [
-                    {
-                        "ApiKeyAuth": []
-                    }
-                ],
-                "description": "Возвращает мапу со статусами и их id",
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "leads"
-                ],
-                "summary": "Получение статусов и их id",
-                "responses": {
-                    "200": {
-                        "description": "Успешное получение",
-                        "schema": {
-                            "$ref": "#/definitions/leads.statusesResponse"
-                        }
-                    },
-                    "401": {
-                        "description": "Ошибка авторизации",
-                        "schema": {
-                            "$ref": "#/definitions/leads.statusesResponse"
-                        }
-                    },
-                    "500": {
-                        "description": "Проблемы на стороне сервера",
-                        "schema": {
-                            "$ref": "#/definitions/leads.statusesResponse"
-                        }
-                    }
-                }
-            }
-        },
-        "/statuses/{id}": {
-            "get": {
-                "description": "Возвращает статус с заданным id",
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "leads"
-                ],
-                "summary": "Получение статуса по id",
-                "parameters": [
-                    {
-                        "type": "integer",
-                        "description": "id статуса",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Успешное получение",
-                        "schema": {
-                            "$ref": "#/definitions/leads.statusResponse"
-                        }
-                    },
-                    "401": {
-                        "description": "Ошибка авторизации",
-                        "schema": {
-                            "$ref": "#/definitions/leads.statusResponse"
-                        }
-                    },
-                    "404": {
-                        "description": "Статуса не существует",
-                        "schema": {
-                            "$ref": "#/definitions/leads.statusResponse"
-                        }
-                    },
-                    "500": {
-                        "description": "Проблемы на стороне сервера",
-                        "schema": {
-                            "$ref": "#/definitions/leads.statusResponse"
                         }
                     }
                 }
@@ -2050,7 +1991,7 @@ const docTemplate = `{
                     "type": "integer"
                 },
                 "industry": {
-                    "type": "integer"
+                    "type": "string"
                 },
                 "is_deleted": {
                     "type": "boolean"
@@ -2098,7 +2039,7 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "industry": {
-                    "type": "integer"
+                    "type": "string"
                 },
                 "price": {
                     "type": "integer"
@@ -2107,6 +2048,20 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "title": {
+                    "type": "string"
+                }
+            }
+        },
+        "ads.industriesResponse": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "integer"
+                    }
+                },
+                "error": {
                     "type": "string"
                 }
             }
@@ -2160,7 +2115,7 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "industry": {
-                    "type": "integer"
+                    "type": "string"
                 },
                 "price": {
                     "type": "integer"
@@ -2189,7 +2144,7 @@ const docTemplate = `{
                     "type": "integer"
                 },
                 "industry": {
-                    "type": "integer"
+                    "type": "string"
                 },
                 "is_deleted": {
                     "type": "boolean"
@@ -2285,7 +2240,7 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "industry": {
-                    "type": "integer"
+                    "type": "string"
                 },
                 "name": {
                     "type": "string"
@@ -2515,7 +2470,7 @@ const docTemplate = `{
                     "type": "integer"
                 },
                 "status": {
-                    "type": "integer"
+                    "type": "string"
                 },
                 "title": {
                     "type": "string"
@@ -2541,17 +2496,6 @@ const docTemplate = `{
                     "items": {
                         "$ref": "#/definitions/leads.leadData"
                     }
-                },
-                "error": {
-                    "type": "string"
-                }
-            }
-        },
-        "leads.statusResponse": {
-            "type": "object",
-            "properties": {
-                "data": {
-                    "type": "string"
                 },
                 "error": {
                     "type": "string"
@@ -2585,7 +2529,7 @@ const docTemplate = `{
                     "type": "integer"
                 },
                 "status": {
-                    "type": "integer"
+                    "type": "string"
                 },
                 "title": {
                     "type": "string"

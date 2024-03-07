@@ -13,7 +13,7 @@ message Company {
   uint64 id = 1;
   string name = 2;
   string description = 3;
-  uint64 industry = 4;
+  string industry = 4;
   uint64 owner_id = 5;
   double rating = 6;
   int64 creation_date = 7;
