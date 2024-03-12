@@ -69,6 +69,19 @@ services:
       - ./back/brm-leads/migrations/:/docker-entrypoint-initdb.d/
       - leads-data:/var/lib/postgresql/data
 
+  redis-stats:
+    image: redis:7
+    container_name: redis_stats
+    environment:
+      REDIS_PASSWORD: root
+      REDIS_DATABASES: 1
+    profiles: ["dev_front", "dev_back"]
+    ports:
+      - "6001:6379"
+    volumes:
+      - stats-data:/root/redis
+
+
   brm-core:
     build:
       context: back/brm-core
@@ -138,6 +151,17 @@ services:
       - postgres-passwords
       - redis-tokens
 
+  stats:
+    build:
+      context: back/stats
+      dockerfile: Dockerfile
+    command: ./stats-app --docker
+    profiles: ["dev_front"]
+    ports:
+      - "50004:50004"
+    depends_on:
+      - redis-stats
+
 
 volumes:
   core-data:
@@ -145,3 +169,4 @@ volumes:
   tokens-data:
   ads-data:
   leads-data:
+  stats-data:
