@@ -7,7 +7,6 @@ import (
 	"fmt"
 	"github.com/joho/godotenv"
 	"github.com/spf13/viper"
-	"log"
 	"net/http"
 	"os"
 	"os/signal"
@@ -16,6 +15,7 @@ import (
 	"transport-api/internal/adapters/grpcads"
 	"transport-api/internal/adapters/grpccore"
 	"transport-api/internal/adapters/grpcleads"
+	"transport-api/internal/adapters/grpcstats"
 	"transport-api/internal/app"
 	"transport-api/internal/ports/httpserver"
 	"transport-api/pkg/logger"
@@ -54,33 +54,41 @@ func main() {
 		logs.Fatal(nil, fmt.Sprintf("reading config: %s", err.Error()))
 	}
 	if err := godotenv.Load("config/.env"); err != nil {
-		log.Fatalf("unable to load .env file: %s", err.Error())
+		logs.Fatal(nil, fmt.Sprintf("unable to load .env file: %s", err.Error()))
 	}
 
 	coreClient, err := grpccore.NewCoreClient(ctx, fmt.Sprintf("%s:%d",
-		viper.GetString("grpc-core-client.host"),
-		viper.GetInt("grpc-core-client.port")))
+		viper.GetString("grpc-clients.core.host"),
+		viper.GetInt("grpc-clients.core.port")))
 	if err != nil {
 		logs.Fatal(nil, fmt.Sprintf("create grpc core client: %s", err.Error()))
 	}
 
 	adsClient, err := grpcads.NewAdsClient(ctx, fmt.Sprintf("%s:%d",
-		viper.GetString("grpc-ads-client.host"),
-		viper.GetInt("grpc-ads-client.port"),
+		viper.GetString("grpc-clients.ads.host"),
+		viper.GetInt("grpc-clients.ads.port"),
 	))
 	if err != nil {
-		logs.Fatal(nil, fmt.Sprintf("create ads core client: %s", err.Error()))
+		logs.Fatal(nil, fmt.Sprintf("create grpc ads client: %s", err.Error()))
 	}
 
 	leadsClient, err := grpcleads.NewLeadsClient(ctx, fmt.Sprintf("%s:%d",
-		viper.GetString("grpc-leads-client.host"),
-		viper.GetInt("grpc-leads-client.port"),
+		viper.GetString("grpc-clients.leads.host"),
+		viper.GetInt("grpc-clients.leads.port"),
 	))
 	if err != nil {
-		logs.Fatal(nil, fmt.Sprintf("create leads core client: %s", err.Error()))
+		logs.Fatal(nil, fmt.Sprintf("create grpc leads client: %s", err.Error()))
 	}
 
-	a := app.NewApp(coreClient, adsClient, leadsClient)
+	statsClient, err := grpcstats.NewStatsClient(ctx, fmt.Sprintf("%s:%d",
+		viper.GetString("grpc-clients.stats.host"),
+		viper.GetInt("grpc-clients.stats.port"),
+	))
+	if err != nil {
+		logs.Fatal(nil, fmt.Sprintf("create grpc stats client: %s", err.Error()))
+	}
+
+	a := app.NewApp(coreClient, adsClient, leadsClient, statsClient)
 	tkn := tokenizer.New(os.Getenv("SIGNKEY"))
 
 	srv := httpserver.New(

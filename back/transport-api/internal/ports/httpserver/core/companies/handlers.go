@@ -26,22 +26,27 @@ import (
 // @Router			/companies/{id}/mainpage [get]
 func GetCompanyMainPage(a app.App) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		// TODO implement
-		c.JSON(http.StatusOK, mainPageResponse{
-			Data: &mainPageData{
-				Title: "Какаято компания",
-				Stats: mainPageStatsData{
-					ActiveLeadsAmount:     20,
-					ActiveLeadsPrice:      30,
-					ClosedLeadsAmount:     40,
-					ClosedLeadsPrice:      50,
-					ActiveAdsAmount:       60,
-					CompanyAbsoluteRating: 4.9,
-					CompanyRelativeRating: 0.99,
-				},
-			},
-			Err: nil,
-		})
+		companyId, _, ok := middleware.GetAuthData(c)
+		if !ok {
+			c.AbortWithStatusJSON(http.StatusUnauthorized, errorResponse(model.ErrUnauthorized))
+			return
+		}
+
+		page, err := a.GetCompanyMainPage(c, companyId)
+		switch {
+		case err == nil:
+			data := mainPageToData(page)
+			c.JSON(http.StatusOK, mainPageResponse{
+				Data: &data,
+				Err:  nil,
+			})
+		case errors.Is(err, model.ErrCompanyNotExists):
+			c.AbortWithStatusJSON(http.StatusNotFound, errorResponse(model.ErrCompanyNotExists))
+		case errors.Is(err, model.ErrStatsError):
+			c.AbortWithStatusJSON(http.StatusInternalServerError, errorResponse(model.ErrStatsError))
+		default:
+			c.AbortWithStatusJSON(http.StatusInternalServerError, errorResponse(model.ErrStatsError))
+		}
 	}
 }
 

@@ -1,14 +1,16 @@
-"grpc-core-client":
-  "host": "localhost"
-  "port": 50000
-
-"grpc-ads-client":
-  "host": "localhost"
-  "port": 50002
-
-"grpc-leads-client":
-  "host": "localhost"
-  "port": 50003
+"grpc-clients":
+  "core":
+    "host": "localhost"
+    "port": 50000
+  "ads":
+    "host": "localhost"
+    "port": 50002
+  "leads":
+    "host": "localhost"
+    "port": 50003
+  "stats":
+    "host": "localhost"
+    "port": 50004
 
 "http-server":
   "host": "localhost"
