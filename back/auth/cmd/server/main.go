@@ -14,7 +14,6 @@ import (
 	"flag"
 	"fmt"
 	"github.com/spf13/viper"
-	"log"
 	"net/http"
 	"os"
 	"os/signal"
@@ -96,12 +95,12 @@ func main() {
 	grpcsrv := grpcserver.New(a, logs)
 	lis, err := factory.PrepareListener()
 	if err != nil {
-		log.Fatal(err.Error())
+		logs.Fatal(nil, err.Error())
 	}
 
 	go func() {
 		if err = grpcsrv.Serve(lis); err != nil {
-			log.Fatal("starting grpc server: ", err.Error())
+			logs.Fatal(nil, fmt.Sprintf("starting grpc server: %s", err.Error()))
 		}
 	}()
 

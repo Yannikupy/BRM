@@ -26,4 +26,5 @@ var (
 	ErrAdsError    = errors.New("something wrong with ads service")
 	ErrAdsUnknown  = errors.New("unknown error from brm-ads")
 	ErrLeadsError  = errors.New("something wrong with leads service")
+	ErrStatsError  = errors.New("something wrong with stats service")
 )

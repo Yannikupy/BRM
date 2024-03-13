@@ -5,6 +5,8 @@ import (
 	"transport-api/internal/model/core"
 )
 
+//go:generate protoc pb/core_client.proto --proto_path=pb --go-grpc_out=require_unimplemented_servers=false:. --go_out=.
+
 type CoreClient interface {
 	CoreCompany
 	CoreEmployee

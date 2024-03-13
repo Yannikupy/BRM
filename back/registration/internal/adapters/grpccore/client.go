@@ -89,7 +89,7 @@ func (c *coreClientImpl) CreateCompanyAndOwner(ctx context.Context, company mode
 }
 
 func (c *coreClientImpl) GetIndustriesList(ctx context.Context) (map[string]uint64, error) {
-	resp, err := c.cli.GetIndustriesList(ctx, &empty.Empty{})
+	resp, err := c.cli.GetIndustries(ctx, &empty.Empty{})
 	if err != nil {
 		code := status.Code(err)
 		switch code {
