@@ -138,20 +138,6 @@ definitions:
     type: object
   companies.mainPageData:
     properties:
-      stats:
-        $ref: '#/definitions/companies.mainPageStatsData'
-      title:
-        type: string
-    type: object
-  companies.mainPageResponse:
-    properties:
-      data:
-        $ref: '#/definitions/companies.mainPageData'
-      error:
-        type: string
-    type: object
-  companies.mainPageStatsData:
-    properties:
       active_ads_aount:
         type: integer
       active_leads_amount:
@@ -166,6 +152,13 @@ definitions:
         type: number
       total_leads_amount:
         type: integer
+    type: object
+  companies.mainPageResponse:
+    properties:
+      data:
+        $ref: '#/definitions/companies.mainPageData'
+      error:
+        type: string
     type: object
   companies.updateCompanyRequest:
     properties:
@@ -868,6 +861,8 @@ paths:
           description: Проблемы на стороне сервера
           schema:
             $ref: '#/definitions/companies.mainPageResponse'
+      security:
+      - ApiKeyAuth: []
       summary: Получение информации о компании
       tags:
       - core/companies

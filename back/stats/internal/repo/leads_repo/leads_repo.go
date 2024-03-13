@@ -23,12 +23,18 @@ const (
 
 func (l *leadsRepoImpl) GetMainPageLeadsStats(ctx context.Context, companyId uint64) (model.MainPageStats, error) {
 	var data model.MainPageStats
+	var pgErr pgx.ScanArgError
 	row := l.QueryRow(ctx, getActiveLeadsStatsQuery, companyId)
-	if err := row.Scan(&data.ActiveLeadsAmount, &data.ActiveLeadsPrice); err != nil {
+	if err := row.Scan(&data.ActiveLeadsAmount, &data.ActiveLeadsPrice); errors.As(err, &pgErr) {
+		data.ActiveLeadsPrice = 0.
+	} else if err != nil {
 		return model.MainPageStats{}, errors.Join(model.ErrLeadsDatabase, err)
 	}
+
 	row = l.QueryRow(ctx, getClosedLeadsStatsQuery, companyId)
-	if err := row.Scan(&data.ClosedLeadsAmount, &data.ClosedLeadsPrice); err != nil {
+	if err := row.Scan(&data.ClosedLeadsAmount, &data.ClosedLeadsPrice); errors.As(err, &pgErr) {
+		data.ClosedLeadsPrice = 0.
+	} else if err != nil {
 		return model.MainPageStats{}, errors.Join(model.ErrLeadsDatabase, err)
 	}
 

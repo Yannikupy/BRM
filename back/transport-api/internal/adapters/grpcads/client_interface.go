@@ -5,6 +5,8 @@ import (
 	"transport-api/internal/model/ads"
 )
 
+//go:generate protoc pb/ads_client.proto --proto_path=pb --go-grpc_out=require_unimplemented_servers=false:. --go_out=.
+
 type AdsClient interface {
 	GetAdById(ctx context.Context, id uint64) (ads.Ad, error)
 	GetAdsList(ctx context.Context, params ads.ListParams) ([]ads.Ad, error)

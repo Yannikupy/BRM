@@ -15,6 +15,7 @@ import (
 // @Summary		Получение информации о компании
 // @Description	Возвращает название и статистику компании для главной страницы
 // @Tags			core/companies
+// @Security		ApiKeyAuth
 // @Produce		json
 // @Param			id	path		int					true	"id компании"
 // @Success		200	{object}	mainPageResponse	"Успешное получение данных"

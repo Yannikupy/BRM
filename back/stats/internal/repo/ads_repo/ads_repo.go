@@ -13,8 +13,7 @@ type adsRepoImpl struct {
 
 const getActiveAdsAmountQuery = `
 	SELECT COUNT(*) FROM "ads"
-	WHERE "company_id" = $1 AND NOT "is_deleted"
-	GROUP BY "company_id", "is_deleted";`
+	WHERE "company_id" = $1 AND NOT "is_deleted";`
 
 func (a *adsRepoImpl) GetActiveAdsAmount(ctx context.Context, companyId uint64) (uint, error) {
 	row := a.QueryRow(ctx, getActiveAdsAmountQuery, companyId)

@@ -37,7 +37,7 @@ func (c *coreRepoImpl) GetCompanyAbsoluteRating(ctx context.Context, companyId u
 }
 
 func (c *coreRepoImpl) GetCompanyRelativeRating(ctx context.Context, companyId uint64) (float64, error) {
-	row := c.QueryRow(ctx, getCompaniesAmountQuery, companyId)
+	row := c.QueryRow(ctx, getCompaniesAmountQuery)
 	var amount float64
 	if err := row.Scan(&amount); errors.Is(err, pgx.ErrNoRows) {
 		return .0, model.ErrCompanyNotExists

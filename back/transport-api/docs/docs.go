@@ -660,6 +660,11 @@ const docTemplate = `{
         },
         "/companies/{id}/mainpage": {
             "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "Возвращает название и статистику компании для главной страницы",
                 "produces": [
                     "application/json"
@@ -2188,28 +2193,6 @@ const docTemplate = `{
         "companies.mainPageData": {
             "type": "object",
             "properties": {
-                "stats": {
-                    "$ref": "#/definitions/companies.mainPageStatsData"
-                },
-                "title": {
-                    "type": "string"
-                }
-            }
-        },
-        "companies.mainPageResponse": {
-            "type": "object",
-            "properties": {
-                "data": {
-                    "$ref": "#/definitions/companies.mainPageData"
-                },
-                "error": {
-                    "type": "string"
-                }
-            }
-        },
-        "companies.mainPageStatsData": {
-            "type": "object",
-            "properties": {
                 "active_ads_aount": {
                     "type": "integer"
                 },
@@ -2230,6 +2213,17 @@ const docTemplate = `{
                 },
                 "total_leads_amount": {
                     "type": "integer"
+                }
+            }
+        },
+        "companies.mainPageResponse": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "$ref": "#/definitions/companies.mainPageData"
+                },
+                "error": {
+                    "type": "string"
                 }
             }
         },
