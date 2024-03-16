@@ -1,0 +1,48 @@
+<div class="login">
+  <form [formGroup]="form" (ngSubmit)="onSubmit()" class="login-form">
+    <div>
+      <mat-form-field appearance="fill">
+        <mat-label>Введите имя</mat-label>
+        <input
+          matInput
+          type="text"
+          placeholder="Имя"
+          [formControl]="first_name"
+        />
+      </mat-form-field>
+    </div>
+    <div>
+      <mat-form-field appearance="fill">
+        <mat-label>Введите фамилию</mat-label>
+        <input
+          matInput
+          type="text"
+          placeholder="Фамилия"
+          [formControl]="second_name"
+        />
+      </mat-form-field>
+    </div>
+    <div>
+      <mat-form-field appearance="fill">
+        <mat-label>Введите email</mat-label>
+        <input matInput type="text" placeholder="Email" [formControl]="email" />
+      </mat-form-field>
+    </div>
+    <div>
+      <mat-form-field appearance="fill">
+        <mat-label>Введите пароль</mat-label>
+        <input
+          matInput
+          type="password"
+          placeholder="Password"
+          [formControl]="password"
+        />
+      </mat-form-field>
+    </div>
+    <div>
+      <button mat-raised-button class="submit-button" type="submit">
+        Зарегистрироваться
+      </button>
+    </div>
+  </form>
+</div>
