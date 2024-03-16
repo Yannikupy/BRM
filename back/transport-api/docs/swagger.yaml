@@ -11,7 +11,7 @@ definitions:
       id:
         type: integer
       industry:
-        type: integer
+        type: string
       is_deleted:
         type: boolean
       price:
@@ -42,12 +42,21 @@ definitions:
   ads.addAdRequest:
     properties:
       industry:
-        type: integer
+        type: string
       price:
         type: integer
       text:
         type: string
       title:
+        type: string
+    type: object
+  ads.industriesResponse:
+    properties:
+      data:
+        additionalProperties:
+          type: integer
+        type: object
+      error:
         type: string
     type: object
   ads.responseData:
@@ -82,7 +91,7 @@ definitions:
   ads.updateAdRequest:
     properties:
       industry:
-        type: integer
+        type: string
       price:
         type: integer
       responsible:
@@ -101,7 +110,7 @@ definitions:
       id:
         type: integer
       industry:
-        type: integer
+        type: string
       is_deleted:
         type: boolean
       name:
@@ -129,20 +138,6 @@ definitions:
     type: object
   companies.mainPageData:
     properties:
-      stats:
-        $ref: '#/definitions/companies.mainPageStatsData'
-      title:
-        type: string
-    type: object
-  companies.mainPageResponse:
-    properties:
-      data:
-        $ref: '#/definitions/companies.mainPageData'
-      error:
-        type: string
-    type: object
-  companies.mainPageStatsData:
-    properties:
       active_ads_aount:
         type: integer
       active_leads_amount:
@@ -158,12 +153,19 @@ definitions:
       total_leads_amount:
         type: integer
     type: object
+  companies.mainPageResponse:
+    properties:
+      data:
+        $ref: '#/definitions/companies.mainPageData'
+      error:
+        type: string
+    type: object
   companies.updateCompanyRequest:
     properties:
       description:
         type: string
       industry:
-        type: integer
+        type: string
       name:
         type: string
       owner_id:
@@ -290,49 +292,31 @@ definitions:
       second_name:
         type: string
     type: object
-  leads.addLeadRequest:
-    properties:
-      consumer_id:
-        type: integer
-      price:
-        type: integer
-      producer_id:
-        type: integer
-      responsible_id:
-        type: integer
-      text:
-        type: string
-      title:
-        type: string
-    type: object
   leads.leadData:
     properties:
-      consumer_id:
+      ad_id:
         type: integer
-      created_at:
+      client_company:
         type: integer
-      lead_id:
+      client_employee:
         type: integer
+      company_id:
+        type: integer
+      creation_date:
+        type: integer
+      description:
+        type: string
+      id:
+        type: integer
+      is_deleted:
+        type: boolean
       price:
         type: integer
-      producer_id:
-        type: integer
-      responsible_id:
+      responsible:
         type: integer
       status:
-        type: integer
-      text:
         type: string
       title:
-        type: string
-    type: object
-  leads.leadListResponse:
-    properties:
-      data:
-        items:
-          $ref: '#/definitions/leads.leadData'
-        type: array
-      error:
         type: string
     type: object
   leads.leadResponse:
@@ -342,24 +326,33 @@ definitions:
       error:
         type: string
     type: object
-  leads.stageResponse:
+  leads.leadsListResponse:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/leads.leadData'
+        type: array
+      error:
+        type: string
+    type: object
+  leads.statusesResponse:
     properties:
       data:
         additionalProperties:
-          type: string
+          type: integer
         type: object
       error:
         type: string
     type: object
   leads.updateLeadRequest:
     properties:
+      description:
+        type: string
       price:
         type: integer
-      responsible_id:
+      responsible:
         type: integer
       status:
-        type: integer
-      text:
         type: string
       title:
         type: string
@@ -464,7 +457,7 @@ paths:
       - description: Поиск по отрасли
         in: query
         name: industry
-        type: integer
+        type: string
       - description: Сортировка по возрастанию цены
         in: query
         name: by_price
@@ -686,6 +679,25 @@ paths:
       summary: Откликнуться на объявление
       tags:
       - ads
+  /ads/industries:
+    get:
+      description: Возвращает словарь из возможных отраслей объявлений и их id
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Успешное получение данных
+          schema:
+            $ref: '#/definitions/ads.industriesResponse'
+        "500":
+          description: Проблемы на стороне сервера
+          schema:
+            $ref: '#/definitions/ads.industriesResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Получение отраслей
+      tags:
+      - ads
   /companies/{id}:
     delete:
       description: Безвозвратно удаляет компанию и всё, что с этой компанией связано
@@ -849,12 +861,14 @@ paths:
           description: Проблемы на стороне сервера
           schema:
             $ref: '#/definitions/companies.mainPageResponse'
+      security:
+      - ApiKeyAuth: []
       summary: Получение информации о компании
       tags:
       - core/companies
   /companies/industries:
     get:
-      description: Возвращает словарь из отраслей и их id
+      description: Возвращает словарь из возможных отраслей компаний и их id
       produces:
       - application/json
       responses:
@@ -869,33 +883,6 @@ paths:
       security:
       - ApiKeyAuth: []
       summary: Получение отраслей
-      tags:
-      - core/companies
-  /companies/industries/{id}:
-    get:
-      description: Возвращает название отрасли по id
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: Успешное получение данных
-          schema:
-            $ref: '#/definitions/companies.industriesResponse'
-        "400":
-          description: Неверный формат входных данных
-          schema:
-            $ref: '#/definitions/companies.companyResponse'
-        "404":
-          description: Отрасль не найдена
-          schema:
-            $ref: '#/definitions/companies.companyResponse'
-        "500":
-          description: Проблемы на стороне сервера
-          schema:
-            $ref: '#/definitions/companies.industriesResponse'
-      security:
-      - ApiKeyAuth: []
-      summary: Получение отрасли по id
       tags:
       - core/companies
   /contacts:
@@ -1350,94 +1337,39 @@ paths:
         name: offset
         required: true
         type: integer
-      - description: Поиск по названию/тексту
+      - description: Фильтрация по id ответственного
         in: query
-        name: name
-        required: true
-        type: string
-      - description: Поиск по этапу
-        in: query
-        name: stage
-        required: true
+        name: responsible
         type: integer
+      - description: Фильтрация по статусу
+        in: query
+        name: status
+        type: string
       produces:
       - application/json
       responses:
         "200":
           description: Успешное получение сделок
           schema:
-            $ref: '#/definitions/leads.leadListResponse'
+            $ref: '#/definitions/leads.leadsListResponse'
         "400":
           description: Неверный формат входных данных
           schema:
-            $ref: '#/definitions/leads.leadListResponse'
+            $ref: '#/definitions/leads.leadsListResponse'
+        "401":
+          description: Ошибка авторизации
+          schema:
+            $ref: '#/definitions/leads.leadResponse'
         "500":
           description: Проблемы на стороне сервера
           schema:
-            $ref: '#/definitions/leads.leadListResponse'
+            $ref: '#/definitions/leads.leadsListResponse'
+      security:
+      - ApiKeyAuth: []
       summary: Получение списка сделок
       tags:
       - leads
-    post:
-      consumes:
-      - application/json
-      description: Добавляет новую сделку
-      parameters:
-      - description: Новая сделка в JSON
-        in: body
-        name: input
-        required: true
-        schema:
-          $ref: '#/definitions/leads.addLeadRequest'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: Успешное добавление задачи
-          schema:
-            $ref: '#/definitions/leads.leadResponse'
-        "400":
-          description: Неверный формат входных данных
-          schema:
-            $ref: '#/definitions/leads.leadResponse'
-        "500":
-          description: Проблемы на стороне сервера
-          schema:
-            $ref: '#/definitions/leads.leadResponse'
-      summary: Добавление новой сделки
-      tags:
-      - leads
   /leads/{id}:
-    delete:
-      description: Безвозвратно удаляет сделку
-      parameters:
-      - description: id сделки
-        in: path
-        name: id
-        required: true
-        type: integer
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: Успешное удаление сделки
-          schema:
-            $ref: '#/definitions/leads.leadResponse'
-        "400":
-          description: Неверный формат входных данных
-          schema:
-            $ref: '#/definitions/leads.leadResponse'
-        "404":
-          description: Сделка не найдена
-          schema:
-            $ref: '#/definitions/leads.leadResponse'
-        "500":
-          description: Проблемы на стороне сервера
-          schema:
-            $ref: '#/definitions/leads.leadResponse'
-      summary: Удаление сделки
-      tags:
-      - leads
     get:
       description: Получает сделку по id
       parameters:
@@ -1457,14 +1389,20 @@ paths:
           description: Неверный формат входных данных
           schema:
             $ref: '#/definitions/leads.leadResponse'
+        "401":
+          description: Ошибка авторизации
+          schema:
+            $ref: '#/definitions/leads.leadResponse'
         "404":
-          description: Задача не найдена
+          description: Сделка не найдена
           schema:
             $ref: '#/definitions/leads.leadResponse'
         "500":
           description: Проблемы на стороне сервера
           schema:
             $ref: '#/definitions/leads.leadResponse'
+      security:
+      - ApiKeyAuth: []
       summary: Получение сделки
       tags:
       - leads
@@ -1495,6 +1433,14 @@ paths:
           description: Неверный формат входных данных
           schema:
             $ref: '#/definitions/leads.leadResponse'
+        "401":
+          description: Ошибка авторизации
+          schema:
+            $ref: '#/definitions/leads.leadResponse'
+        "403":
+          description: Нет прав на редактрование сделки
+          schema:
+            $ref: '#/definitions/leads.leadResponse'
         "404":
           description: Сделка не найдена
           schema:
@@ -1503,28 +1449,32 @@ paths:
           description: Проблемы на стороне сервера
           schema:
             $ref: '#/definitions/leads.leadResponse'
+      security:
+      - ApiKeyAuth: []
       summary: Редактирование сделки
       tags:
       - leads
-  /leads/stages:
+  /leads/statuses:
     get:
-      description: Возвращает словарь из этапов и их id
+      description: Возвращает мапу со статусами и их id
       produces:
       - application/json
       responses:
         "200":
-          description: Успешное получение данных
+          description: Успешное получение
           schema:
-            $ref: '#/definitions/leads.stageResponse'
-        "400":
-          description: Неверный формат входных данных
+            $ref: '#/definitions/leads.statusesResponse'
+        "401":
+          description: Ошибка авторизации
           schema:
-            $ref: '#/definitions/leads.stageResponse'
+            $ref: '#/definitions/leads.statusesResponse'
         "500":
           description: Проблемы на стороне сервера
           schema:
-            $ref: '#/definitions/leads.stageResponse'
-      summary: Получение этапов сделки
+            $ref: '#/definitions/leads.statusesResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Получение статусов и их id
       tags:
       - leads
   /responses:

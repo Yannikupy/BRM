@@ -1,0 +1,18 @@
+"postgres-leads":
+  "username": "root"
+  "host": "postgres-leads"
+  "port": 5432
+  "dbname": "leads-db"
+  "sslmode": "disable"
+
+"grpc-core-client":
+  "host": "brm-core"
+  "port": 50000
+
+"grpc-ads-client":
+  "host": "brm-ads"
+  "port": 50002
+
+"grpc-server":
+  "network": "tcp"
+  "port": 50003

@@ -15,6 +15,7 @@ import (
 // @Summary		Получение информации о компании
 // @Description	Возвращает название и статистику компании для главной страницы
 // @Tags			core/companies
+// @Security		ApiKeyAuth
 // @Produce		json
 // @Param			id	path		int					true	"id компании"
 // @Success		200	{object}	mainPageResponse	"Успешное получение данных"
@@ -26,31 +27,34 @@ import (
 // @Router			/companies/{id}/mainpage [get]
 func GetCompanyMainPage(a app.App) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		// TODO implement
-		c.JSON(http.StatusOK, mainPageResponse{
-			Data: &mainPageData{
-				Title: "Какаято компания",
-				Stats: mainPageStatsData{
-					ActiveLeadsAmount:     20,
-					ActiveLeadsPrice:      30,
-					ClosedLeadsAmount:     40,
-					ClosedLeadsPrice:      50,
-					ActiveAdsAmount:       60,
-					CompanyAbsoluteRating: 4.9,
-					CompanyRelativeRating: 0.99,
-				},
-			},
-			Err: nil,
-		})
+		companyId, _, ok := middleware.GetAuthData(c)
+		if !ok {
+			c.AbortWithStatusJSON(http.StatusUnauthorized, errorResponse(model.ErrUnauthorized))
+			return
+		}
+
+		page, err := a.GetCompanyMainPage(c, companyId)
+		switch {
+		case err == nil:
+			data := mainPageToData(page)
+			c.JSON(http.StatusOK, mainPageResponse{
+				Data: &data,
+				Err:  nil,
+			})
+		case errors.Is(err, model.ErrCompanyNotExists):
+			c.AbortWithStatusJSON(http.StatusNotFound, errorResponse(model.ErrCompanyNotExists))
+		case errors.Is(err, model.ErrStatsError):
+			c.AbortWithStatusJSON(http.StatusInternalServerError, errorResponse(model.ErrStatsError))
+		default:
+			c.AbortWithStatusJSON(http.StatusInternalServerError, errorResponse(model.ErrStatsError))
+		}
 	}
 }
 
 // @Summary		Получение информации о компании
 // @Description	Возвращает поля компании для страницы редактирования
 // @Tags			core/companies
-//
 // @Security		ApiKeyAuth
-//
 // @Produce		json
 // @Param			id	path		int				true	"id компании"
 // @Success		200	{object}	companyResponse	"Успешное получение данных"
@@ -94,9 +98,7 @@ func GetCompany(a app.App) gin.HandlerFunc {
 // @Summary		Редактирование полей компании
 // @Description	Изменяет одно или несколько полей компании
 // @Tags			core/companies
-//
 // @Security		ApiKeyAuth
-//
 // @Produce		json
 // @Param			id		path		int						true	"id компании"
 // @Param			input	body		updateCompanyRequest	true	"Новые поля"
@@ -159,9 +161,7 @@ func UpdateCompany(a app.App) gin.HandlerFunc {
 // @Summary		Удаление компании
 // @Description	Безвозвратно удаляет компанию и всё, что с этой компанией связано
 // @Tags			core/companies
-//
 // @Security		ApiKeyAuth
-//
 // @Produce		json
 // @Param			id	path		int				true	"id компании"
 // @Success		200	{object}	companyResponse	"Успешное удаление компании"
@@ -204,7 +204,7 @@ func DeleteCompany(a app.App) gin.HandlerFunc {
 }
 
 // @Summary		Получение отраслей
-// @Description	Возвращает словарь из отраслей и их id
+// @Description	Возвращает словарь из возможных отраслей компаний и их id
 // @Tags			core/companies
 // @Security		ApiKeyAuth
 // @Produce		json
@@ -213,7 +213,7 @@ func DeleteCompany(a app.App) gin.HandlerFunc {
 // @Router			/companies/industries [get]
 func GetIndustriesMap(a app.App) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		industries, err := a.GetIndustriesList(c)
+		industries, err := a.GetCompanyIndustries(c)
 
 		switch {
 		case err == nil:
@@ -221,42 +221,6 @@ func GetIndustriesMap(a app.App) gin.HandlerFunc {
 				Data: industries,
 				Err:  nil,
 			})
-		case errors.Is(err, model.ErrCoreError):
-			c.AbortWithStatusJSON(http.StatusInternalServerError, errorResponse(model.ErrCoreError))
-		default:
-			c.AbortWithStatusJSON(http.StatusInternalServerError, errorResponse(model.ErrCoreUnknown))
-		}
-	}
-}
-
-// @Summary		Получение отрасли по id
-// @Description	Возвращает название отрасли по id
-// @Tags			core/companies
-// @Security		ApiKeyAuth
-// @Produce		json
-// @Success		200	{object}	industriesResponse	"Успешное получение данных"
-// @Failure		500	{object}	industriesResponse	"Проблемы на стороне сервера"
-// @Failure		400	{object}	companyResponse		"Неверный формат входных данных"
-// @Failure		404	{object}	companyResponse		"Отрасль не найдена"
-// @Router			/companies/industries/{id} [get]
-func GetIndustry(a app.App) gin.HandlerFunc {
-	return func(c *gin.Context) {
-		industryId, err := strconv.ParseUint(c.Param("id"), 10, 64)
-		if err != nil {
-			c.AbortWithStatusJSON(http.StatusBadRequest, errorResponse(model.ErrInvalidInput))
-			return
-		}
-
-		industry, err := a.GetIndustryById(c, industryId)
-
-		switch {
-		case err == nil:
-			c.JSON(http.StatusOK, industryResponse{
-				Data: industry,
-				Err:  nil,
-			})
-		case errors.Is(err, model.ErrIndustryNotExists):
-			c.AbortWithStatusJSON(http.StatusNotFound, errorResponse(model.ErrIndustryNotExists))
 		case errors.Is(err, model.ErrCoreError):
 			c.AbortWithStatusJSON(http.StatusInternalServerError, errorResponse(model.ErrCoreError))
 		default:

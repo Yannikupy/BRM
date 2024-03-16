@@ -1,20 +1,48 @@
 package leads
 
-type leadData struct {
-	LeadId        int    `json:"lead_id"`
-	ProducerId    int    `json:"producer_id"`
-	ConsumerId    int    `json:"consumer_id"`
-	Title         string `json:"title"`
-	Text          string `json:"text"`
-	Price         int    `json:"price"`
-	Status        int    `json:"status"`
-	CreatedAt     uint   `json:"created_at"`
-	ResponsibleId int    `json:"responsible_id"`
+import "transport-api/internal/model/leads"
+
+func errorResponse(err error) leadResponse {
+	if err == nil {
+		return leadResponse{}
+	}
+	errStr := err.Error()
+	return leadResponse{
+		Data: nil,
+		Err:  &errStr,
+	}
 }
 
-type stageResponse struct {
-	Stages map[int]string `json:"data"`
-	Err    *string        `json:"error"`
+type leadData struct {
+	Id             uint64 `json:"id"`
+	AdId           uint64 `json:"ad_id"`
+	Title          string `json:"title"`
+	Description    string `json:"description"`
+	Price          uint   `json:"price"`
+	Status         string `json:"status"`
+	Responsible    uint64 `json:"responsible"`
+	CompanyId      uint64 `json:"company_id"`
+	ClientCompany  uint64 `json:"client_company"`
+	ClientEmployee uint64 `json:"client_employee"`
+	CreationDate   int64  `json:"creation_date"`
+	IsDeleted      bool   `json:"is_deleted"`
+}
+
+func leadToLeadData(lead leads.Lead) leadData {
+	return leadData{
+		Id:             lead.Id,
+		AdId:           lead.AdId,
+		Title:          lead.Title,
+		Description:    lead.Description,
+		Price:          lead.Price,
+		Status:         lead.Status,
+		Responsible:    lead.Responsible,
+		CompanyId:      lead.CompanyId,
+		ClientCompany:  lead.ClientCompany,
+		ClientEmployee: lead.ClientEmployee,
+		CreationDate:   lead.CreationDate,
+		IsDeleted:      lead.IsDeleted,
+	}
 }
 
 type leadResponse struct {
@@ -22,7 +50,25 @@ type leadResponse struct {
 	Err  *string   `json:"error"`
 }
 
-type leadListResponse struct {
+type leadsListResponse struct {
 	Data []leadData `json:"data"`
 	Err  *string    `json:"error"`
+}
+
+func leadsToLeadsDataList(leadsList []leads.Lead) []leadData {
+	data := make([]leadData, len(leadsList))
+	for i, lead := range leadsList {
+		data[i] = leadToLeadData(lead)
+	}
+	return data
+}
+
+type statusesResponse struct {
+	Data map[string]uint64 `json:"data"`
+	Err  *string           `json:"error"`
+}
+
+type statusResponse struct {
+	Data string  `json:"data"`
+	Err  *string `json:"error"`
 }

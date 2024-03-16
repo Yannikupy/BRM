@@ -58,7 +58,7 @@ const docTemplate = `{
                         "in": "query"
                     },
                     {
-                        "type": "integer",
+                        "type": "string",
                         "description": "Поиск по отрасли",
                         "name": "industry",
                         "in": "query"
@@ -166,6 +166,37 @@ const docTemplate = `{
                         "description": "Проблемы на стороне сервера",
                         "schema": {
                             "$ref": "#/definitions/ads.adResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/ads/industries": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Возвращает словарь из возможных отраслей объявлений и их id",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "ads"
+                ],
+                "summary": "Получение отраслей",
+                "responses": {
+                    "200": {
+                        "description": "Успешное получение данных",
+                        "schema": {
+                            "$ref": "#/definitions/ads.industriesResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Проблемы на стороне сервера",
+                        "schema": {
+                            "$ref": "#/definitions/ads.industriesResponse"
                         }
                     }
                 }
@@ -406,7 +437,7 @@ const docTemplate = `{
                         "ApiKeyAuth": []
                     }
                 ],
-                "description": "Возвращает словарь из отраслей и их id",
+                "description": "Возвращает словарь из возможных отраслей компаний и их id",
                 "produces": [
                     "application/json"
                 ],
@@ -419,49 +450,6 @@ const docTemplate = `{
                         "description": "Успешное получение данных",
                         "schema": {
                             "$ref": "#/definitions/companies.industriesResponse"
-                        }
-                    },
-                    "500": {
-                        "description": "Проблемы на стороне сервера",
-                        "schema": {
-                            "$ref": "#/definitions/companies.industriesResponse"
-                        }
-                    }
-                }
-            }
-        },
-        "/companies/industries/{id}": {
-            "get": {
-                "security": [
-                    {
-                        "ApiKeyAuth": []
-                    }
-                ],
-                "description": "Возвращает название отрасли по id",
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "core/companies"
-                ],
-                "summary": "Получение отрасли по id",
-                "responses": {
-                    "200": {
-                        "description": "Успешное получение данных",
-                        "schema": {
-                            "$ref": "#/definitions/companies.industriesResponse"
-                        }
-                    },
-                    "400": {
-                        "description": "Неверный формат входных данных",
-                        "schema": {
-                            "$ref": "#/definitions/companies.companyResponse"
-                        }
-                    },
-                    "404": {
-                        "description": "Отрасль не найдена",
-                        "schema": {
-                            "$ref": "#/definitions/companies.companyResponse"
                         }
                     },
                     "500": {
@@ -672,6 +660,11 @@ const docTemplate = `{
         },
         "/companies/{id}/mainpage": {
             "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "Возвращает название и статистику компании для главной страницы",
                 "produces": [
                     "application/json"
@@ -1407,6 +1400,11 @@ const docTemplate = `{
         },
         "/leads": {
             "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "Получает список сделок с использованием фильтрации и пагинации",
                 "produces": [
                     "application/json"
@@ -1431,73 +1429,33 @@ const docTemplate = `{
                         "required": true
                     },
                     {
-                        "type": "string",
-                        "description": "Поиск по названию/тексту",
-                        "name": "name",
-                        "in": "query",
-                        "required": true
+                        "type": "integer",
+                        "description": "Фильтрация по id ответственного",
+                        "name": "responsible",
+                        "in": "query"
                     },
                     {
-                        "type": "integer",
-                        "description": "Поиск по этапу",
-                        "name": "stage",
-                        "in": "query",
-                        "required": true
+                        "type": "string",
+                        "description": "Фильтрация по статусу",
+                        "name": "status",
+                        "in": "query"
                     }
                 ],
                 "responses": {
                     "200": {
                         "description": "Успешное получение сделок",
                         "schema": {
-                            "$ref": "#/definitions/leads.leadListResponse"
+                            "$ref": "#/definitions/leads.leadsListResponse"
                         }
                     },
                     "400": {
                         "description": "Неверный формат входных данных",
                         "schema": {
-                            "$ref": "#/definitions/leads.leadListResponse"
+                            "$ref": "#/definitions/leads.leadsListResponse"
                         }
                     },
-                    "500": {
-                        "description": "Проблемы на стороне сервера",
-                        "schema": {
-                            "$ref": "#/definitions/leads.leadListResponse"
-                        }
-                    }
-                }
-            },
-            "post": {
-                "description": "Добавляет новую сделку",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "leads"
-                ],
-                "summary": "Добавление новой сделки",
-                "parameters": [
-                    {
-                        "description": "Новая сделка в JSON",
-                        "name": "input",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/leads.addLeadRequest"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Успешное добавление задачи",
-                        "schema": {
-                            "$ref": "#/definitions/leads.leadResponse"
-                        }
-                    },
-                    "400": {
-                        "description": "Неверный формат входных данных",
+                    "401": {
+                        "description": "Ошибка авторизации",
                         "schema": {
                             "$ref": "#/definitions/leads.leadResponse"
                         }
@@ -1505,39 +1463,44 @@ const docTemplate = `{
                     "500": {
                         "description": "Проблемы на стороне сервера",
                         "schema": {
-                            "$ref": "#/definitions/leads.leadResponse"
+                            "$ref": "#/definitions/leads.leadsListResponse"
                         }
                     }
                 }
             }
         },
-        "/leads/stages": {
+        "/leads/statuses": {
             "get": {
-                "description": "Возвращает словарь из этапов и их id",
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Возвращает мапу со статусами и их id",
                 "produces": [
                     "application/json"
                 ],
                 "tags": [
                     "leads"
                 ],
-                "summary": "Получение этапов сделки",
+                "summary": "Получение статусов и их id",
                 "responses": {
                     "200": {
-                        "description": "Успешное получение данных",
+                        "description": "Успешное получение",
                         "schema": {
-                            "$ref": "#/definitions/leads.stageResponse"
+                            "$ref": "#/definitions/leads.statusesResponse"
                         }
                     },
-                    "400": {
-                        "description": "Неверный формат входных данных",
+                    "401": {
+                        "description": "Ошибка авторизации",
                         "schema": {
-                            "$ref": "#/definitions/leads.stageResponse"
+                            "$ref": "#/definitions/leads.statusesResponse"
                         }
                     },
                     "500": {
                         "description": "Проблемы на стороне сервера",
                         "schema": {
-                            "$ref": "#/definitions/leads.stageResponse"
+                            "$ref": "#/definitions/leads.statusesResponse"
                         }
                     }
                 }
@@ -1545,6 +1508,11 @@ const docTemplate = `{
         },
         "/leads/{id}": {
             "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "Получает сделку по id",
                 "produces": [
                     "application/json"
@@ -1575,8 +1543,14 @@ const docTemplate = `{
                             "$ref": "#/definitions/leads.leadResponse"
                         }
                     },
+                    "401": {
+                        "description": "Ошибка авторизации",
+                        "schema": {
+                            "$ref": "#/definitions/leads.leadResponse"
+                        }
+                    },
                     "404": {
-                        "description": "Задача не найдена",
+                        "description": "Сделка не найдена",
                         "schema": {
                             "$ref": "#/definitions/leads.leadResponse"
                         }
@@ -1590,6 +1564,11 @@ const docTemplate = `{
                 }
             },
             "put": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "Изменяет одно или несколько полей сделки",
                 "consumes": [
                     "application/json"
@@ -1632,47 +1611,14 @@ const docTemplate = `{
                             "$ref": "#/definitions/leads.leadResponse"
                         }
                     },
-                    "404": {
-                        "description": "Сделка не найдена",
+                    "401": {
+                        "description": "Ошибка авторизации",
                         "schema": {
                             "$ref": "#/definitions/leads.leadResponse"
                         }
                     },
-                    "500": {
-                        "description": "Проблемы на стороне сервера",
-                        "schema": {
-                            "$ref": "#/definitions/leads.leadResponse"
-                        }
-                    }
-                }
-            },
-            "delete": {
-                "description": "Безвозвратно удаляет сделку",
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "leads"
-                ],
-                "summary": "Удаление сделки",
-                "parameters": [
-                    {
-                        "type": "integer",
-                        "description": "id сделки",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Успешное удаление сделки",
-                        "schema": {
-                            "$ref": "#/definitions/leads.leadResponse"
-                        }
-                    },
-                    "400": {
-                        "description": "Неверный формат входных данных",
+                    "403": {
+                        "description": "Нет прав на редактрование сделки",
                         "schema": {
                             "$ref": "#/definitions/leads.leadResponse"
                         }
@@ -2050,7 +1996,7 @@ const docTemplate = `{
                     "type": "integer"
                 },
                 "industry": {
-                    "type": "integer"
+                    "type": "string"
                 },
                 "is_deleted": {
                     "type": "boolean"
@@ -2098,7 +2044,7 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "industry": {
-                    "type": "integer"
+                    "type": "string"
                 },
                 "price": {
                     "type": "integer"
@@ -2107,6 +2053,20 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "title": {
+                    "type": "string"
+                }
+            }
+        },
+        "ads.industriesResponse": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "integer"
+                    }
+                },
+                "error": {
                     "type": "string"
                 }
             }
@@ -2160,7 +2120,7 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "industry": {
-                    "type": "integer"
+                    "type": "string"
                 },
                 "price": {
                     "type": "integer"
@@ -2189,7 +2149,7 @@ const docTemplate = `{
                     "type": "integer"
                 },
                 "industry": {
-                    "type": "integer"
+                    "type": "string"
                 },
                 "is_deleted": {
                     "type": "boolean"
@@ -2233,28 +2193,6 @@ const docTemplate = `{
         "companies.mainPageData": {
             "type": "object",
             "properties": {
-                "stats": {
-                    "$ref": "#/definitions/companies.mainPageStatsData"
-                },
-                "title": {
-                    "type": "string"
-                }
-            }
-        },
-        "companies.mainPageResponse": {
-            "type": "object",
-            "properties": {
-                "data": {
-                    "$ref": "#/definitions/companies.mainPageData"
-                },
-                "error": {
-                    "type": "string"
-                }
-            }
-        },
-        "companies.mainPageStatsData": {
-            "type": "object",
-            "properties": {
                 "active_ads_aount": {
                     "type": "integer"
                 },
@@ -2278,6 +2216,17 @@ const docTemplate = `{
                 }
             }
         },
+        "companies.mainPageResponse": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "$ref": "#/definitions/companies.mainPageData"
+                },
+                "error": {
+                    "type": "string"
+                }
+            }
+        },
         "companies.updateCompanyRequest": {
             "type": "object",
             "properties": {
@@ -2285,7 +2234,7 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "industry": {
-                    "type": "integer"
+                    "type": "string"
                 },
                 "name": {
                     "type": "string"
@@ -2481,71 +2430,43 @@ const docTemplate = `{
                 }
             }
         },
-        "leads.addLeadRequest": {
-            "type": "object",
-            "properties": {
-                "consumer_id": {
-                    "type": "integer"
-                },
-                "price": {
-                    "type": "integer"
-                },
-                "producer_id": {
-                    "type": "integer"
-                },
-                "responsible_id": {
-                    "type": "integer"
-                },
-                "text": {
-                    "type": "string"
-                },
-                "title": {
-                    "type": "string"
-                }
-            }
-        },
         "leads.leadData": {
             "type": "object",
             "properties": {
-                "consumer_id": {
+                "ad_id": {
                     "type": "integer"
                 },
-                "created_at": {
+                "client_company": {
                     "type": "integer"
                 },
-                "lead_id": {
+                "client_employee": {
                     "type": "integer"
+                },
+                "company_id": {
+                    "type": "integer"
+                },
+                "creation_date": {
+                    "type": "integer"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "is_deleted": {
+                    "type": "boolean"
                 },
                 "price": {
                     "type": "integer"
                 },
-                "producer_id": {
-                    "type": "integer"
-                },
-                "responsible_id": {
+                "responsible": {
                     "type": "integer"
                 },
                 "status": {
-                    "type": "integer"
-                },
-                "text": {
                     "type": "string"
                 },
                 "title": {
-                    "type": "string"
-                }
-            }
-        },
-        "leads.leadListResponse": {
-            "type": "object",
-            "properties": {
-                "data": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/leads.leadData"
-                    }
-                },
-                "error": {
                     "type": "string"
                 }
             }
@@ -2561,13 +2482,27 @@ const docTemplate = `{
                 }
             }
         },
-        "leads.stageResponse": {
+        "leads.leadsListResponse": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/leads.leadData"
+                    }
+                },
+                "error": {
+                    "type": "string"
+                }
+            }
+        },
+        "leads.statusesResponse": {
             "type": "object",
             "properties": {
                 "data": {
                     "type": "object",
                     "additionalProperties": {
-                        "type": "string"
+                        "type": "integer"
                     }
                 },
                 "error": {
@@ -2578,16 +2513,16 @@ const docTemplate = `{
         "leads.updateLeadRequest": {
             "type": "object",
             "properties": {
+                "description": {
+                    "type": "string"
+                },
                 "price": {
                     "type": "integer"
                 },
-                "responsible_id": {
+                "responsible": {
                     "type": "integer"
                 },
                 "status": {
-                    "type": "integer"
-                },
-                "text": {
                     "type": "string"
                 },
                 "title": {

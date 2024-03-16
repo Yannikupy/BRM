@@ -5,6 +5,7 @@ import (
 	"brm-ads/internal/ports/grpcserver/pb"
 	"context"
 	"github.com/golang/protobuf/ptypes/empty"
+	"google.golang.org/protobuf/types/known/emptypb"
 	"time"
 )
 
@@ -133,4 +134,12 @@ func (s *Server) DeleteAd(ctx context.Context, req *pb.DeleteAdRequest) (*empty.
 		return nil, mapErrors(err)
 	}
 	return &empty.Empty{}, nil
+}
+
+func (s *Server) GetIndustries(ctx context.Context, _ *emptypb.Empty) (*pb.GetIndustriesResponse, error) {
+	if industries, err := s.App.GetIndustries(ctx); err != nil {
+		return nil, mapErrors(err)
+	} else {
+		return &pb.GetIndustriesResponse{Data: industries}, nil
+	}
 }

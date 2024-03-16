@@ -1,17 +1,17 @@
 CREATE TABLE ads (
     "id" SERIAL PRIMARY KEY,
-    "company_id" INTEGER,
-    "title" VARCHAR(200),
-    "text" VARCHAR(1000),
-    "industry" INTEGER,
-    "price" INTEGER,
-    "creation_date" DATE,
-    "created_by" INTEGER,
-    "responsible" INTEGER,
+    "company_id" INTEGER NOT NULL,
+    "title" VARCHAR(200) NOT NULL,
+    "text" VARCHAR(1000) NOT NULL,
+    "industry" INTEGER NOT NULL,
+    "price" INTEGER NOT NULL,
+    "creation_date" DATE NOT NULL,
+    "created_by" INTEGER NOT NULL,
+    "responsible" INTEGER NOT NULL,
     "is_deleted" BOOLEAN
 );
 
-CREATE TABLE responses_shard01 (
+CREATE TABLE responses (
     "id" SERIAL PRIMARY KEY,
     "company_id" INTEGER,
     "employee_id" INTEGER,
@@ -19,26 +19,21 @@ CREATE TABLE responses_shard01 (
     "creation_date" DATE
 );
 
-CREATE TABLE responses_shard02 (
-    "id" SERIAL PRIMARY KEY,
-    "company_id" INTEGER,
-    "employee_id" INTEGER,
-    "ad_id" INTEGER,
-    "creation_date" DATE
+CREATE TABLE industries (
+    "id" SERIAL,
+    "name" VARCHAR(100) PRIMARY KEY
 );
 
-CREATE TABLE responses_shard03 (
-    "id" SERIAL PRIMARY KEY,
-    "company_id" INTEGER,
-    "employee_id" INTEGER,
-    "ad_id" INTEGER,
-    "creation_date" DATE
-);
-
-CREATE TABLE responses_shard04 (
-    "id" SERIAL PRIMARY KEY,
-    "company_id" INTEGER,
-    "employee_id" INTEGER,
-    "ad_id" INTEGER,
-    "creation_date" DATE
-);
+INSERT INTO "industries" (name)
+VALUES
+    ('Информационные технологии'),
+    ('Юридические услуги'),
+    ('Транспорт'),
+    ('Промышленность'),
+    ('Еда и напитки'),
+    ('Одежда и обувь'),
+    ('Развлечения'),
+    ('Туризм'),
+    ('Медицина'),
+    ('Рестораны и бары'),
+    ('Гостиницы');

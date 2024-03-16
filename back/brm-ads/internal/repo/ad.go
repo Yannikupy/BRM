@@ -6,19 +6,20 @@ import (
 	"errors"
 	"fmt"
 	"github.com/jackc/pgx/v5"
+	"github.com/jackc/pgx/v5/pgconn"
 )
 
 const (
 	createAdQuery = `
 		INSERT INTO "ads" ("company_id", "title", "text", "industry", "price", "creation_date", "created_by", "responsible", "is_deleted")
-		VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+		VALUES ($1, $2, $3, (SELECT "industries"."id" FROM "industries" WHERE "name" = $4), $5, $6, $7, $8, $9)
 		RETURNING "id";`
 
 	updateAdQuery = `
 		UPDATE "ads"
 		SET "title" = $2,
 		    "text" = $3,
-		    "industry" = $4,
+		    "industry" = (SELECT "industries"."id" FROM "industries" WHERE "name" = $4),
 		    "price" = $5,
 		    "responsible" = $6
 		WHERE "id" = $1 AND (NOT "is_deleted");`
@@ -29,17 +30,43 @@ const (
 		WHERE "id" = $1 AND (NOT "is_deleted");`
 
 	getAdByIdQuery = `
-		SELECT * FROM "ads"
-		WHERE "id" = $1 AND (NOT "is_deleted");`
+		SELECT  "ads"."id",
+		        "ads"."company_id",
+		        "ads"."title",
+		        "ads"."text",
+		        "industries"."name",
+		        "ads"."price",
+		        "ads"."creation_date",
+		        "ads"."created_by",
+		        "ads"."responsible",
+		        "ads"."is_deleted"
+		       FROM "ads"
+		INNER JOIN "industries" ON "industries"."id" = "ads"."industry"        
+		WHERE "ads"."id" = $1 AND (NOT "is_deleted");`
 
 	getAdsByPatternQuery = `
-		SELECT * FROM "ads"
+		SELECT  "ads"."id",
+		        "ads"."company_id",
+		        "ads"."title",
+		        "ads"."text",
+		        "industries"."name",
+		        "ads"."price",
+		        "ads"."creation_date",
+		        "ads"."created_by",
+		        "ads"."responsible",
+		        "ads"."is_deleted"
+		       FROM "ads"
+		INNER JOIN "industries" ON "industries"."id" = "ads"."industry" 
 		WHERE ("title" LIKE $1 OR "text" LIKE $1) AND (NOT "is_deleted")
 		LIMIT $2 OFFSET $3;`
+
+	getIndustriesQuery = `
+		SELECT * FROM "industries";`
 )
 
 func (a *adRepoImpl) CreateAd(ctx context.Context, ad model.Ad) (model.Ad, error) {
 	var adId uint64
+	var pgErr *pgconn.PgError
 	if err := a.QueryRow(ctx, createAdQuery,
 		ad.CompanyId,
 		ad.Title,
@@ -50,8 +77,13 @@ func (a *adRepoImpl) CreateAd(ctx context.Context, ad model.Ad) (model.Ad, error
 		ad.CreatedBy,
 		ad.Responsible,
 		ad.IsDeleted,
-	).Scan(&adId); err != nil {
-		return model.Ad{}, errors.Join(model.ErrDatabaseError, err)
+	).Scan(&adId); errors.As(err, &pgErr) {
+		switch pgErr.Code {
+		case "23502":
+			return model.Ad{}, model.ErrIndustryNotExists
+		default:
+			return model.Ad{}, errors.Join(model.ErrDatabaseError, err)
+		}
 	} else {
 		ad.Id = adId
 		return ad, nil
@@ -59,6 +91,7 @@ func (a *adRepoImpl) CreateAd(ctx context.Context, ad model.Ad) (model.Ad, error
 }
 
 func (a *adRepoImpl) UpdateAd(ctx context.Context, adId uint64, upd model.UpdateAd) (model.Ad, error) {
+	var pgErr *pgconn.PgError
 	if e, err := a.Exec(ctx, updateAdQuery,
 		adId,
 		upd.Title,
@@ -66,8 +99,13 @@ func (a *adRepoImpl) UpdateAd(ctx context.Context, adId uint64, upd model.Update
 		upd.Industry,
 		upd.Price,
 		upd.Responsible,
-	); err != nil {
-		return model.Ad{}, errors.Join(model.ErrDatabaseError, err)
+	); errors.As(err, &pgErr) {
+		switch pgErr.Code {
+		case "23502":
+			return model.Ad{}, model.ErrIndustryNotExists
+		default:
+			return model.Ad{}, errors.Join(model.ErrDatabaseError, err)
+		}
 	} else if e.RowsAffected() == 0 {
 		return model.Ad{}, model.ErrAdNotExists
 	} else {
@@ -144,14 +182,25 @@ func (a *adRepoImpl) GetAdsList(ctx context.Context, params model.AdsListParams)
 				ByCompany:  false,
 				CompanyId:  0,
 				ByIndustry: false,
-				Industry:   0,
+				Industry:   "",
 			}
 		}
 		getAdsQuery := fmt.Sprintf(`
-			SELECT * FROM "ads"
+			SELECT  "ads"."id",
+					"ads"."company_id",
+					"ads"."title",
+					"ads"."text",
+					"industries"."name",
+					"ads"."price",
+					"ads"."creation_date",
+					"ads"."created_by",
+					"ads"."responsible",
+					"ads"."is_deleted"
+				    FROM "ads"
+			INNER JOIN "industries" ON "industries"."id" = "ads"."industry" 
 			WHERE (NOT "is_deleted")
 				AND ((NOT $1) OR "company_id" = $2)
-				AND ((NOT $3) OR "industry" = $4)
+				AND ((NOT $3) OR "industry" = (SELECT "industries"."id" FROM "industries" WHERE "name" = $4))
 			%s
 			LIMIT $5 OFFSET $6;`, getOrderParam(params.Sort))
 
@@ -203,4 +252,21 @@ func getOrderParam(s *model.AdSorter) string {
 	default:
 		return "ORDER BY \"creation_date\" DESC"
 	}
+}
+
+func (a *adRepoImpl) GetIndustries(ctx context.Context) (map[string]uint64, error) {
+	rows, err := a.Query(ctx, getIndustriesQuery)
+	if err != nil {
+		return map[string]uint64{}, model.ErrDatabaseError
+	}
+	defer rows.Close()
+
+	industries := make(map[string]uint64)
+	for rows.Next() {
+		var id uint64
+		var industry string
+		_ = rows.Scan(&id, &industry)
+		industries[industry] = id
+	}
+	return industries, nil
 }

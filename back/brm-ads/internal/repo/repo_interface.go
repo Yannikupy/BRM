@@ -15,6 +15,8 @@ type AdRepo interface {
 
 	CreateResponse(ctx context.Context, resp model.Response) (model.Response, error)
 	GetResponses(ctx context.Context, companyId uint64, limit uint, offset uint) ([]model.Response, error)
+
+	GetIndustries(ctx context.Context) (map[string]uint64, error)
 }
 
 func New(conn *pgx.Conn) AdRepo {

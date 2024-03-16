@@ -107,7 +107,7 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "industry": {
-                    "type": "integer"
+                    "type": "string"
                 },
                 "name": {
                     "type": "string"
@@ -172,7 +172,7 @@ const docTemplate = `{
                     "type": "integer"
                 },
                 "industry": {
-                    "type": "integer"
+                    "type": "string"
                 },
                 "is_deleted": {
                     "type": "boolean"

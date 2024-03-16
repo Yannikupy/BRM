@@ -4,6 +4,8 @@ import (
 	"context"
 	"transport-api/internal/model/ads"
 	"transport-api/internal/model/core"
+	"transport-api/internal/model/leads"
+	"transport-api/internal/model/stats"
 )
 
 type App interface {
@@ -11,6 +13,8 @@ type App interface {
 	CoreEmployee
 	CoreContact
 	Ads
+	Leads
+	Stats
 }
 
 type CoreCompany interface {
@@ -18,8 +22,7 @@ type CoreCompany interface {
 	UpdateCompany(ctx context.Context, companyId uint64, ownerId uint64, upd core.UpdateCompany) (core.Company, error)
 	DeleteCompany(ctx context.Context, companyId uint64, ownerId uint64) error
 
-	GetIndustriesList(ctx context.Context) (map[string]uint64, error)
-	GetIndustryById(ctx context.Context, id uint64) (string, error)
+	GetCompanyIndustries(ctx context.Context) (map[string]uint64, error)
 }
 
 type CoreEmployee interface {
@@ -48,4 +51,18 @@ type Ads interface {
 
 	CreateResponse(ctx context.Context, companyId uint64, employeeId uint64, adId uint64) (ads.Response, error)
 	GetResponses(ctx context.Context, companyId uint64, employeeId uint64, limit uint, offset uint) ([]ads.Response, error)
+
+	GetAdsIndustries(ctx context.Context) (map[string]uint64, error)
+}
+
+type Leads interface {
+	GetLeads(ctx context.Context, companyId uint64, employeeId uint64, filter leads.Filter) ([]leads.Lead, error)
+	GetLeadById(ctx context.Context, companyId uint64, employeeId uint64, leadId uint64) (leads.Lead, error)
+	UpdateLead(ctx context.Context, companyId uint64, employeeId uint64, id uint64, upd leads.UpdateLead) (leads.Lead, error)
+
+	GetStatuses(ctx context.Context) (map[string]uint64, error)
+}
+
+type Stats interface {
+	GetCompanyMainPage(ctx context.Context, companyId uint64) (stats.MainPage, error)
 }

@@ -72,7 +72,7 @@ func (s *Server) UpdateCompany(ctx context.Context, req *pb.UpdateCompanyRequest
 		model.UpdateCompany{
 			Name:        req.Upd.Name,
 			Description: req.Upd.Description,
-			Industry:    uint64(req.Upd.Industry),
+			Industry:    req.Upd.Industry,
 			OwnerId:     req.Upd.OwnerId,
 		},
 	)
@@ -94,18 +94,10 @@ func (s *Server) DeleteCompany(ctx context.Context, req *pb.DeleteCompanyRequest
 	return &empty.Empty{}, nil
 }
 
-func (s *Server) GetIndustriesList(ctx context.Context, _ *emptypb.Empty) (*pb.GetIndustriesListResponse, error) {
-	if industries, err := s.App.GetIndustriesList(ctx); err != nil {
+func (s *Server) GetIndustries(ctx context.Context, _ *emptypb.Empty) (*pb.GetIndustriesResponse, error) {
+	if industries, err := s.App.GetIndustries(ctx); err != nil {
 		return nil, mapErrors(err)
 	} else {
-		return &pb.GetIndustriesListResponse{Data: industries}, nil
-	}
-}
-
-func (s *Server) GetIndustryById(ctx context.Context, req *pb.GetIndustryByIdRequest) (*pb.GetIndustryByIdResponse, error) {
-	if industry, err := s.App.GetIndustryById(ctx, req.Id); err != nil {
-		return nil, mapErrors(err)
-	} else {
-		return &pb.GetIndustryByIdResponse{Industry: industry}, nil
+		return &pb.GetIndustriesResponse{Data: industries}, nil
 	}
 }

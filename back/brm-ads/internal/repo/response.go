@@ -4,12 +4,23 @@ import (
 	"brm-ads/internal/model"
 	"context"
 	"errors"
-	"fmt"
+)
+
+const (
+	createResponseQuery = `
+		INSERT INTO "responses" ("company_id", "employee_id", "ad_id", "creation_date")
+		VALUES ($1, $2, $3, $4)
+		RETURNING "id";`
+
+	getResponsesQuery = `
+		SELECT * FROM "responses"
+		WHERE "company_id" = $1
+		LIMIT $2 OFFSET $3;`
 )
 
 func (a *adRepoImpl) CreateResponse(ctx context.Context, resp model.Response) (model.Response, error) {
 	var respId uint64
-	if err := a.QueryRow(ctx, getCreateResponseQuery(resp.CompanyId),
+	if err := a.QueryRow(ctx, createResponseQuery,
 		resp.CompanyId,
 		resp.EmployeeId,
 		resp.AdId,
@@ -22,15 +33,8 @@ func (a *adRepoImpl) CreateResponse(ctx context.Context, resp model.Response) (m
 	}
 }
 
-func getCreateResponseQuery(companyId uint64) string {
-	return fmt.Sprintf(`
-		INSERT INTO %s ("company_id", "employee_id", "ad_id", "creation_date")
-		VALUES ($1, $2, $3, $4)
-		RETURNING "id";`, getShardName(companyId))
-}
-
 func (a *adRepoImpl) GetResponses(ctx context.Context, companyId uint64, limit uint, offset uint) ([]model.Response, error) {
-	rows, err := a.Query(ctx, getGetResponsesQuery(companyId),
+	rows, err := a.Query(ctx, getResponsesQuery,
 		companyId,
 		limit,
 		offset)
@@ -52,28 +56,4 @@ func (a *adRepoImpl) GetResponses(ctx context.Context, companyId uint64, limit u
 		responses = append(responses, resp)
 	}
 	return responses, nil
-}
-
-func getGetResponsesQuery(companyId uint64) string {
-	return fmt.Sprintf(`
-		SELECT * FROM %s
-		WHERE "company_id" = $1
-		LIMIT $2 OFFSET $3;
-		`, getShardName(companyId))
-}
-
-func getShardName(companyId uint64) string {
-	switch companyId % 4 {
-	case 0:
-		return "responses_shard01"
-	case 1:
-		return "responses_shard02"
-	case 2:
-		return "responses_shard03"
-	case 3:
-		return "responses_shard04"
-	default:
-		// ахуеть как ты вообще попал сюда?
-		return ""
-	}
 }

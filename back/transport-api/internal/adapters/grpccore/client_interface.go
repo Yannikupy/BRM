@@ -5,6 +5,8 @@ import (
 	"transport-api/internal/model/core"
 )
 
+//go:generate protoc pb/core_client.proto --proto_path=pb --go-grpc_out=require_unimplemented_servers=false:. --go_out=.
+
 type CoreClient interface {
 	CoreCompany
 	CoreEmployee
@@ -16,8 +18,7 @@ type CoreCompany interface {
 	UpdateCompany(ctx context.Context, companyId uint64, ownerId uint64, upd core.UpdateCompany) (core.Company, error)
 	DeleteCompany(ctx context.Context, companyId uint64, ownerId uint64) error
 
-	GetIndustriesList(ctx context.Context) (map[string]uint64, error)
-	GetIndustryById(ctx context.Context, id uint64) (string, error)
+	GetIndustries(ctx context.Context) (map[string]uint64, error)
 }
 
 type CoreEmployee interface {

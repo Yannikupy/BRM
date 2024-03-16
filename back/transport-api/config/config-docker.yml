@@ -1,10 +1,16 @@
-"grpc-core-client":
-  "host": "brm-core"
-  "port": 50000
-
-"grpc-ads-client":
-  "host": "brm-ads"
-  "port": 50002
+"grpc-clients":
+  "core":
+    "host": "brm-core"
+    "port": 50000
+  "ads":
+    "host": "brm-ads"
+    "port": 50002
+  "leads":
+    "host": "brm-leads"
+    "port": 50003
+  "stats":
+    "host": "stats"
+    "port": 50004
 
 "http-server":
   "host": "transport-api"

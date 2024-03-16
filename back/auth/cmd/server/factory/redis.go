@@ -12,7 +12,7 @@ func ConnectToRedis() *redis.Client {
 		Addr: fmt.Sprintf("%s:%d",
 			viper.GetString("redis-tokens.host"),
 			viper.GetInt("redis-tokens.port")),
-		Password: os.Getenv("REDIS_TOKENS_PASSWORDS"),
+		Password: os.Getenv("REDIS_TOKENS_PASSWORD"),
 		DB:       viper.GetInt("redis-tokens.db"),
 	})
 }

@@ -35,9 +35,12 @@ func mapErrors(err error) error {
 	case errors.Is(err, model.ErrCoreError):
 		c = codes.ResourceExhausted
 		resErr = model.ErrCoreError
+	case errors.Is(err, model.ErrLeadsServiceError):
+		c = codes.ResourceExhausted
+		resErr = model.ErrLeadsServiceError
 	default:
 		c = codes.Unknown
-		resErr = model.ErrServiceError
+		resErr = model.ErrAdsServiceError
 	}
 
 	return status.Errorf(c, resErr.Error())

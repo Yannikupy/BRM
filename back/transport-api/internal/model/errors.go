@@ -9,6 +9,8 @@ var (
 	ErrEmployeeNotExists = errors.New("employee with required id does not exist")
 	ErrContactNotExists  = errors.New("contact with required id does not exist")
 	ErrIndustryNotExists = errors.New("industry with required id does not exists")
+	ErrLeadNotExists     = errors.New("lead with required id does not exist")
+	ErrStatusNotExists   = errors.New("status with required id does not exist")
 	ErrEmailRegistered   = errors.New("employee with this email is already registered")
 	ErrContactExist      = errors.New("this contact already exists")
 
@@ -23,4 +25,6 @@ var (
 	ErrCoreUnknown = errors.New("unknown error from brm-core")
 	ErrAdsError    = errors.New("something wrong with ads service")
 	ErrAdsUnknown  = errors.New("unknown error from brm-ads")
+	ErrLeadsError  = errors.New("something wrong with leads service")
+	ErrStatsError  = errors.New("something wrong with stats service")
 )

@@ -2,7 +2,7 @@
 // versions:
 // - protoc-gen-go-grpc v1.2.0
 // - protoc             v3.21.12
-// source: service.proto
+// source: core_client.proto
 
 package pb
 
@@ -26,8 +26,7 @@ type CoreServiceClient interface {
 	GetCompany(ctx context.Context, in *GetCompanyRequest, opts ...grpc.CallOption) (*GetCompanyResponse, error)
 	UpdateCompany(ctx context.Context, in *UpdateCompanyRequest, opts ...grpc.CallOption) (*UpdateCompanyResponse, error)
 	DeleteCompany(ctx context.Context, in *DeleteCompanyRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
-	GetIndustriesList(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*GetIndustriesListResponse, error)
-	GetIndustryById(ctx context.Context, in *GetIndustryByIdRequest, opts ...grpc.CallOption) (*GetIndustryByIdResponse, error)
+	GetIndustries(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*GetIndustriesResponse, error)
 	CreateEmployee(ctx context.Context, in *CreateEmployeeRequest, opts ...grpc.CallOption) (*CreateEmployeeResponse, error)
 	UpdateEmployee(ctx context.Context, in *UpdateEmployeeRequest, opts ...grpc.CallOption) (*UpdateEmployeeResponse, error)
 	DeleteEmployee(ctx context.Context, in *DeleteEmployeeRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
@@ -76,18 +75,9 @@ func (c *coreServiceClient) DeleteCompany(ctx context.Context, in *DeleteCompany
 	return out, nil
 }
 
-func (c *coreServiceClient) GetIndustriesList(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*GetIndustriesListResponse, error) {
-	out := new(GetIndustriesListResponse)
-	err := c.cc.Invoke(ctx, "/core.CoreService/GetIndustriesList", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *coreServiceClient) GetIndustryById(ctx context.Context, in *GetIndustryByIdRequest, opts ...grpc.CallOption) (*GetIndustryByIdResponse, error) {
-	out := new(GetIndustryByIdResponse)
-	err := c.cc.Invoke(ctx, "/core.CoreService/GetIndustryById", in, out, opts...)
+func (c *coreServiceClient) GetIndustries(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*GetIndustriesResponse, error) {
+	out := new(GetIndustriesResponse)
+	err := c.cc.Invoke(ctx, "/core.CoreService/GetIndustries", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -200,8 +190,7 @@ type CoreServiceServer interface {
 	GetCompany(context.Context, *GetCompanyRequest) (*GetCompanyResponse, error)
 	UpdateCompany(context.Context, *UpdateCompanyRequest) (*UpdateCompanyResponse, error)
 	DeleteCompany(context.Context, *DeleteCompanyRequest) (*emptypb.Empty, error)
-	GetIndustriesList(context.Context, *emptypb.Empty) (*GetIndustriesListResponse, error)
-	GetIndustryById(context.Context, *GetIndustryByIdRequest) (*GetIndustryByIdResponse, error)
+	GetIndustries(context.Context, *emptypb.Empty) (*GetIndustriesResponse, error)
 	CreateEmployee(context.Context, *CreateEmployeeRequest) (*CreateEmployeeResponse, error)
 	UpdateEmployee(context.Context, *UpdateEmployeeRequest) (*UpdateEmployeeResponse, error)
 	DeleteEmployee(context.Context, *DeleteEmployeeRequest) (*emptypb.Empty, error)
@@ -228,11 +217,8 @@ func (UnimplementedCoreServiceServer) UpdateCompany(context.Context, *UpdateComp
 func (UnimplementedCoreServiceServer) DeleteCompany(context.Context, *DeleteCompanyRequest) (*emptypb.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeleteCompany not implemented")
 }
-func (UnimplementedCoreServiceServer) GetIndustriesList(context.Context, *emptypb.Empty) (*GetIndustriesListResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetIndustriesList not implemented")
-}
-func (UnimplementedCoreServiceServer) GetIndustryById(context.Context, *GetIndustryByIdRequest) (*GetIndustryByIdResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetIndustryById not implemented")
+func (UnimplementedCoreServiceServer) GetIndustries(context.Context, *emptypb.Empty) (*GetIndustriesResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetIndustries not implemented")
 }
 func (UnimplementedCoreServiceServer) CreateEmployee(context.Context, *CreateEmployeeRequest) (*CreateEmployeeResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateEmployee not implemented")
@@ -333,38 +319,20 @@ func _CoreService_DeleteCompany_Handler(srv interface{}, ctx context.Context, de
 	return interceptor(ctx, in, info, handler)
 }
 
-func _CoreService_GetIndustriesList_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _CoreService_GetIndustries_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(emptypb.Empty)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(CoreServiceServer).GetIndustriesList(ctx, in)
+		return srv.(CoreServiceServer).GetIndustries(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/core.CoreService/GetIndustriesList",
+		FullMethod: "/core.CoreService/GetIndustries",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(CoreServiceServer).GetIndustriesList(ctx, req.(*emptypb.Empty))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _CoreService_GetIndustryById_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GetIndustryByIdRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(CoreServiceServer).GetIndustryById(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/core.CoreService/GetIndustryById",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(CoreServiceServer).GetIndustryById(ctx, req.(*GetIndustryByIdRequest))
+		return srv.(CoreServiceServer).GetIndustries(ctx, req.(*emptypb.Empty))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -587,12 +555,8 @@ var CoreService_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _CoreService_DeleteCompany_Handler,
 		},
 		{
-			MethodName: "GetIndustriesList",
-			Handler:    _CoreService_GetIndustriesList_Handler,
-		},
-		{
-			MethodName: "GetIndustryById",
-			Handler:    _CoreService_GetIndustryById_Handler,
+			MethodName: "GetIndustries",
+			Handler:    _CoreService_GetIndustries_Handler,
 		},
 		{
 			MethodName: "CreateEmployee",
@@ -640,5 +604,5 @@ var CoreService_ServiceDesc = grpc.ServiceDesc{
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "service.proto",
+	Metadata: "core_client.proto",
 }

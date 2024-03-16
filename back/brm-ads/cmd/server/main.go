@@ -3,6 +3,7 @@ package main
 import (
 	"brm-ads/cmd/server/factory"
 	"brm-ads/internal/adapters/grpccore"
+	"brm-ads/internal/adapters/grpcleads"
 	"brm-ads/internal/app"
 	"brm-ads/internal/ports/grpcserver"
 	"brm-ads/internal/repo"
@@ -50,7 +51,14 @@ func main() {
 		logs.Fatal(nil, fmt.Sprintf("create grpc core client: %s", err.Error()))
 	}
 
-	a := app.New(repo.New(adsRepo), coreClient, logs)
+	leadsClient, err := grpcleads.NewLeadsClient(ctx, fmt.Sprintf("%s:%d",
+		viper.GetString("grpc-leads-client.host"),
+		viper.GetInt("grpc-leads-client.port")))
+	if err != nil {
+		logs.Fatal(nil, fmt.Sprintf("create grpc leads client: %s", err.Error()))
+	}
+
+	a := app.New(repo.New(adsRepo), coreClient, leadsClient, logs)
 
 	srv := grpcserver.New(a, logs)
 	lis, err := factory.PrepareListener()
