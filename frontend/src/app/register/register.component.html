@@ -1,43 +1,112 @@
 <div class="login">
   <form [formGroup]="form" (ngSubmit)="onSubmit()" class="login-form">
     <div>
-      <mat-form-field appearance="fill">
-        <mat-label>Введите имя</mat-label>
-        <input
-          matInput
-          type="text"
-          placeholder="Имя"
-          [formControl]="first_name"
-        />
-      </mat-form-field>
+      <h2>Компания:</h2>
+      <div>
+        <mat-form-field appearance="fill">
+          <mat-label>Название</mat-label>
+          <input
+            matInput
+            type="text"
+            placeholder="Название"
+            [formControl]="name"
+          />
+        </mat-form-field>
+      </div>
+      <div>
+        <mat-form-field appearance="fill">
+          <mat-label>Описание</mat-label>
+          <input
+            matInput
+            type="text"
+            placeholder="Описание"
+            [formControl]="description"
+          />
+        </mat-form-field>
+      </div>
+      <div>
+        <mat-form-field>
+          <mat-label>Отрасль</mat-label>
+          <mat-select [formControl]="industry" required>
+            <mat-option>--</mat-option>
+            @for (industry of industries | keyvalue; track industry) {
+            <mat-option [value]="industry.key">{{ industry.key }}</mat-option>
+            }
+          </mat-select>
+          @if (industry.hasError('required')) {
+          <mat-error>Please choose an animal</mat-error>
+          }
+        </mat-form-field>
+      </div>
     </div>
     <div>
-      <mat-form-field appearance="fill">
-        <mat-label>Введите фамилию</mat-label>
-        <input
-          matInput
-          type="text"
-          placeholder="Фамилия"
-          [formControl]="second_name"
-        />
-      </mat-form-field>
-    </div>
-    <div>
-      <mat-form-field appearance="fill">
-        <mat-label>Введите email</mat-label>
-        <input matInput type="text" placeholder="Email" [formControl]="email" />
-      </mat-form-field>
-    </div>
-    <div>
-      <mat-form-field appearance="fill">
-        <mat-label>Введите пароль</mat-label>
-        <input
-          matInput
-          type="password"
-          placeholder="Password"
-          [formControl]="password"
-        />
-      </mat-form-field>
+      <h2>Владелец:</h2>
+      <div>
+        <mat-form-field appearance="fill">
+          <mat-label>Имя</mat-label>
+          <input
+            matInput
+            type="text"
+            placeholder="Имя"
+            [formControl]="first_name"
+          />
+        </mat-form-field>
+      </div>
+      <div>
+        <mat-form-field appearance="fill">
+          <mat-label>Фамилия</mat-label>
+          <input
+            matInput
+            type="text"
+            placeholder="Фамилия"
+            [formControl]="second_name"
+          />
+        </mat-form-field>
+      </div>
+      <div>
+        <mat-form-field appearance="fill">
+          <mat-label>Почта</mat-label>
+          <input
+            matInput
+            type="text"
+            placeholder="Почта"
+            [formControl]="email"
+          />
+        </mat-form-field>
+      </div>
+      <div>
+        <mat-form-field appearance="fill">
+          <mat-label>Пароль</mat-label>
+          <input
+            matInput
+            type="password"
+            placeholder="Пароль"
+            [formControl]="password"
+          />
+        </mat-form-field>
+      </div>
+      <div>
+        <mat-form-field appearance="fill">
+          <mat-label>Должность</mat-label>
+          <input
+            matInput
+            type="text"
+            placeholder="Должность"
+            [formControl]="job_title"
+          />
+        </mat-form-field>
+      </div>
+      <div>
+        <mat-form-field appearance="fill">
+          <mat-label>Департамент</mat-label>
+          <input
+            matInput
+            type="text"
+            placeholder="Департамент"
+            [formControl]="department"
+          />
+        </mat-form-field>
+      </div>
     </div>
     <div>
       <button mat-raised-button class="submit-button" type="submit">

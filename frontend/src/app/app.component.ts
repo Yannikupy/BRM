@@ -6,7 +6,7 @@ import {
   inject,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterOutlet } from '@angular/router';
+import { Router, RouterOutlet } from '@angular/router';
 import { MediaMatcher } from '@angular/cdk/layout';
 import { AuthService } from './services/auth.service';
 import { MatButtonModule } from '@angular/material/button';
@@ -35,6 +35,7 @@ import { LoginComponent } from './login/login.component';
 export class AppComponent implements OnInit, OnDestroy {
   title = 'BRM';
   mobileQuery: MediaQueryList;
+  router = inject(Router);
 
   authService = inject(AuthService);
 
@@ -47,7 +48,11 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    throw new Error('Method not implemented.');
+    const token = localStorage.getItem('token');
+    if (token && token != '') {
+      this.authService.currentUserSig.set({ access: token, refresh: '' });
+      this.router.navigateByUrl('/');
+    }
   }
 
   ngOnDestroy(): void {
@@ -57,5 +62,6 @@ export class AppComponent implements OnInit, OnDestroy {
   logout(): void {
     localStorage.setItem('token', '');
     this.authService.currentUserSig.set(null);
+    this.router.navigateByUrl('/login');
   }
 }
