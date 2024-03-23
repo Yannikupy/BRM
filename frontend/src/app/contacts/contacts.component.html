@@ -1,1 +1,31 @@
-<p>contacts works!</p>
+@for (contact of contacts; track contact) {
+  <mat-card class="example-card">
+    <mat-card-header>
+      <mat-card-subtitle>
+        Компания: {{ contact.employee?.company_name }}
+      </mat-card-subtitle>
+      <mat-card-subtitle> Департамент: {{ contact.employee?.department }}
+      </mat-card-subtitle>
+      <mat-card-subtitle>
+        Должность: {{ contact.employee?.job_title }}
+      </mat-card-subtitle>
+      <mat-card-title>{{ contact.employee?.first_name }} {{ contact.employee?.second_name }}</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <mat-icon>notes</mat-icon>
+      {{ contact.notes }}
+      <mat-divider></mat-divider>
+      <mat-icon>email</mat-icon>
+      {{ contact.employee?.email }}
+    </mat-card-content>
+    <mat-card-actions>
+      <button mat-button>Написать</button>
+    </mat-card-actions>
+  </mat-card>
+}
+
+<mat-paginator
+  [pageSize]="10"
+  [pageSizeOptions]="[5, 10, 25, 100]"
+  aria-label="Выберите страницу">
+</mat-paginator>

@@ -1,16 +1,17 @@
-import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
-import { IndustriesResponse } from './model/IndustriesResponse';
-import { environment } from '../../../environments/environment';
-import { CompanyAndOwnerResponse } from './model/CompanyAndOwnerResponse';
-import { AddCompanyAndOwnerRequest } from './model/AddCompanyAndOwnerRequest';
+import {HttpClient} from '@angular/common/http';
+import {Injectable} from '@angular/core';
+import {Observable} from 'rxjs';
+import {IndustriesResponse} from './model/IndustriesResponse';
+import {environment} from '../../../environments/environment';
+import {CompanyAndOwnerResponse} from './model/CompanyAndOwnerResponse';
+import {AddCompanyAndOwnerRequest} from './model/AddCompanyAndOwnerRequest';
 
 @Injectable({
   providedIn: 'root',
 })
 export class RegisterService {
-  constructor(private _http: HttpClient) {}
+  constructor(private _http: HttpClient) {
+  }
 
   getIndustries(): Observable<IndustriesResponse> {
     return this._http.get<IndustriesResponse>(

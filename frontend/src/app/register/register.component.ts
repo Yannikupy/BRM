@@ -1,20 +1,14 @@
-import { HttpClient } from '@angular/common/http';
-import { Component, OnInit, inject } from '@angular/core';
-import {
-  FormBuilder,
-  FormControl,
-  FormGroup,
-  ReactiveFormsModule,
-  Validators,
-} from '@angular/forms';
-import { MatButtonModule } from '@angular/material/button';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { Router } from '@angular/router';
-import { AuthService } from '../services/auth.service';
-import { MatSelectModule } from '@angular/material/select';
-import { RegisterService } from '../DAL/register/register.service';
-import { CommonModule } from '@angular/common';
+import {HttpClient} from '@angular/common/http';
+import {Component, inject, OnInit} from '@angular/core';
+import {FormBuilder, FormControl, FormGroup, ReactiveFormsModule,} from '@angular/forms';
+import {MatButtonModule} from '@angular/material/button';
+import {MatFormFieldModule} from '@angular/material/form-field';
+import {MatInputModule} from '@angular/material/input';
+import {Router} from '@angular/router';
+import {AuthService} from '../services/auth.service';
+import {MatSelectModule} from '@angular/material/select';
+import {RegisterService} from '../DAL/register/register.service';
+import {CommonModule} from '@angular/common';
 
 @Component({
   selector: 'app-register',

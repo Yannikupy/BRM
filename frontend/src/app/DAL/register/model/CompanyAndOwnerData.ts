@@ -1,5 +1,5 @@
-import { CompanyData } from './CompanyData';
-import { OwnerData } from './OwnerData';
+import {CompanyData} from './CompanyData';
+import {OwnerData} from './OwnerData';
 
 export interface CompanyAndOwnerData {
   company: CompanyData;

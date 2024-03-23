@@ -1,4 +1,4 @@
-import { CompanyAndOwnerData } from './CompanyAndOwnerData';
+import {CompanyAndOwnerData} from './CompanyAndOwnerData';
 
 export interface CompanyAndOwnerResponse {
   data: CompanyAndOwnerData;

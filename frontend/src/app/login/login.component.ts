@@ -1,12 +1,12 @@
-import { HttpClient } from '@angular/common/http';
-import { Component, inject } from '@angular/core';
-import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
-import { AuthService } from '../services/auth.service';
-import { LoginService } from '../DAL/login/login.service';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatButtonModule } from '@angular/material/button';
+import {HttpClient} from '@angular/common/http';
+import {Component, inject} from '@angular/core';
+import {FormBuilder, ReactiveFormsModule, Validators} from '@angular/forms';
+import {Router} from '@angular/router';
+import {AuthService} from '../services/auth.service';
+import {LoginService} from '../DAL/login/login.service';
+import {MatFormFieldModule} from '@angular/material/form-field';
+import {MatInputModule} from '@angular/material/input';
+import {MatButtonModule} from '@angular/material/button';
 
 @Component({
   selector: 'app-login',
@@ -34,7 +34,6 @@ export class LoginComponent {
 
   onSubmit(): void {
     this.loginService.login(this.form.getRawValue()).subscribe((response) => {
-      console.log('response', response);
       localStorage.setItem('token', response.data.access);
       this.authService.currentUserSig.set(response.data);
       this.router.navigateByUrl('/');

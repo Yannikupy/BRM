@@ -1,5 +1,5 @@
-import { AddCompanyData } from './AddCompanyData';
-import { AddOwnerData } from './AddOwnerData';
+import {AddCompanyData} from './AddCompanyData';
+import {AddOwnerData} from './AddOwnerData';
 
 export interface AddCompanyAndOwnerRequest {
   company: AddCompanyData;

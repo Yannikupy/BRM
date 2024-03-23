@@ -1,20 +1,14 @@
-import {
-  ChangeDetectorRef,
-  Component,
-  OnDestroy,
-  OnInit,
-  inject,
-} from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { Router, RouterOutlet } from '@angular/router';
-import { MediaMatcher } from '@angular/cdk/layout';
-import { AuthService } from './services/auth.service';
-import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
-import { MatSidenavModule } from '@angular/material/sidenav';
-import { MatToolbarModule } from '@angular/material/toolbar';
-import { LeftMenuComponent } from './left-menu/left-menu.component';
-import { LoginComponent } from './login/login.component';
+import {ChangeDetectorRef, Component, inject, OnDestroy, OnInit, ViewChild,} from '@angular/core';
+import {CommonModule} from '@angular/common';
+import {Router, RouterOutlet} from '@angular/router';
+import {MediaMatcher} from '@angular/cdk/layout';
+import {AuthService} from './services/auth.service';
+import {MatButtonModule} from '@angular/material/button';
+import {MatIconModule} from '@angular/material/icon';
+import {MatSidenavModule} from '@angular/material/sidenav';
+import {MatToolbarModule} from '@angular/material/toolbar';
+import {LeftMenuComponent} from './left-menu/left-menu.component';
+import {LoginComponent} from './login/login.component';
 
 @Component({
   selector: 'app-root',
@@ -33,6 +27,8 @@ import { LoginComponent } from './login/login.component';
   styleUrl: './app.component.scss',
 })
 export class AppComponent implements OnInit, OnDestroy {
+  @ViewChild('snav') snav: any
+
   title = 'BRM';
   mobileQuery: MediaQueryList;
   router = inject(Router);
@@ -50,8 +46,7 @@ export class AppComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     const token = localStorage.getItem('token');
     if (token && token != '') {
-      this.authService.currentUserSig.set({ access: token, refresh: '' });
-      this.router.navigateByUrl('/');
+      this.authService.currentUserSig.set({access: token, refresh: ''});
     }
   }
 
@@ -62,6 +57,7 @@ export class AppComponent implements OnInit, OnDestroy {
   logout(): void {
     localStorage.setItem('token', '');
     this.authService.currentUserSig.set(null);
+    this.snav.close();
     this.router.navigateByUrl('/login');
   }
 }
