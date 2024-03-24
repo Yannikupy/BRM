@@ -27,15 +27,12 @@
       <div>
         <mat-form-field>
           <mat-label>Отрасль</mat-label>
-          <mat-select [formControl]="industry" required>
+          <mat-select [formControl]="industry">
             <mat-option>--</mat-option>
             @for (industry of industries | keyvalue; track industry) {
               <mat-option [value]="industry.key">{{ industry.key }}</mat-option>
             }
           </mat-select>
-          @if (industry.hasError('required')) {
-            <mat-error>Please choose an animal</mat-error>
-          }
         </mat-form-field>
       </div>
     </div>

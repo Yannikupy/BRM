@@ -1,0 +1,6 @@
+/back/auth/migrations/passwords-test-data-init.sql
+/back/brm-core/migrations/core-test-data-init.sql
+/back/auth/config/.env
+/back/stats/config/.env
+/back/transport-api/config/.env
+.vscode
