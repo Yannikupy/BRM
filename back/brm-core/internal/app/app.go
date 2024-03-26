@@ -395,7 +395,7 @@ func (a *appImpl) DeleteContact(ctx context.Context, ownerId uint64, contactId u
 	return err
 }
 
-func (a *appImpl) GetContacts(ctx context.Context, ownerId uint64, pagination model.GetContacts) ([]model.Contact, error) {
+func (a *appImpl) GetContacts(ctx context.Context, ownerId uint64, pagination model.GetContacts) ([]model.Contact, uint, error) {
 	var err error
 	defer func() {
 		a.writeLog(logger.Fields{
@@ -406,11 +406,16 @@ func (a *appImpl) GetContacts(ctx context.Context, ownerId uint64, pagination mo
 
 	_, err = a.coreRepo.GetEmployeeById(ctx, ownerId)
 	if err != nil {
-		return []model.Contact{}, err
+		return []model.Contact{}, 0, err
+	}
+
+	amount, err := a.coreRepo.GetContactsAmount(ctx, ownerId)
+	if err != nil || amount == 0 {
+		return []model.Contact{}, 0, err
 	}
 
 	contacts, err := a.coreRepo.GetContacts(ctx, ownerId, pagination)
-	return contacts, err
+	return contacts, amount, err
 }
 
 func (a *appImpl) GetContactById(ctx context.Context, ownerId uint64, contactId uint64) (model.Contact, error) {

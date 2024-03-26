@@ -222,6 +222,7 @@ message GetContactsPagination {
 
 message GetContactsResponse {
   repeated Contact list = 1;
+  uint64 amount = 2;
 }
 
 message GetContactByIdRequest {

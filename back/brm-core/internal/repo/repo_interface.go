@@ -44,5 +44,6 @@ type ContactRepo interface {
 	DeleteContact(ctx context.Context, ownerId uint64, contactId uint64) error
 
 	GetContacts(ctx context.Context, ownerId uint64, pagination model.GetContacts) ([]model.Contact, error)
+	GetContactsAmount(ctx context.Context, ownerId uint64) (uint, error)
 	GetContactById(ctx context.Context, ownerId uint64, contactId uint64) (model.Contact, error)
 }

@@ -46,6 +46,6 @@ type ContactApp interface {
 	UpdateContact(ctx context.Context, ownerId uint64, contactId uint64, upd model.UpdateContact) (model.Contact, error)
 	DeleteContact(ctx context.Context, ownerId uint64, contactId uint64) error
 
-	GetContacts(ctx context.Context, ownerId uint64, pagination model.GetContacts) ([]model.Contact, error)
+	GetContacts(ctx context.Context, ownerId uint64, pagination model.GetContacts) ([]model.Contact, uint, error)
 	GetContactById(ctx context.Context, ownerId uint64, contactId uint64) (model.Contact, error)
 }

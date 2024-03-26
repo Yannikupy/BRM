@@ -78,7 +78,7 @@ func (s *Server) DeleteContact(ctx context.Context, req *pb.DeleteContactRequest
 }
 
 func (s *Server) GetContacts(ctx context.Context, req *pb.GetContactsRequest) (*pb.GetContactsResponse, error) {
-	contacts, err := s.App.GetContacts(
+	contacts, amount, err := s.App.GetContacts(
 		ctx,
 		req.OwnerId,
 		model.GetContacts{
@@ -90,7 +90,8 @@ func (s *Server) GetContacts(ctx context.Context, req *pb.GetContactsRequest) (*
 	}
 
 	resp := &pb.GetContactsResponse{
-		List: make([]*pb.Contact, len(contacts)),
+		List:   make([]*pb.Contact, len(contacts)),
+		Amount: uint64(amount),
 	}
 
 	for i, contact := range contacts {

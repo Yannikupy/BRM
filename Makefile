@@ -1,3 +1,9 @@
+run_dev_front:
+	docker-compose -p brm --profile dev_front up -d
+
+run_dev_back:
+	docker-compose -p brm --profile dev_back up -d
+
 generate_auth_swagger:
 	cd back/auth && swag fmt && swag init -g cmd/server/main.go
 
@@ -41,9 +47,3 @@ generate_transport_proto_clients:
 	cd back/transport-api && go generate transport-api/internal/adapters/grpccore
 	cd back/transport-api && go generate transport-api/internal/adapters/grpcleads
 	cd back/transport-api && go generate transport-api/internal/adapters/grpcstats
-
-run_dev_front:
-	docker-compose -p brm --profile dev_front up -d
-
-run_dev_back:
-	docker-compose -p brm --profile dev_back up -d
