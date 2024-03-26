@@ -89,7 +89,7 @@ func (c *coreClientImpl) DeleteContact(ctx context.Context, ownerId uint64, cont
 	return nil
 }
 
-func (c *coreClientImpl) GetContacts(ctx context.Context, ownerId uint64, pagination core.GetContacts) ([]core.Contact, error) {
+func (c *coreClientImpl) GetContacts(ctx context.Context, ownerId uint64, pagination core.GetContacts) ([]core.Contact, uint, error) {
 	resp, err := c.cli.GetContacts(ctx, &pb.GetContactsRequest{
 		OwnerId: ownerId,
 		Pagination: &pb.GetContactsPagination{
@@ -101,20 +101,20 @@ func (c *coreClientImpl) GetContacts(ctx context.Context, ownerId uint64, pagina
 		code := status.Code(err)
 		switch code {
 		case codes.NotFound:
-			return []core.Contact{}, model.ErrEmployeeNotExists
+			return []core.Contact{}, 0, model.ErrEmployeeNotExists
 		case codes.PermissionDenied:
-			return []core.Contact{}, model.ErrPermissionDenied
+			return []core.Contact{}, 0, model.ErrPermissionDenied
 		case codes.ResourceExhausted:
-			return []core.Contact{}, model.ErrCoreError
+			return []core.Contact{}, 0, model.ErrCoreError
 		default:
-			return []core.Contact{}, model.ErrCoreUnknown
+			return []core.Contact{}, 0, model.ErrCoreUnknown
 		}
 	}
 	contacts := make([]core.Contact, len(resp.List))
 	for i, contact := range resp.List {
 		contacts[i] = respToContact(contact)
 	}
-	return contacts, nil
+	return contacts, uint(resp.Amount), nil
 }
 
 func (c *coreClientImpl) GetContactById(ctx context.Context, ownerId uint64, contactId uint64) (core.Contact, error) {

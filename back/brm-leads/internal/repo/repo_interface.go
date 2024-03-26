@@ -3,7 +3,7 @@ package repo
 import (
 	"brm-leads/internal/model"
 	"context"
-	"github.com/jackc/pgx/v5"
+	"github.com/jackc/pgx/v5/pgxpool"
 )
 
 type LeadsRepo interface {
@@ -15,8 +15,8 @@ type LeadsRepo interface {
 	GetStatuses(ctx context.Context) (map[string]uint64, error)
 }
 
-func New(conn *pgx.Conn) LeadsRepo {
+func New(pool *pgxpool.Pool) LeadsRepo {
 	return &leadRepoImpl{
-		Conn: *conn,
+		Pool: pool,
 	}
 }

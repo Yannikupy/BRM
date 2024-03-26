@@ -4,13 +4,13 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"github.com/jackc/pgx/v5"
+	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/spf13/viper"
 	"os"
 	"time"
 )
 
-func ConnectToPostgres(ctx context.Context) (*pgx.Conn, error) {
+func ConnectToPostgres(ctx context.Context) (*pgxpool.Pool, error) {
 	coreRepoUrl := fmt.Sprintf("postgres://%s:%s@%s:%d/%s?sslmode=%s",
 		viper.GetString("postgres-core.username"),
 		os.Getenv("POSTGRES_CORE_PASSWORD"),
@@ -21,7 +21,7 @@ func ConnectToPostgres(ctx context.Context) (*pgx.Conn, error) {
 
 	// 30 attempts to connect to postgres starting in docker container
 	for i := 0; i < 30; i++ {
-		conn, err := pgx.Connect(ctx, coreRepoUrl)
+		conn, err := pgxpool.New(ctx, coreRepoUrl)
 		if err != nil {
 			time.Sleep(time.Second)
 		} else {

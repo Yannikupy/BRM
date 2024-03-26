@@ -3,8 +3,7 @@ package repo
 import (
 	"brm-core/internal/model"
 	"context"
-
-	"github.com/jackc/pgx/v5"
+	"github.com/jackc/pgx/v5/pgxpool"
 )
 
 type CoreRepo interface {
@@ -13,9 +12,9 @@ type CoreRepo interface {
 	ContactRepo
 }
 
-func New(conn *pgx.Conn) CoreRepo {
+func New(pool *pgxpool.Pool) CoreRepo {
 	return &coreRepoImpl{
-		Conn: *conn,
+		Pool: pool,
 	}
 }
 
@@ -44,5 +43,6 @@ type ContactRepo interface {
 	DeleteContact(ctx context.Context, ownerId uint64, contactId uint64) error
 
 	GetContacts(ctx context.Context, ownerId uint64, pagination model.GetContacts) ([]model.Contact, error)
+	GetContactsAmount(ctx context.Context, ownerId uint64) (uint, error)
 	GetContactById(ctx context.Context, ownerId uint64, contactId uint64) (model.Contact, error)
 }

@@ -48,7 +48,7 @@ func main() {
 	}
 	defer func() {
 		if adsConn != nil {
-			_ = adsConn.Close(ctx)
+			adsConn.Close()
 		}
 	}()
 
@@ -58,7 +58,7 @@ func main() {
 	}
 	defer func() {
 		if coreConn != nil {
-			_ = coreConn.Close(ctx)
+			coreConn.Close()
 		}
 	}()
 
@@ -68,7 +68,7 @@ func main() {
 	}
 	defer func() {
 		if leadsConn != nil {
-			_ = leadsConn.Close(ctx)
+			leadsConn.Close()
 		}
 	}()
 

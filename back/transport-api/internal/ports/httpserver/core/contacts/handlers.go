@@ -96,7 +96,7 @@ func GetContactsList(a app.App) gin.HandlerFunc {
 			return
 		}
 
-		contacts, err := a.GetContacts(c,
+		contacts, amount, err := a.GetContacts(c,
 			ownerId,
 			core.GetContacts{
 				Limit:  uint(limit),
@@ -106,8 +106,11 @@ func GetContactsList(a app.App) gin.HandlerFunc {
 		case err == nil:
 			data := contactsToContactDataList(contacts)
 			c.JSON(http.StatusOK, сontactListResponse{
-				Data: data,
-				Err:  nil,
+				Data: contactListData{
+					Contacts: data,
+					Amount:   amount,
+				},
+				Err: nil,
 			})
 		case errors.Is(err, model.ErrCompanyNotExists):
 			c.AbortWithStatusJSON(http.StatusNotFound, errorResponse(model.ErrCompanyNotExists))
