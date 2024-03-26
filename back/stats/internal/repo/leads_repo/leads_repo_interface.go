@@ -2,7 +2,7 @@ package leads_repo
 
 import (
 	"context"
-	"github.com/jackc/pgx/v5"
+	"github.com/jackc/pgx/v5/pgxpool"
 	"stats/internal/model"
 )
 
@@ -10,8 +10,8 @@ type LeadsRepo interface {
 	GetMainPageLeadsStats(ctx context.Context, companyId uint64) (model.MainPageStats, error)
 }
 
-func New(conn *pgx.Conn) LeadsRepo {
+func New(pool *pgxpool.Pool) LeadsRepo {
 	return &leadsRepoImpl{
-		Conn: *conn,
+		Pool: pool,
 	}
 }

@@ -40,6 +40,12 @@ func main() {
 	}
 
 	leadsRepo, err := factory.ConnectToPostgres(ctx)
+	if err != nil {
+		logs.Fatal(nil, fmt.Sprintf("connect to leads databse: %s", err.Error()))
+	}
+	defer func() {
+		leadsRepo.Close()
+	}()
 
 	coreClient, err := grpccore.NewCoreClient(ctx, fmt.Sprintf("%s:%d",
 		viper.GetString("grpc-core-client.host"),

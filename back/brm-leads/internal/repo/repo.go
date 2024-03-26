@@ -1,7 +1,9 @@
 package repo
 
-import "github.com/jackc/pgx/v5"
+import (
+	"github.com/jackc/pgx/v5/pgxpool"
+)
 
 type leadRepoImpl struct {
-	pgx.Conn
+	*pgxpool.Pool
 }

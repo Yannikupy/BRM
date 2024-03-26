@@ -3,8 +3,7 @@ package repo
 import (
 	"brm-core/internal/model"
 	"context"
-
-	"github.com/jackc/pgx/v5"
+	"github.com/jackc/pgx/v5/pgxpool"
 )
 
 type CoreRepo interface {
@@ -13,9 +12,9 @@ type CoreRepo interface {
 	ContactRepo
 }
 
-func New(conn *pgx.Conn) CoreRepo {
+func New(pool *pgxpool.Pool) CoreRepo {
 	return &coreRepoImpl{
-		Conn: *conn,
+		Pool: pool,
 	}
 }
 

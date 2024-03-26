@@ -3,7 +3,7 @@ package repo
 import (
 	"brm-ads/internal/model"
 	"context"
-	"github.com/jackc/pgx/v5"
+	"github.com/jackc/pgx/v5/pgxpool"
 )
 
 type AdRepo interface {
@@ -19,8 +19,8 @@ type AdRepo interface {
 	GetIndustries(ctx context.Context) (map[string]uint64, error)
 }
 
-func New(conn *pgx.Conn) AdRepo {
+func New(pool *pgxpool.Pool) AdRepo {
 	return &adRepoImpl{
-		Conn: *conn,
+		Pool: pool,
 	}
 }

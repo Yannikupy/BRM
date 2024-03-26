@@ -55,7 +55,7 @@ func main() {
 	}
 	defer func() {
 		if passConn != nil {
-			_ = passConn.Close(ctx)
+			passConn.Close()
 		}
 	}()
 
