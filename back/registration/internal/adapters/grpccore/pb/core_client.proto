@@ -6,7 +6,7 @@ import "google/protobuf/empty.proto";
 
 service CoreService {
   rpc CreateCompanyAndOwner(CreateCompanyAndOwnerRequest) returns (CreateCompanyAndOwnerResponse) {}
-  rpc GetIndustriesList(google.protobuf.Empty) returns (GetIndustriesListResponse) {}
+  rpc GetIndustries(google.protobuf.Empty) returns (GetIndustriesResponse) {}
 }
 
 message Company {
@@ -43,6 +43,6 @@ message CreateCompanyAndOwnerResponse {
   Employee owner = 2;
 }
 
-message GetIndustriesListResponse {
+message GetIndustriesResponse {
   map <string, uint64> data = 1;
 }

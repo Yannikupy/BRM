@@ -43,6 +43,11 @@ func main() {
 	if err != nil {
 		logs.Fatal(nil, err.Error())
 	}
+	defer func() {
+		if adsRepo != nil {
+			adsRepo.Close()
+		}
+	}()
 
 	coreClient, err := grpccore.NewCoreClient(ctx, fmt.Sprintf("%s:%d",
 		viper.GetString("grpc-core-client.host"),

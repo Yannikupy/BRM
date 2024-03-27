@@ -69,25 +69,26 @@ services:
       - ./back/brm-leads/migrations/:/docker-entrypoint-initdb.d/
       - leads-data:/var/lib/postgresql/data
 
-  postgres-notifications:
-    image: postgres:15.5
-    container_name: postgres-notifications
+
+  redis-stats:
+    image: redis:7
+    container_name: redis-stats
     environment:
-      POSTGRES_DB: notifications-db
-      POSTGRES_USER: root
-      POSTGRES_PASSWORD: root
+      REDIS_PASSWORD: root
+      REDIS_DATABASES: 1
     profiles: ["dev_front", "dev_back"]
     ports:
-      - "5504:5432"
+      - "6001:6379"
     volumes:
-      - ./back/notifications/migrations/:/docker-entrypoint-initdb.d/
-      - notifications-data:/var/lib/postgresql/data
+      - stats-data:/root/redis
+
 
   brm-core:
     build:
       context: back/brm-core
       dockerfile: Dockerfile
     command: ./brm-core-app --docker
+    container_name: brm-core
     profiles: ["dev_front"]
     ports:
       - "50000:50000"
@@ -99,6 +100,7 @@ services:
       context: back/brm-ads
       dockerfile: Dockerfile
     command: ./brm-ads-app --docker
+    container_name: brm-ads
     profiles: ["dev_front"]
     ports:
       - "50002:50002"
@@ -110,6 +112,7 @@ services:
       context: back/brm-leads
       dockerfile: Dockerfile
     command: ./brm-leads-app --docker
+    container_name: brm-leads
     profiles: ["dev_front"]
     ports:
       - "50003:50003"
@@ -121,6 +124,7 @@ services:
       context: back/transport-api
       dockerfile: Dockerfile
     command: ./transport-api-app --docker
+    container_name: transport-api
     profiles: ["dev_front"]
     ports:
       - "8090:8090"
@@ -133,6 +137,7 @@ services:
       context: back/registration
       dockerfile: Dockerfile
     command: ./registration-app --docker
+    container_name: registration
     profiles: ["dev_front"]
     ports:
       - "8091:8091"
@@ -144,6 +149,7 @@ services:
       context: back/auth
       dockerfile: Dockerfile
     command: ./auth-app --docker
+    container_name: auth
     profiles: ["dev_front"]
     ports:
       - "50001:50001"
@@ -152,6 +158,18 @@ services:
       - postgres-passwords
       - redis-tokens
 
+  stats:
+    build:
+      context: back/stats
+      dockerfile: Dockerfile
+    command: ./stats-app --docker
+    container_name: stats
+    profiles: ["dev_front"]
+    ports:
+      - "50004:50004"
+    depends_on:
+      - redis-stats
+
 
 volumes:
   core-data:
@@ -159,4 +177,4 @@ volumes:
   tokens-data:
   ads-data:
   leads-data:
-  notifications-data:
+  stats-data:

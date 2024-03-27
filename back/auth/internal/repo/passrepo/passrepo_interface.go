@@ -3,7 +3,7 @@ package passrepo
 import (
 	"auth/internal/model"
 	"context"
-	"github.com/jackc/pgx/v5"
+	"github.com/jackc/pgx/v5/pgxpool"
 )
 
 type PassRepo interface {
@@ -12,8 +12,8 @@ type PassRepo interface {
 	DeleteEmployee(ctx context.Context, email string) error
 }
 
-func New(conn *pgx.Conn) PassRepo {
+func New(pool *pgxpool.Pool) PassRepo {
 	return &passRepoImpl{
-		Conn: *conn,
+		Pool: pool,
 	}
 }

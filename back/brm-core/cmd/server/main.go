@@ -42,6 +42,11 @@ func main() {
 	if err != nil {
 		logs.Fatal(nil, err.Error())
 	}
+	defer func() {
+		if coreRepo != nil {
+			coreRepo.Close()
+		}
+	}()
 
 	authClient, err := grpcauth.NewAuthClient(ctx, fmt.Sprintf("%s:%d",
 		viper.GetString("grpc-auth-client.host"),

@@ -5,6 +5,7 @@ import (
 	"transport-api/internal/model/ads"
 	"transport-api/internal/model/core"
 	"transport-api/internal/model/leads"
+	"transport-api/internal/model/stats"
 )
 
 type App interface {
@@ -13,6 +14,7 @@ type App interface {
 	CoreContact
 	Ads
 	Leads
+	Stats
 }
 
 type CoreCompany interface {
@@ -36,7 +38,7 @@ type CoreContact interface {
 	CreateContact(ctx context.Context, ownerId uint64, employeeId uint64) (core.Contact, error)
 	UpdateContact(ctx context.Context, ownerId uint64, contactId uint64, upd core.UpdateContact) (core.Contact, error)
 	DeleteContact(ctx context.Context, ownerId uint64, contactId uint64) error
-	GetContacts(ctx context.Context, ownerId uint64, pagination core.GetContacts) ([]core.Contact, error)
+	GetContacts(ctx context.Context, ownerId uint64, pagination core.GetContacts) ([]core.Contact, uint, error)
 	GetContactById(ctx context.Context, ownerId uint64, contactId uint64) (core.Contact, error)
 }
 
@@ -59,4 +61,8 @@ type Leads interface {
 	UpdateLead(ctx context.Context, companyId uint64, employeeId uint64, id uint64, upd leads.UpdateLead) (leads.Lead, error)
 
 	GetStatuses(ctx context.Context) (map[string]uint64, error)
+}
+
+type Stats interface {
+	GetCompanyMainPage(ctx context.Context, companyId uint64) (stats.MainPage, error)
 }

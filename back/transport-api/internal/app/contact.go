@@ -17,7 +17,7 @@ func (a *appImpl) DeleteContact(ctx context.Context, ownerId uint64, contactId u
 	return a.core.DeleteContact(ctx, ownerId, contactId)
 }
 
-func (a *appImpl) GetContacts(ctx context.Context, ownerId uint64, pagination core.GetContacts) ([]core.Contact, error) {
+func (a *appImpl) GetContacts(ctx context.Context, ownerId uint64, pagination core.GetContacts) ([]core.Contact, uint, error) {
 	return a.core.GetContacts(ctx, ownerId, pagination)
 }
 

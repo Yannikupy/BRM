@@ -5,6 +5,8 @@ import (
 	"transport-api/internal/model/core"
 )
 
+//go:generate protoc pb/core_client.proto --proto_path=pb --go-grpc_out=require_unimplemented_servers=false:. --go_out=.
+
 type CoreClient interface {
 	CoreCompany
 	CoreEmployee
@@ -32,6 +34,6 @@ type CoreContact interface {
 	CreateContact(ctx context.Context, ownerId uint64, employeeId uint64) (core.Contact, error)
 	UpdateContact(ctx context.Context, ownerId uint64, contactId uint64, upd core.UpdateContact) (core.Contact, error)
 	DeleteContact(ctx context.Context, ownerId uint64, contactId uint64) error
-	GetContacts(ctx context.Context, ownerId uint64, pagination core.GetContacts) ([]core.Contact, error)
+	GetContacts(ctx context.Context, ownerId uint64, pagination core.GetContacts) ([]core.Contact, uint, error)
 	GetContactById(ctx context.Context, ownerId uint64, contactId uint64) (core.Contact, error)
 }

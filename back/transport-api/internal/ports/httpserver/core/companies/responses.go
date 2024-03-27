@@ -1,6 +1,9 @@
 package companies
 
-import "transport-api/internal/model/core"
+import (
+	"transport-api/internal/model/core"
+	"transport-api/internal/model/stats"
+)
 
 func errorResponse(err error) companyResponse {
 	if err == nil {
@@ -53,16 +56,23 @@ type mainPageResponse struct {
 }
 
 type mainPageData struct {
-	Title string            `json:"title"`
-	Stats mainPageStatsData `json:"stats"`
-}
-
-type mainPageStatsData struct {
-	ActiveLeadsAmount     int     `json:"active_leads_amount"`
-	ActiveLeadsPrice      int     `json:"active_leads_price"`
-	ClosedLeadsAmount     int     `json:"total_leads_amount"`
-	ClosedLeadsPrice      int     `json:"closed_leads_price"`
-	ActiveAdsAmount       int     `json:"active_ads_aount"`
+	ActiveLeadsAmount     uint    `json:"active_leads_amount"`
+	ActiveLeadsPrice      uint    `json:"active_leads_price"`
+	ClosedLeadsAmount     uint    `json:"total_leads_amount"`
+	ClosedLeadsPrice      uint    `json:"closed_leads_price"`
+	ActiveAdsAmount       uint    `json:"active_ads_aount"`
 	CompanyAbsoluteRating float64 `json:"company_absolute_rating"`
 	CompanyRelativeRating float64 `json:"company_relative_rating"`
+}
+
+func mainPageToData(page stats.MainPage) mainPageData {
+	return mainPageData{
+		ActiveLeadsAmount:     page.ActiveLeadsAmount,
+		ActiveLeadsPrice:      page.ActiveLeadsPrice,
+		ClosedLeadsAmount:     page.ClosedLeadsAmount,
+		ClosedLeadsPrice:      page.ClosedLeadsPrice,
+		ActiveAdsAmount:       page.ActiveAdsAmount,
+		CompanyAbsoluteRating: page.CompanyAbsoluteRating,
+		CompanyRelativeRating: page.CompanyRelativeRating,
+	}
 }

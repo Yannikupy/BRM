@@ -74,7 +74,12 @@ func contactsToContactDataList(contacts []core.Contact) []contactData {
 	return data
 }
 
+type contactListData struct {
+	Contacts []contactData `json:"contacts"`
+	Amount   uint          `json:"amount"`
+}
+
 type сontactListResponse struct {
-	Data []contactData `json:"data"`
-	Err  *string       `json:"error"`
+	Data contactListData `json:"data"`
+	Err  *string         `json:"error"`
 }
