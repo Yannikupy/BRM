@@ -7,43 +7,26 @@ import (
 	"notifications/internal/model"
 	"notifications/internal/repo"
 	"notifications/pkg/logger"
-	"strings"
+	"time"
 )
 
 type appImpl struct {
-	r        repo.Repo
+	r        repo.NotificationsRepo
 	statsCli grpcstats.StatsClient
 	logs     logger.Logger
 }
 
-const (
-	newLeadNotificationIdPrefix    = "00"
-	closedLeadNotificationIdPrefix = "01"
-)
-
-func (a *appImpl) CreateNewLeadNotification(ctx context.Context, notification model.Notification) error {
+func (a *appImpl) CreateNotification(ctx context.Context, notification model.Notification) error {
 	var err error
 	defer func() {
 		a.writeLog(logger.Fields{
 			"CompanyId": notification.CompanyId,
-			"Method":    "CreateNewLeadNotification",
+			"Method":    "CreateNotification",
 		}, err)
 	}()
+	notification.Date = time.Now().UTC()
 
-	err = a.r.CreateNewLeadNotification(ctx, notification)
-	return err
-}
-
-func (a *appImpl) CreateClosedLeadNotification(ctx context.Context, notification model.Notification) error {
-	var err error
-	defer func() {
-		a.writeLog(logger.Fields{
-			"CompanyId": notification.CompanyId,
-			"Method":    "CreateClosedLeadNotification",
-		}, err)
-	}()
-
-	err = a.r.CreateClosedLeadNotification(ctx, notification)
+	err = a.r.CreateNotification(ctx, notification)
 	return err
 }
 
@@ -61,7 +44,7 @@ func (a *appImpl) GetNotifications(ctx context.Context, companyId uint64, limit 
 	return notifications, err
 }
 
-func (a *appImpl) GetNotification(ctx context.Context, companyId uint64, notificationId string) (model.Notification, error) {
+func (a *appImpl) GetNotification(ctx context.Context, companyId uint64, notificationId uint64) (model.Notification, error) {
 	var err error
 	defer func() {
 		a.writeLog(logger.Fields{
@@ -69,19 +52,10 @@ func (a *appImpl) GetNotification(ctx context.Context, companyId uint64, notific
 			"Method":    "GetNotification",
 		}, err)
 	}()
-	if len(strings.Split(notificationId, "-")) != 2 {
-		err = model.ErrInvalidInput
-		return model.Notification{}, err
-	}
 
 	var notification model.Notification
 
-	switch strings.Split(notificationId, "-")[0] {
-	case newLeadNotificationIdPrefix:
-		notification, err = a.r.GetNewLeadNotification(ctx, strings.Split(notificationId, "-")[1])
-	case closedLeadNotificationIdPrefix:
-		notification, err = a.r.GetClosedLeadNotification(ctx, strings.Split(notificationId, "-")[1])
-	}
+	notification, err = a.r.GetNotification(ctx, notificationId)
 	if err != nil {
 		return model.Notification{}, err
 	}
@@ -94,7 +68,7 @@ func (a *appImpl) GetNotification(ctx context.Context, companyId uint64, notific
 	return notification, nil
 }
 
-func (a *appImpl) SubmitClosedLead(ctx context.Context, companyId uint64, notificationId string, submit bool) error {
+func (a *appImpl) SubmitClosedLead(ctx context.Context, companyId uint64, notificationId uint64, submit bool) error {
 	var err error
 	defer func() {
 		a.writeLog(logger.Fields{
@@ -102,17 +76,23 @@ func (a *appImpl) SubmitClosedLead(ctx context.Context, companyId uint64, notifi
 			"Method":    "SubmitClosedLead",
 		}, err)
 	}()
-	if len(strings.Split(notificationId, "-")) != 2 || strings.Split(notificationId, "-")[0] != closedLeadNotificationIdPrefix {
-		err = model.ErrInvalidInput
-		return err
-	}
 
 	var notification model.Notification
-	notification, err = a.r.GetClosedLeadNotification(ctx, strings.Split(notificationId, "-")[1])
+	notification, err = a.r.GetNotification(ctx, notificationId)
 	if err != nil {
 		return err
 	} else if notification.CompanyId != companyId {
 		err = model.ErrPermissionDenied
+		return err
+	} else if notification.Type != model.ClosedLead {
+		err = model.ErrWrongNotificationType
+	} else if notification.Answered {
+		err = model.ErrClosedLeadAlreadyAnswered
+		return err
+	}
+
+	err = a.r.MarkClosedLeadNotificationAnswered(ctx, notificationId)
+	if err != nil {
 		return err
 	}
 
