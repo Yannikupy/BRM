@@ -3,6 +3,7 @@ module notifications
 go 1.21.6
 
 require (
+	github.com/grpc-ecosystem/go-grpc-middleware v1.4.0
 	github.com/jackc/pgx/v5 v5.5.5
 	github.com/sirupsen/logrus v1.9.3
 	google.golang.org/grpc v1.62.1
