@@ -6,7 +6,7 @@ import (
 )
 
 type Notification struct {
-	Id        string
+	Id        uint64
 	CompanyId uint64
 	Type      NotificationType
 	Date      time.Time

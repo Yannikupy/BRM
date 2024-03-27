@@ -25,6 +25,7 @@ func (a *appImpl) CreateNotification(ctx context.Context, notification model.Not
 		}, err)
 	}()
 	notification.Date = time.Now().UTC()
+	notification.Viewed = false
 
 	err = a.r.CreateNotification(ctx, notification)
 	return err

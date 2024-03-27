@@ -3,8 +3,6 @@ package model
 import "errors"
 
 var (
-	ErrInvalidInput = errors.New("given data is invalid")
-
 	ErrPermissionDenied          = errors.New("no rights to make this operation")
 	ErrNotificationNotFound      = errors.New("notification with required id does not exist")
 	ErrWrongNotificationType     = errors.New("found notification with wrong type")
