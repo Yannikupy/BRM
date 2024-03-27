@@ -13,6 +13,10 @@
   "host": "brm-ads"
   "port": 50002
 
+"grpc-notifications-client":
+  "host": "notifications"
+  "port": 50005
+
 "grpc-server":
   "network": "tcp"
   "port": 50003

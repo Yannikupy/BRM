@@ -4,6 +4,7 @@ import (
 	"brm-leads/cmd/server/factory"
 	"brm-leads/internal/adapters/grpcads"
 	"brm-leads/internal/adapters/grpccore"
+	"brm-leads/internal/adapters/grpcnotifications"
 	"brm-leads/internal/app"
 	"brm-leads/internal/ports/grpcserver"
 	"brm-leads/internal/repo"
@@ -61,10 +62,18 @@ func main() {
 		logs.Fatal(nil, fmt.Sprintf("create grpc ads client: %s", err.Error()))
 	}
 
+	notificationsClient, err := grpcnotifications.NewNotificationsClient(ctx, fmt.Sprintf("%s:%d",
+		viper.GetString("grpc-notifications-client.host"),
+		viper.GetInt("grpc-notifications-client.port")))
+	if err != nil {
+		logs.Fatal(nil, fmt.Sprintf("create grpc notifications client: %s", err.Error()))
+	}
+
 	a := app.New(
 		repo.New(leadsRepo),
 		coreClient,
 		adsClient,
+		notificationsClient,
 		logs,
 	)
 
