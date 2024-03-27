@@ -69,6 +69,20 @@ services:
       - ./back/brm-leads/migrations/:/docker-entrypoint-initdb.d/
       - leads-data:/var/lib/postgresql/data
 
+  postgres-notifications:
+    image: postgres:15.5
+    container_name: postgres-notifications
+    environment:
+      POSTGRES_DB: notifications-db
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: root
+    profiles: ["dev_front", "dev_back"]
+    ports:
+      - "5504:5432"
+    volumes:
+      - ./back/notifications/migrations/:/docker-entrypoint-initdb.d/
+      - notifications-data:/var/lib/postgresql/data
+
   brm-core:
     build:
       context: back/brm-core
@@ -145,3 +159,4 @@ volumes:
   tokens-data:
   ads-data:
   leads-data:
+  notifications-data:

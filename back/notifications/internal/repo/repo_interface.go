@@ -5,10 +5,9 @@ import (
 	"notifications/internal/model"
 )
 
-type Repo interface {
-	CreateNewLeadNotification(ctx context.Context, notification model.Notification) error
-	CreateClosedLeadNotification(ctx context.Context, notification model.Notification) error
+type NotificationsRepo interface {
+	CreateNotification(ctx context.Context, notification model.Notification) error
 	GetNotifications(ctx context.Context, companyId uint64, limit uint, offset uint, onlyNotViewed bool) ([]model.Notification, error)
-	GetNewLeadNotification(ctx context.Context, notificationId string) (model.Notification, error)
-	GetClosedLeadNotification(ctx context.Context, notificationId string) (model.Notification, error)
+	GetNotification(ctx context.Context, id uint64) (model.Notification, error)
+	MarkClosedLeadNotificationAnswered(ctx context.Context, notificationId uint64) error
 }
