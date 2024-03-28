@@ -17,6 +17,7 @@ CREATE TABLE employees (
     "email" VARCHAR(100) UNIQUE NOT NULL,
     "job_title" VARCHAR(100),
     "department" VARCHAR(100),
+    "image_url" VARCHAR(200),
     "creation_date" DATE NOT NULL,
     "is_deleted" BOOLEAN NOT NULL
 );

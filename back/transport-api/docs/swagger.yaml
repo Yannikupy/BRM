@@ -10,6 +10,8 @@ definitions:
         type: integer
       id:
         type: integer
+      image_url:
+        type: string
       industry:
         type: string
       is_deleted:
@@ -41,6 +43,8 @@ definitions:
     type: object
   ads.addAdRequest:
     properties:
+      image_url:
+        type: string
       industry:
         type: string
       price:
@@ -90,6 +94,8 @@ definitions:
     type: object
   ads.updateAdRequest:
     properties:
+      image_url:
+        type: string
       industry:
         type: string
       price:
@@ -215,6 +221,8 @@ definitions:
         type: string
       id:
         type: integer
+      image_url:
+        type: string
       is_deleted:
         type: boolean
       job_title:
@@ -237,6 +245,8 @@ definitions:
         type: string
       first_name:
         type: string
+      image_url:
+        type: string
       job_title:
         type: string
       password:
@@ -258,6 +268,8 @@ definitions:
         type: string
       id:
         type: integer
+      image_url:
+        type: string
       is_deleted:
         type: boolean
       job_title:
@@ -286,6 +298,8 @@ definitions:
       department:
         type: string
       first_name:
+        type: string
+      image_url:
         type: string
       job_title:
         type: string

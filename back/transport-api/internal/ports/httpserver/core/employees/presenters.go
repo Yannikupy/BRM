@@ -8,6 +8,7 @@ type addEmployeeRequest struct {
 	Password   string `json:"password"`
 	JobTitle   string `json:"job_title"`
 	Department string `json:"department"`
+	ImageURL   string `json:"image_url"`
 }
 
 type updateEmployeeRequest struct {
@@ -15,4 +16,5 @@ type updateEmployeeRequest struct {
 	SecondName string `json:"second_name"`
 	JobTitle   string `json:"job_title"`
 	Department string `json:"department"`
+	ImageURL   string `json:"image_url"`
 }
