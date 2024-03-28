@@ -20,6 +20,7 @@ type adData struct {
 	Text         string `json:"text"`
 	Industry     string `json:"industry"`
 	Price        uint   `json:"price"`
+	ImageURL     string `json:"image_url"`
 	CreationDate int64  `json:"creation_date"`
 	CreatedBy    uint64 `json:"created_by"`
 	Responsible  uint64 `json:"responsible"`
@@ -34,6 +35,7 @@ func adToAdData(ad ads.Ad) adData {
 		Text:         ad.Text,
 		Industry:     ad.Industry,
 		Price:        ad.Price,
+		ImageURL:     ad.ImageURL,
 		CreationDate: ad.CreationDate,
 		CreatedBy:    ad.CreatedBy,
 		Responsible:  ad.Responsible,
