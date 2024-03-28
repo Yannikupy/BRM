@@ -22,6 +22,7 @@ func respToAd(ad *pb.Ad) ads.Ad {
 		Text:         ad.Text,
 		Industry:     ad.Industry,
 		Price:        uint(ad.Price),
+		ImageURL:     ad.ImageUrl,
 		CreationDate: ad.CreationDate,
 		CreatedBy:    ad.CreatedBy,
 		Responsible:  ad.Responsible,
@@ -104,6 +105,7 @@ func (a *adsClientImpl) CreateAd(ctx context.Context, companyId uint64, employee
 			Text:         ad.Text,
 			Industry:     ad.Industry,
 			Price:        uint64(ad.Price),
+			ImageUrl:     ad.ImageURL,
 			CreationDate: ad.CreationDate,
 			CreatedBy:    ad.CreatedBy,
 			Responsible:  ad.Responsible,
@@ -134,6 +136,7 @@ func (a *adsClientImpl) UpdateAd(ctx context.Context, companyId uint64, employee
 			Text:        upd.Text,
 			Industry:    upd.Industry,
 			Price:       uint64(upd.Price),
+			ImageUrl:    upd.ImageURL,
 			Responsible: upd.Responsible,
 		},
 	})

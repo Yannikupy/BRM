@@ -20,6 +20,7 @@ func adToModelAd(ad *pb.Ad) model.Ad {
 		Text:         ad.Text,
 		Industry:     ad.Industry,
 		Price:        uint(ad.Price),
+		ImageURL:     ad.ImageUrl,
 		CreationDate: time.Unix(ad.CreationDate, 0),
 		CreatedBy:    ad.CreatedBy,
 		Responsible:  ad.Responsible,
@@ -38,6 +39,7 @@ func modelAdToAd(ad model.Ad) *pb.Ad {
 		Text:         ad.Text,
 		Industry:     ad.Industry,
 		Price:        uint64(ad.Price),
+		ImageUrl:     ad.ImageURL,
 		CreationDate: ad.CreationDate.UTC().Unix(),
 		CreatedBy:    ad.CreatedBy,
 		Responsible:  ad.Responsible,
@@ -114,6 +116,7 @@ func (s *Server) UpdateAd(ctx context.Context, req *pb.UpdateAdRequest) (*pb.Upd
 			Text:        req.Upd.Text,
 			Industry:    req.Upd.Industry,
 			Price:       uint(req.Upd.Price),
+			ImageURL:    req.Upd.ImageUrl,
 			Responsible: req.Upd.Responsible,
 		})
 	if err != nil {
