@@ -11,6 +11,9 @@ import (
 
 type Repo interface {
 	GetCompanyMainPageStats(ctx context.Context, id uint64) (model.MainPageStats, error)
+
+	GetCompanyRating(ctx context.Context, id uint64) (float64, error)
+	SetCompanyRating(ctx context.Context, id uint64, rating float64) error
 }
 
 func New(ads adsRepo.AdsRepo, core coreRepo.CoreRepo, leads leadsRepo.LeadsRepo, cache cache.Cache) Repo {

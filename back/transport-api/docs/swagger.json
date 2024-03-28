@@ -1632,6 +1632,210 @@
                 }
             }
         },
+        "/notifications": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Получает список уведомлений",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "notifications"
+                ],
+                "summary": "Получение списка уведомлений",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Limit",
+                        "name": "limit",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Offset",
+                        "name": "offset",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "boolean",
+                        "description": "Вернуть только непрочитанные уведомления",
+                        "name": "only_not_viewed",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Успешное получение объявлений",
+                        "schema": {
+                            "$ref": "#/definitions/notifications.notificationListResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Неверный формат входных данных",
+                        "schema": {
+                            "$ref": "#/definitions/notifications.notificationListResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Ошибка авторизации",
+                        "schema": {
+                            "$ref": "#/definitions/notifications.notificationListResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Проблемы на стороне сервера",
+                        "schema": {
+                            "$ref": "#/definitions/notifications.notificationListResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/notifications/{id}": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Получает уведомление по id",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "notifications"
+                ],
+                "summary": "Получение уведомления",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "id уведомления",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Успешное получение уведомления",
+                        "schema": {
+                            "$ref": "#/definitions/notifications.notificationResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Неверный формат входных данных",
+                        "schema": {
+                            "$ref": "#/definitions/notifications.notificationResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Ошибка авторизации",
+                        "schema": {
+                            "$ref": "#/definitions/notifications.notificationResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Нет прав для выполнения действия",
+                        "schema": {
+                            "$ref": "#/definitions/notifications.notificationResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Уведомление не найдено",
+                        "schema": {
+                            "$ref": "#/definitions/notifications.notificationResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Проблемы на стороне сервера",
+                        "schema": {
+                            "$ref": "#/definitions/notifications.notificationResponse"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Когда компания-поставщик услуги отмечает сделку закрытой, в компанию клиента приходит уведомление об этом. Клиент может подтвердить закрытие сделки, чтобы у поставщика вырос рейтинг",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "notifications"
+                ],
+                "summary": "Подтверждение закрытой сделки",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "id уведомления",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "boolean",
+                        "description": "Подтверждено/не подтверждено",
+                        "name": "submit",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Успешное подтверждение",
+                        "schema": {
+                            "$ref": "#/definitions/notifications.notificationResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Неверный формат входных данных",
+                        "schema": {
+                            "$ref": "#/definitions/notifications.notificationResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Ошибка авторизации",
+                        "schema": {
+                            "$ref": "#/definitions/notifications.notificationResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Нет прав для выполнения действия",
+                        "schema": {
+                            "$ref": "#/definitions/notifications.notificationResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Уведомление не найдено",
+                        "schema": {
+                            "$ref": "#/definitions/notifications.notificationResponse"
+                        }
+                    },
+                    "409": {
+                        "description": "Попытка повторного подтверждения",
+                        "schema": {
+                            "$ref": "#/definitions/notifications.notificationResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Проблемы на стороне сервера",
+                        "schema": {
+                            "$ref": "#/definitions/notifications.notificationResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/responses": {
             "get": {
                 "security": [
@@ -2520,6 +2724,82 @@
                     "type": "string"
                 },
                 "title": {
+                    "type": "string"
+                }
+            }
+        },
+        "notifications.closedLeadData": {
+            "type": "object",
+            "properties": {
+                "ad_id": {
+                    "type": "integer"
+                },
+                "answered": {
+                    "type": "boolean"
+                },
+                "producer_company": {
+                    "type": "integer"
+                }
+            }
+        },
+        "notifications.newLeadData": {
+            "type": "object",
+            "properties": {
+                "client_company": {
+                    "type": "integer"
+                },
+                "lead_id": {
+                    "type": "integer"
+                }
+            }
+        },
+        "notifications.notificationData": {
+            "type": "object",
+            "properties": {
+                "closed_lead_info": {
+                    "$ref": "#/definitions/notifications.closedLeadData"
+                },
+                "company_id": {
+                    "type": "integer"
+                },
+                "date": {
+                    "type": "integer"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "new_lead_info": {
+                    "$ref": "#/definitions/notifications.newLeadData"
+                },
+                "type": {
+                    "type": "string"
+                },
+                "viewed": {
+                    "type": "boolean"
+                }
+            }
+        },
+        "notifications.notificationListResponse": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/notifications.notificationData"
+                    }
+                },
+                "error": {
+                    "type": "string"
+                }
+            }
+        },
+        "notifications.notificationResponse": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "$ref": "#/definitions/notifications.notificationData"
+                },
+                "error": {
                     "type": "string"
                 }
             }

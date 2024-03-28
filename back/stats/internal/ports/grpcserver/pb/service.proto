@@ -2,9 +2,11 @@ syntax = "proto3";
 
 package stats;
 option go_package = "/pb";
+import "google/protobuf/empty.proto";
 
 service StatsService {
   rpc GetCompanyMainPage(GetCompanyMainPageRequest) returns (GetCompanyMainPageResponse) {}
+  rpc SubmitClosedLead(SubmitClosedLeadRequest) returns (google.protobuf.Empty) {}
 }
 
 message Data {
@@ -23,4 +25,9 @@ message GetCompanyMainPageRequest {
 
 message GetCompanyMainPageResponse {
   Data data = 1;
+}
+
+message SubmitClosedLeadRequest {
+  uint64 company_id = 1;
+  bool submit = 2;
 }

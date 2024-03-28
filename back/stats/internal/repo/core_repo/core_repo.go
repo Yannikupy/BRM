@@ -23,6 +23,11 @@ const (
 	getComapniesWithLessRating = `
 		SELECT COUNT(*) FROM "companies"
 		WHERE "rating" <= $1 AND NOT "is_deleted";`
+
+	setCompanyRatingQuery = `
+		UPDATE "companies"
+		SET "rating" = $2
+		WHERE "id" = $1 AND NOT "is_deleted";`
 )
 
 func (c *coreRepoImpl) GetCompanyAbsoluteRating(ctx context.Context, companyId uint64) (float64, error) {
@@ -58,4 +63,13 @@ func (c *coreRepoImpl) GetCompanyRelativeRating(ctx context.Context, companyId u
 	}
 
 	return lessRatingsCompaniesAmount / amount, nil
+}
+
+func (c *coreRepoImpl) SetCompanyRating(ctx context.Context, id uint64, rating float64) error {
+	if e, err := c.Exec(ctx, setCompanyRatingQuery, id, rating); err != nil {
+		return errors.Join(model.ErrCoreDatabase, err)
+	} else if e.RowsAffected() == 0 {
+		return model.ErrCompanyNotExists
+	}
+	return nil
 }

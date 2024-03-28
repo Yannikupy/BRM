@@ -357,6 +357,55 @@ definitions:
       title:
         type: string
     type: object
+  notifications.closedLeadData:
+    properties:
+      ad_id:
+        type: integer
+      answered:
+        type: boolean
+      producer_company:
+        type: integer
+    type: object
+  notifications.newLeadData:
+    properties:
+      client_company:
+        type: integer
+      lead_id:
+        type: integer
+    type: object
+  notifications.notificationData:
+    properties:
+      closed_lead_info:
+        $ref: '#/definitions/notifications.closedLeadData'
+      company_id:
+        type: integer
+      date:
+        type: integer
+      id:
+        type: integer
+      new_lead_info:
+        $ref: '#/definitions/notifications.newLeadData'
+      type:
+        type: string
+      viewed:
+        type: boolean
+    type: object
+  notifications.notificationListResponse:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/notifications.notificationData'
+        type: array
+      error:
+        type: string
+    type: object
+  notifications.notificationResponse:
+    properties:
+      data:
+        $ref: '#/definitions/notifications.notificationData'
+      error:
+        type: string
+    type: object
   tasks.addTaskRequest:
     properties:
       deadline:
@@ -1477,6 +1526,140 @@ paths:
       summary: Получение статусов и их id
       tags:
       - leads
+  /notifications:
+    get:
+      description: Получает список уведомлений
+      parameters:
+      - description: Limit
+        in: query
+        name: limit
+        required: true
+        type: integer
+      - description: Offset
+        in: query
+        name: offset
+        required: true
+        type: integer
+      - description: Вернуть только непрочитанные уведомления
+        in: query
+        name: only_not_viewed
+        type: boolean
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Успешное получение объявлений
+          schema:
+            $ref: '#/definitions/notifications.notificationListResponse'
+        "400":
+          description: Неверный формат входных данных
+          schema:
+            $ref: '#/definitions/notifications.notificationListResponse'
+        "401":
+          description: Ошибка авторизации
+          schema:
+            $ref: '#/definitions/notifications.notificationListResponse'
+        "500":
+          description: Проблемы на стороне сервера
+          schema:
+            $ref: '#/definitions/notifications.notificationListResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Получение списка уведомлений
+      tags:
+      - notifications
+  /notifications/{id}:
+    get:
+      description: Получает уведомление по id
+      parameters:
+      - description: id уведомления
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Успешное получение уведомления
+          schema:
+            $ref: '#/definitions/notifications.notificationResponse'
+        "400":
+          description: Неверный формат входных данных
+          schema:
+            $ref: '#/definitions/notifications.notificationResponse'
+        "401":
+          description: Ошибка авторизации
+          schema:
+            $ref: '#/definitions/notifications.notificationResponse'
+        "403":
+          description: Нет прав для выполнения действия
+          schema:
+            $ref: '#/definitions/notifications.notificationResponse'
+        "404":
+          description: Уведомление не найдено
+          schema:
+            $ref: '#/definitions/notifications.notificationResponse'
+        "500":
+          description: Проблемы на стороне сервера
+          schema:
+            $ref: '#/definitions/notifications.notificationResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Получение уведомления
+      tags:
+      - notifications
+    post:
+      description: Когда компания-поставщик услуги отмечает сделку закрытой, в компанию
+        клиента приходит уведомление об этом. Клиент может подтвердить закрытие сделки,
+        чтобы у поставщика вырос рейтинг
+      parameters:
+      - description: id уведомления
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Подтверждено/не подтверждено
+        in: query
+        name: submit
+        required: true
+        type: boolean
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Успешное подтверждение
+          schema:
+            $ref: '#/definitions/notifications.notificationResponse'
+        "400":
+          description: Неверный формат входных данных
+          schema:
+            $ref: '#/definitions/notifications.notificationResponse'
+        "401":
+          description: Ошибка авторизации
+          schema:
+            $ref: '#/definitions/notifications.notificationResponse'
+        "403":
+          description: Нет прав для выполнения действия
+          schema:
+            $ref: '#/definitions/notifications.notificationResponse'
+        "404":
+          description: Уведомление не найдено
+          schema:
+            $ref: '#/definitions/notifications.notificationResponse'
+        "409":
+          description: Попытка повторного подтверждения
+          schema:
+            $ref: '#/definitions/notifications.notificationResponse'
+        "500":
+          description: Проблемы на стороне сервера
+          schema:
+            $ref: '#/definitions/notifications.notificationResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Подтверждение закрытой сделки
+      tags:
+      - notifications
   /responses:
     get:
       description: Возвращает список откликов компании на объявления

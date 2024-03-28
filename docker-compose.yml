@@ -81,6 +81,19 @@ services:
     volumes:
       - stats-data:/root/redis
 
+  postgres-notifications:
+    image: postgres:15.5
+    container_name: postgres-notifications
+    environment:
+      POSTGRES_DB: notifications-db
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: root
+    profiles: ["dev_front", "dev_back"]
+    ports:
+      - "5504:5432"
+    volumes:
+      - ./back/notifications/migrations/:/docker-entrypoint-initdb.d/
+      - notifications-data:/var/lib/postgresql/data
 
   brm-core:
     build:
@@ -169,6 +182,17 @@ services:
     depends_on:
       - redis-stats
 
+  notifications:
+    build:
+      context: back/notifications
+      dockerfile: Dockerfile
+    command: ./notifications-app --docker
+    container_name: notifications
+    profiles: ["dev_front"]
+    ports:
+      - "50005:50005"
+    depends_on:
+      - postgres-notifications
 
 volumes:
   core-data:
@@ -177,3 +201,4 @@ volumes:
   ads-data:
   leads-data:
   stats-data:
+  notifications-data:
