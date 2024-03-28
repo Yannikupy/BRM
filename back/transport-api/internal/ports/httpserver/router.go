@@ -10,6 +10,7 @@ import (
 	"transport-api/internal/ports/httpserver/core/employees"
 	"transport-api/internal/ports/httpserver/leads"
 	"transport-api/internal/ports/httpserver/middleware"
+	"transport-api/internal/ports/httpserver/notifications"
 	"transport-api/pkg/logger"
 	"transport-api/pkg/tokenizer"
 )
@@ -57,4 +58,8 @@ func appRouter(r *gin.RouterGroup, a app.App, tkn tokenizer.Tokenizer, logs logg
 	r.GET("/leads", leads.GetLeadsList(a))
 	r.PUT("/leads/:id", leads.UpdateLead(a))
 	r.GET("/leads/statuses", leads.GetStatuses(a))
+
+	r.GET("/notifications", notifications.GetNotifications(a))
+	r.GET("/notifications/:id", notifications.GetNotification(a))
+	r.POST("/notifications/:id", notifications.SubmitClosedLead(a))
 }

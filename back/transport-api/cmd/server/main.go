@@ -15,6 +15,7 @@ import (
 	"transport-api/internal/adapters/grpcads"
 	"transport-api/internal/adapters/grpccore"
 	"transport-api/internal/adapters/grpcleads"
+	"transport-api/internal/adapters/grpcnotifications"
 	"transport-api/internal/adapters/grpcstats"
 	"transport-api/internal/app"
 	"transport-api/internal/ports/httpserver"
@@ -88,7 +89,21 @@ func main() {
 		logs.Fatal(nil, fmt.Sprintf("create grpc stats client: %s", err.Error()))
 	}
 
-	a := app.NewApp(coreClient, adsClient, leadsClient, statsClient)
+	notificationsClient, err := grpcnotifications.NewNotificationsClient(ctx, fmt.Sprintf("%s:%d",
+		viper.GetString("grpc-clients.notifications.host"),
+		viper.GetInt("grpc-clients.notifications.port"),
+	))
+	if err != nil {
+		logs.Fatal(nil, fmt.Sprintf("create grpc notifications client: %s", err.Error()))
+	}
+
+	a := app.NewApp(
+		coreClient,
+		adsClient,
+		leadsClient,
+		statsClient,
+		notificationsClient,
+	)
 	tkn := tokenizer.New(os.Getenv("SIGNKEY"))
 
 	srv := httpserver.New(

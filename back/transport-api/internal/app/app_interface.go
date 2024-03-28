@@ -5,6 +5,7 @@ import (
 	"transport-api/internal/model/ads"
 	"transport-api/internal/model/core"
 	"transport-api/internal/model/leads"
+	"transport-api/internal/model/notifications"
 	"transport-api/internal/model/stats"
 )
 
@@ -15,6 +16,7 @@ type App interface {
 	Ads
 	Leads
 	Stats
+	Notifications
 }
 
 type CoreCompany interface {
@@ -65,4 +67,10 @@ type Leads interface {
 
 type Stats interface {
 	GetCompanyMainPage(ctx context.Context, companyId uint64) (stats.MainPage, error)
+}
+
+type Notifications interface {
+	GetNotifications(ctx context.Context, companyId uint64, limit uint, offset uint, onlyNotViewed bool) ([]notifications.Notification, error)
+	GetNotification(ctx context.Context, companyId uint64, notificationId uint64) (notifications.Notification, error)
+	SubmitClosedLead(ctx context.Context, companyId uint64, notificationId uint64, submit bool) error
 }
