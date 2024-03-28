@@ -31,6 +31,14 @@ func (r *repoImpl) GetCompanyMainPageStats(ctx context.Context, id uint64) (mode
 	return data, nil
 }
 
+func (r *repoImpl) GetCompanyRating(ctx context.Context, id uint64) (float64, error) {
+	return r.core.GetCompanyAbsoluteRating(ctx, id)
+}
+
+func (r *repoImpl) SetCompanyRating(ctx context.Context, id uint64, rating float64) error {
+	return r.core.SetCompanyRating(ctx, id, rating)
+}
+
 func (r *repoImpl) getStatsFromPermanent(ctx context.Context, id uint64) (model.MainPageStats, error) {
 	data, err := r.leads.GetMainPageLeadsStats(ctx, id)
 	if err != nil {
