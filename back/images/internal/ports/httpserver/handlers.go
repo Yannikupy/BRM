@@ -10,6 +10,15 @@ import (
 	"strconv"
 )
 
+// @Summary		Добавление изображения
+// @Description	Добавляет изображение
+// @Accept			mpfd
+// @Produce		json
+// @Param			file	formData	file		true	"Изображение"
+// @Success		200		{object}	idResponse	"Успешное добавление изображения"
+// @Failure		500		{object}	idResponse	"Проблемы на стороне сервера"
+// @Failure		400		{object}	idResponse	"Неверный формат входных данных"
+// @Router			/images [post]
 func handleAddImage(a app.App) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		file, _, err := c.Request.FormFile("file")
@@ -47,6 +56,15 @@ func handleAddImage(a app.App) gin.HandlerFunc {
 	}
 }
 
+// @Summary		Получение изображения
+// @Description	Получает изображение
+// @Produce		image/png
+// @Param			id	path		int			true	"id изображения"
+// @Success		200	{file}		file		"Успешное получение изображения"
+// @Failure		500	{object}	idResponse	"Проблемы на стороне сервера"
+// @Failure		400	{object}	idResponse	"Неверный формат входных данных"
+// @Failure		404	{object}	idResponse	"Изображение не найдено"
+// @Router			/images/{id} [get]
 func handleGetImage(a app.App) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		id, err := strconv.ParseUint(c.Param("id"), 10, 64)

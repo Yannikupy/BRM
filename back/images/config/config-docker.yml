@@ -1,0 +1,15 @@
+"postgres-images":
+  "username": "root"
+  "host": "postgres-images"
+  "port": 5432
+  "dbname": "images-db"
+  "sslmode": "disable"
+
+"http-server":
+  "host": "images"
+  "port": 8093
+
+"origins":
+  "web":
+    "host": "localhost"
+    "port": 4200

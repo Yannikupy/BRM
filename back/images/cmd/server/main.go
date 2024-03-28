@@ -24,6 +24,12 @@ const (
 	localConfigFile  = "config/config-local.yml"
 )
 
+//	@title			BRM API
+//	@version		1.0
+//	@description	Swagger документация к API сервиса для хранения изображений
+//	@host			localhost:8093
+//	@BasePath		/api/v1
+
 func main() {
 	ctx := context.Background()
 	logs := logger.New()

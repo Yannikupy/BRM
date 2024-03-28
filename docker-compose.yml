@@ -208,6 +208,16 @@ services:
     depends_on:
       - postgres-notifications
 
+  images:
+    build:
+      context: back/images
+      dockerfile: Dockerfile
+    command: ./images-app --docker
+    container_name: images
+    profiles: ["dev_front"]
+    ports:
+      - "8093:8093"
+
 volumes:
   core-data:
   passwords-data:
