@@ -8,6 +8,8 @@ import (
 	"notifications/pkg/logger"
 )
 
+//go:generate protoc pb/service.proto --proto_path=pb --go-grpc_out=require_unimplemented_servers=false:. --go_out=.
+
 type Server struct {
 	App app.App
 	pb.NotificationsServiceServer
