@@ -11,8 +11,8 @@ import (
 
 const (
 	createAdQuery = `
-		INSERT INTO "ads" ("company_id", "title", "text", "industry", "price", "creation_date", "created_by", "responsible", "is_deleted")
-		VALUES ($1, $2, $3, (SELECT "industries"."id" FROM "industries" WHERE "name" = $4), $5, $6, $7, $8, $9)
+		INSERT INTO "ads" ("company_id", "title", "text", "industry", "price", "image_url", "creation_date", "created_by", "responsible", "is_deleted")
+		VALUES ($1, $2, $3, (SELECT "industries"."id" FROM "industries" WHERE "name" = $4), $5, $6, $7, $8, $9, $10)
 		RETURNING "id";`
 
 	updateAdQuery = `
@@ -21,7 +21,8 @@ const (
 		    "text" = $3,
 		    "industry" = (SELECT "industries"."id" FROM "industries" WHERE "name" = $4),
 		    "price" = $5,
-		    "responsible" = $6
+		    "image_url" = $6,
+		    "responsible" = $7
 		WHERE "id" = $1 AND (NOT "is_deleted");`
 
 	deleteAdQuery = `
@@ -36,6 +37,7 @@ const (
 		        "ads"."text",
 		        "industries"."name",
 		        "ads"."price",
+		        "ads"."image_url",
 		        "ads"."creation_date",
 		        "ads"."created_by",
 		        "ads"."responsible",
@@ -51,6 +53,7 @@ const (
 		        "ads"."text",
 		        "industries"."name",
 		        "ads"."price",
+		        "ads"."image_url",
 		        "ads"."creation_date",
 		        "ads"."created_by",
 		        "ads"."responsible",
@@ -73,6 +76,7 @@ func (a *adRepoImpl) CreateAd(ctx context.Context, ad model.Ad) (model.Ad, error
 		ad.Text,
 		ad.Industry,
 		ad.Price,
+		ad.ImageURL,
 		ad.CreationDate,
 		ad.CreatedBy,
 		ad.Responsible,
@@ -98,6 +102,7 @@ func (a *adRepoImpl) UpdateAd(ctx context.Context, adId uint64, upd model.Update
 		upd.Text,
 		upd.Industry,
 		upd.Price,
+		upd.ImageURL,
 		upd.Responsible,
 	); errors.As(err, &pgErr) {
 		switch pgErr.Code {
@@ -135,6 +140,7 @@ func (a *adRepoImpl) GetAdById(ctx context.Context, id uint64) (model.Ad, error)
 		&ad.Text,
 		&ad.Industry,
 		&ad.Price,
+		&ad.ImageURL,
 		&ad.CreationDate,
 		&ad.CreatedBy,
 		&ad.Responsible,
@@ -169,6 +175,7 @@ func (a *adRepoImpl) GetAdsList(ctx context.Context, params model.AdsListParams)
 				&ad.Text,
 				&ad.Industry,
 				&ad.Price,
+				&ad.ImageURL,
 				&ad.CreationDate,
 				&ad.CreatedBy,
 				&ad.Responsible,
@@ -192,6 +199,7 @@ func (a *adRepoImpl) GetAdsList(ctx context.Context, params model.AdsListParams)
 					"ads"."text",
 					"industries"."name",
 					"ads"."price",
+					"ads"."image_url",
 					"ads"."creation_date",
 					"ads"."created_by",
 					"ads"."responsible",
@@ -226,6 +234,7 @@ func (a *adRepoImpl) GetAdsList(ctx context.Context, params model.AdsListParams)
 				&ad.Text,
 				&ad.Industry,
 				&ad.Price,
+				&ad.ImageURL,
 				&ad.CreationDate,
 				&ad.CreatedBy,
 				&ad.Responsible,

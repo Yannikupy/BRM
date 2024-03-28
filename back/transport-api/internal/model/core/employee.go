@@ -9,6 +9,7 @@ type Employee struct {
 	Password     string
 	JobTitle     string
 	Department   string
+	ImageURL     string
 	CreationDate int64
 	IsDeleted    bool
 }
@@ -18,6 +19,7 @@ type UpdateEmployee struct {
 	SecondName string
 	JobTitle   string
 	Department string
+	ImageURL   string
 }
 
 type FilterEmployee struct {

@@ -2199,6 +2199,9 @@ const docTemplate = `{
                 "id": {
                     "type": "integer"
                 },
+                "image_url": {
+                    "type": "string"
+                },
                 "industry": {
                     "type": "string"
                 },
@@ -2247,6 +2250,9 @@ const docTemplate = `{
         "ads.addAdRequest": {
             "type": "object",
             "properties": {
+                "image_url": {
+                    "type": "string"
+                },
                 "industry": {
                     "type": "string"
                 },
@@ -2323,6 +2329,9 @@ const docTemplate = `{
         "ads.updateAdRequest": {
             "type": "object",
             "properties": {
+                "image_url": {
+                    "type": "string"
+                },
                 "industry": {
                     "type": "string"
                 },
@@ -2515,6 +2524,9 @@ const docTemplate = `{
                 "id": {
                     "type": "integer"
                 },
+                "image_url": {
+                    "type": "string"
+                },
                 "is_deleted": {
                     "type": "boolean"
                 },
@@ -2549,6 +2561,9 @@ const docTemplate = `{
                 "first_name": {
                     "type": "string"
                 },
+                "image_url": {
+                    "type": "string"
+                },
                 "job_title": {
                     "type": "string"
                 },
@@ -2580,6 +2595,9 @@ const docTemplate = `{
                 },
                 "id": {
                     "type": "integer"
+                },
+                "image_url": {
+                    "type": "string"
                 },
                 "is_deleted": {
                     "type": "boolean"
@@ -2624,6 +2642,9 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "first_name": {
+                    "type": "string"
+                },
+                "image_url": {
                     "type": "string"
                 },
                 "job_title": {

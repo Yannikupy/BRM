@@ -10,8 +10,8 @@ import (
 
 const (
 	createEmployeeQuery = `
-		INSERT INTO "employees" ("company_id", "first_name", "second_name", "email", "job_title", "department", "creation_date", "is_deleted") 
-		VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+		INSERT INTO "employees" ("company_id", "first_name", "second_name", "email", "job_title", "department", "image_url", "creation_date", "is_deleted") 
+		VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
 		RETURNING "id";`
 
 	updateEmployeeQuery = `
@@ -19,7 +19,8 @@ const (
 		SET "first_name" = $2,
 		    "second_name" = $3,
 		    "job_title" = $4,
-		    "department" = $5
+		    "department" = $5,
+		    "image_url" = $6
 		WHERE "id" = $1 AND (NOT "is_deleted");`
 
 	deleteEmployeeQuery = `
@@ -54,6 +55,7 @@ func (c *coreRepoImpl) CreateEmployee(ctx context.Context, employee model.Employ
 		employee.Email,
 		employee.JobTitle,
 		employee.Department,
+		employee.ImageURL,
 		employee.CreationDate,
 		employee.IsDeleted,
 	).Scan(&employeeId); errors.As(err, &pgErr) {
@@ -78,6 +80,7 @@ func (c *coreRepoImpl) UpdateEmployee(ctx context.Context, employeeId uint64, up
 		upd.SecondName,
 		upd.JobTitle,
 		upd.Department,
+		upd.ImageURL,
 	); err != nil {
 		return model.Employee{}, errors.Join(model.ErrDatabaseError, err)
 	} else if e.RowsAffected() == 0 {
@@ -124,6 +127,7 @@ func (c *coreRepoImpl) GetCompanyEmployees(ctx context.Context, companyId uint64
 			&e.Email,
 			&e.JobTitle,
 			&e.Department,
+			&e.ImageURL,
 			&e.CreationDate,
 			&e.IsDeleted)
 		employees = append(employees, e)
@@ -153,6 +157,7 @@ func (c *coreRepoImpl) GetEmployeeByName(ctx context.Context, companyId uint64, 
 			&e.Email,
 			&e.JobTitle,
 			&e.Department,
+			&e.ImageURL,
 			&e.CreationDate,
 			&e.IsDeleted)
 		employees = append(employees, e)
@@ -171,6 +176,7 @@ func (c *coreRepoImpl) GetEmployeeById(ctx context.Context, employeeId uint64) (
 		&employee.Email,
 		&employee.JobTitle,
 		&employee.Department,
+		&employee.ImageURL,
 		&employee.CreationDate,
 		&employee.IsDeleted,
 	); errors.Is(err, pgx.ErrNoRows) {

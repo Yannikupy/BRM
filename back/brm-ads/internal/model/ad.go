@@ -9,6 +9,7 @@ type Ad struct {
 	Text         string
 	Industry     string
 	Price        uint
+	ImageURL     string
 	CreationDate time.Time
 	CreatedBy    uint64
 	Responsible  uint64
@@ -20,6 +21,7 @@ type UpdateAd struct {
 	Text        string
 	Industry    string
 	Price       uint
+	ImageURL    string
 	Responsible uint64
 }
 

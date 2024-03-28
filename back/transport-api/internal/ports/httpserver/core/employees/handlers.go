@@ -47,6 +47,7 @@ func AddEmployee(a app.App) gin.HandlerFunc {
 			Password:     req.Password,
 			JobTitle:     req.JobTitle,
 			Department:   req.Department,
+			ImageURL:     req.ImageURL,
 			CreationDate: 0,
 			IsDeleted:    false,
 		})
@@ -252,6 +253,7 @@ func UpdateEmployee(a app.App) gin.HandlerFunc {
 				SecondName: req.SecondName,
 				JobTitle:   req.JobTitle,
 				Department: req.Department,
+				ImageURL:   req.ImageURL,
 			},
 		)
 		switch {

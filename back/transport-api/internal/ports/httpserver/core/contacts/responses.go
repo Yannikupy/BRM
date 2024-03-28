@@ -44,6 +44,7 @@ func employeeToEmployeeData(employee core.Employee) employeeData {
 		Email:        employee.Email,
 		JobTitle:     employee.JobTitle,
 		Department:   employee.Department,
+		ImageURL:     employee.ImageURL,
 		CreationDate: employee.CreationDate,
 		IsDeleted:    employee.IsDeleted,
 	}
@@ -57,6 +58,7 @@ type employeeData struct {
 	Email        string `json:"email"`
 	JobTitle     string `json:"job_title"`
 	Department   string `json:"department"`
+	ImageURL     string `json:"image_url"`
 	CreationDate int64  `json:"creation_date"`
 	IsDeleted    bool   `json:"is_deleted"`
 }

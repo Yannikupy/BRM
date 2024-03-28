@@ -45,8 +45,9 @@ message Employee {
   string password = 6;
   string job_title = 7;
   string department = 8;
-  int64 creation_date = 9;
-  bool is_deleted = 10;
+  string image_url = 9;
+  int64 creation_date = 10;
+  bool is_deleted = 11;
 }
 
 message Contact {
@@ -125,6 +126,7 @@ message UpdateEmployeeFields {
   string second_name = 2;
   string job_title = 3;
   string department = 4;
+  string image_url = 5;
 }
 
 message UpdateEmployeeResponse {

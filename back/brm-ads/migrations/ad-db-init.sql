@@ -5,6 +5,7 @@ CREATE TABLE ads (
     "text" VARCHAR(1000) NOT NULL,
     "industry" INTEGER NOT NULL,
     "price" INTEGER NOT NULL,
+    "image_url" VARCHAR(200) NOT NULL,
     "creation_date" DATE NOT NULL,
     "created_by" INTEGER NOT NULL,
     "responsible" INTEGER NOT NULL,

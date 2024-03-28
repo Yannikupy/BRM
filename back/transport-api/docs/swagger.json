@@ -2193,6 +2193,9 @@
                 "id": {
                     "type": "integer"
                 },
+                "image_url": {
+                    "type": "string"
+                },
                 "industry": {
                     "type": "string"
                 },
@@ -2241,6 +2244,9 @@
         "ads.addAdRequest": {
             "type": "object",
             "properties": {
+                "image_url": {
+                    "type": "string"
+                },
                 "industry": {
                     "type": "string"
                 },
@@ -2317,6 +2323,9 @@
         "ads.updateAdRequest": {
             "type": "object",
             "properties": {
+                "image_url": {
+                    "type": "string"
+                },
                 "industry": {
                     "type": "string"
                 },
@@ -2509,6 +2518,9 @@
                 "id": {
                     "type": "integer"
                 },
+                "image_url": {
+                    "type": "string"
+                },
                 "is_deleted": {
                     "type": "boolean"
                 },
@@ -2543,6 +2555,9 @@
                 "first_name": {
                     "type": "string"
                 },
+                "image_url": {
+                    "type": "string"
+                },
                 "job_title": {
                     "type": "string"
                 },
@@ -2574,6 +2589,9 @@
                 },
                 "id": {
                     "type": "integer"
+                },
+                "image_url": {
+                    "type": "string"
                 },
                 "is_deleted": {
                     "type": "boolean"
@@ -2618,6 +2636,9 @@
                     "type": "string"
                 },
                 "first_name": {
+                    "type": "string"
+                },
+                "image_url": {
                     "type": "string"
                 },
                 "job_title": {

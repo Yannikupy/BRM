@@ -21,6 +21,7 @@ func employeeToModelEmployee(employee *pb.Employee) model.Employee {
 		Password:     employee.Password,
 		JobTitle:     employee.JobTitle,
 		Department:   employee.Department,
+		ImageURL:     employee.ImageUrl,
 		CreationDate: time.Unix(employee.CreationDate, 0),
 		IsDeleted:    employee.IsDeleted,
 	}
@@ -39,6 +40,7 @@ func modelEmployeeToEmployee(employee model.Employee) *pb.Employee {
 		Password:     employee.Password,
 		JobTitle:     employee.JobTitle,
 		Department:   employee.Department,
+		ImageUrl:     employee.ImageURL,
 		CreationDate: employee.CreationDate.UTC().Unix(),
 		IsDeleted:    employee.IsDeleted,
 	}
@@ -68,6 +70,7 @@ func (s *Server) UpdateEmployee(ctx context.Context, req *pb.UpdateEmployeeReque
 			SecondName: req.Upd.SecondName,
 			JobTitle:   req.Upd.JobTitle,
 			Department: req.Upd.Department,
+			ImageURL:   req.Upd.ImageUrl,
 		},
 	)
 	if err != nil {

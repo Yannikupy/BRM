@@ -7,6 +7,7 @@ type Ad struct {
 	Text         string
 	Industry     string
 	Price        uint
+	ImageURL     string
 	CreationDate int64
 	CreatedBy    uint64
 	Responsible  uint64
@@ -19,6 +20,7 @@ type UpdateAd struct {
 	Industry    string
 	Price       uint
 	Responsible uint64
+	ImageURL    string
 }
 
 type ListParams struct {

@@ -37,6 +37,7 @@ func employeeToRequest(employee core.Employee) *pb.Employee {
 		Password:     employee.Password,
 		JobTitle:     employee.JobTitle,
 		Department:   employee.Department,
+		ImageUrl:     employee.ImageURL,
 		CreationDate: employee.CreationDate,
 		IsDeleted:    employee.IsDeleted,
 	}
@@ -74,6 +75,7 @@ func (c *coreClientImpl) UpdateEmployee(ctx context.Context, companyId uint64, o
 			SecondName: upd.SecondName,
 			JobTitle:   upd.JobTitle,
 			Department: upd.Department,
+			ImageUrl:   upd.ImageURL,
 		},
 	})
 	if err != nil {
