@@ -111,7 +111,7 @@ func main() {
 		}
 	}()
 
-	logs.Info(nil, "service auth successfully started")
+	logs.Info(nil, "service stats successfully started")
 
 	// preparing graceful shutdown
 	osSignals := make(chan os.Signal, 1)

@@ -5,9 +5,10 @@
   "dbname": "notifications-db"
   "sslmode": "disable"
 
-"grpc-stats-client":
-  "host": "localhost"
-  "port": 50004
+"grpc-clients":
+  "stats":
+    "host": "localhost"
+    "port": 50004
 
 "grpc-server":
   "network": "tcp"

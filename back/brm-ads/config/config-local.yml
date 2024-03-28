@@ -5,13 +5,13 @@
   "dbname": "ads-db"
   "sslmode": "disable"
 
-"grpc-core-client":
-  "host": "localhost"
-  "port": 50000
-
-"grpc-leads-client":
-  "host": "localhost"
-  "port": 50003
+"grpc-clients":
+  "core":
+    "host": "localhost"
+    "port": 50000
+  "leads":
+    "host": "localhost"
+    "port": 50003
 
 "grpc-server":
   "network": "tcp"

@@ -1,6 +1,7 @@
-"grpc-core-client":
-  "host": "brm-core"
-  "port": 50000
+"grpc-clients":
+  "core":
+    "host": "brm-core"
+    "port": 50000
 
 "http-server":
   "host": "registration"

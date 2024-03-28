@@ -49,22 +49,22 @@ func main() {
 	}()
 
 	coreClient, err := grpccore.NewCoreClient(ctx, fmt.Sprintf("%s:%d",
-		viper.GetString("grpc-core-client.host"),
-		viper.GetInt("grpc-core-client.port")))
+		viper.GetString("grpc-clients.core.host"),
+		viper.GetInt("grpc-clients.core.port")))
 	if err != nil {
 		logs.Fatal(nil, fmt.Sprintf("create grpc core client: %s", err.Error()))
 	}
 
 	adsClient, err := grpcads.NewAdsClient(ctx, fmt.Sprintf("%s:%d",
-		viper.GetString("grpc-ads-client.host"),
-		viper.GetInt("grpc-ads-client.port")))
+		viper.GetString("grpc-clients.ads.host"),
+		viper.GetInt("grpc-clients.ads.port")))
 	if err != nil {
 		logs.Fatal(nil, fmt.Sprintf("create grpc ads client: %s", err.Error()))
 	}
 
 	notificationsClient, err := grpcnotifications.NewNotificationsClient(ctx, fmt.Sprintf("%s:%d",
-		viper.GetString("grpc-notifications-client.host"),
-		viper.GetInt("grpc-notifications-client.port")))
+		viper.GetString("grpc-clients.notifications.host"),
+		viper.GetInt("grpc-clients.notifications.port")))
 	if err != nil {
 		logs.Fatal(nil, fmt.Sprintf("create grpc notifications client: %s", err.Error()))
 	}
