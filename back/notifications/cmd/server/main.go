@@ -45,8 +45,8 @@ func main() {
 	defer notificationsRepo.Close()
 
 	statsClient, err := grpcstats.NewStatsClient(ctx, fmt.Sprintf("%s:%d",
-		viper.GetString("grpc-stats-client.host"),
-		viper.GetInt("grpc-stats-client.port")))
+		viper.GetString("grpc-clients.stats.host"),
+		viper.GetInt("grpc-clients.stats.port")))
 	if err != nil {
 		logs.Fatal(nil, fmt.Sprintf("create grpc stats client: %s", err.Error()))
 	}

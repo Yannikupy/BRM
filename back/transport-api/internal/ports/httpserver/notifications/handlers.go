@@ -10,6 +10,19 @@ import (
 	"transport-api/internal/ports/httpserver/middleware"
 )
 
+// @Summary		Получение списка уведомлений
+// @Description	Получает список уведомлений
+// @Tags			notifications
+// @Security		ApiKeyAuth
+// @Produce		json
+// @Param			limit			query		int							true	"Limit"
+// @Param			offset			query		int							true	"Offset"
+// @Param			only_not_viewed	query		bool						false	"Вернуть только непрочитанные уведомления"
+// @Success		200				{object}	notificationListResponse	"Успешное получение объявлений"
+// @Failure		500				{object}	notificationListResponse	"Проблемы на стороне сервера"
+// @Failure		400				{object}	notificationListResponse	"Неверный формат входных данных"
+// @Failure		401				{object}	notificationListResponse	"Ошибка авторизации"
+// @Router			/notifications [get]
 func GetNotifications(a app.App) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		_, companyId, ok := middleware.GetAuthData(c)
@@ -45,6 +58,19 @@ func GetNotifications(a app.App) gin.HandlerFunc {
 	}
 }
 
+// @Summary		Получение уведомления
+// @Description	Получает уведомление по id
+// @Tags			notifications
+// @Security		ApiKeyAuth
+// @Produce		json
+// @Param			id	path		int						true	"id уведомления"
+// @Success		200	{object}	notificationResponse	"Успешное получение уведомления"
+// @Failure		500	{object}	notificationResponse	"Проблемы на стороне сервера"
+// @Failure		400	{object}	notificationResponse	"Неверный формат входных данных"
+// @Failure		401	{object}	notificationResponse	"Ошибка авторизации"
+// @Failure		404	{object}	notificationResponse	"Уведомление не найдено"
+// @Failure		403	{object}	notificationResponse	"Нет прав для выполнения действия"
+// @Router			/notifications/{id} [get]
 func GetNotification(a app.App) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		_, companyId, ok := middleware.GetAuthData(c)
@@ -79,6 +105,21 @@ func GetNotification(a app.App) gin.HandlerFunc {
 	}
 }
 
+// @Summary		Подтверждение закрытой сделки
+// @Description	Когда компания-поставщик услуги отмечает сделку закрытой, в компанию клиента приходит уведомление об этом. Клиент может подтвердить закрытие сделки, чтобы у поставщика вырос рейтинг
+// @Tags			notifications
+// @Security		ApiKeyAuth
+// @Produce		json
+// @Param			id		path		int						true	"id уведомления"
+// @Param			submit	query		bool					true	"Подтверждено/не подтверждено"
+// @Success		200		{object}	notificationResponse	"Успешное подтверждение"
+// @Failure		500		{object}	notificationResponse	"Проблемы на стороне сервера"
+// @Failure		400		{object}	notificationResponse	"Неверный формат входных данных"
+// @Failure		401		{object}	notificationResponse	"Ошибка авторизации"
+// @Failure		404		{object}	notificationResponse	"Уведомление не найдено"
+// @Failure		403		{object}	notificationResponse	"Нет прав для выполнения действия"
+// @Failure		409		{object}	notificationResponse	"Попытка повторного подтверждения"
+// @Router			/notifications/{id} [post]
 func SubmitClosedLead(a app.App) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		_, companyId, ok := middleware.GetAuthData(c)
