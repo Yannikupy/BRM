@@ -95,6 +95,20 @@ services:
       - ./back/notifications/migrations/:/docker-entrypoint-initdb.d/
       - notifications-data:/var/lib/postgresql/data
 
+  postgres-images:
+    image: postgres:15.5
+    container_name: postgres-images
+    environment:
+      POSTGRES_DB: images-db
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: root
+    profiles: ["dev_front", "dev_back"]
+    ports:
+      - "5505:5432"
+    volumes:
+      - ./back/images/migrations/:/docker-entrypoint-initdb.d/
+      - images-data:/var/lib/postgresql/data
+
   brm-core:
     build:
       context: back/brm-core
@@ -202,3 +216,4 @@ volumes:
   leads-data:
   stats-data:
   notifications-data:
+  images-data:
