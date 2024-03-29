@@ -6,6 +6,7 @@ export interface EmployeeData {
   email?: string
   first_name?: string
   id?: number
+  image_url?:	string
   is_deleted?: boolean
   job_title?: string
   second_name?: string

@@ -13,6 +13,8 @@
       <mat-card-title>{{ contact.employee?.first_name }} {{ contact.employee?.second_name }}</mat-card-title>
     </mat-card-header>
     <mat-card-content>
+      <img width="105px" [src]="contact.employee?.image_url" />
+      <mat-divider></mat-divider>
       <mat-icon>notes</mat-icon>
       {{ contact.notes }}
       <mat-divider></mat-divider>
@@ -26,6 +28,7 @@
 }
 
 <mat-paginator
+  [length]="resultsLength"
   [pageSize]="5"
   [pageSizeOptions]="[5, 10, 25, 100]"
   aria-label="Выберите страницу">

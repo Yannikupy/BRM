@@ -1,6 +1,6 @@
-import {ContactData} from "./ContactData";
+import {ContactPaginationData} from "./ContactPaginationData";
 
 export interface ContactResponse {
-  data: ContactData[],
+  data: ContactPaginationData,
   error: string[]
 }
