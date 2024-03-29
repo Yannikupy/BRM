@@ -50,9 +50,14 @@ type leadResponse struct {
 	Err  *string   `json:"error"`
 }
 
+type leadsListData struct {
+	Leads  []leadData `json:"leads"`
+	Amount uint       `json:"amount"`
+}
+
 type leadsListResponse struct {
-	Data []leadData `json:"data"`
-	Err  *string    `json:"error"`
+	Data *leadsListData `json:"data"`
+	Err  *string        `json:"error"`
 }
 
 func leadsToLeadsDataList(leadsList []leads.Lead) []leadData {

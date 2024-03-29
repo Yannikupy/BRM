@@ -31,7 +31,7 @@ func respToLead(lead *pb.Lead) leads.Lead {
 	}
 }
 
-func (l *leadsClientImpl) GetLeads(ctx context.Context, companyId uint64, employeeId uint64, filter leads.Filter) ([]leads.Lead, error) {
+func (l *leadsClientImpl) GetLeads(ctx context.Context, companyId uint64, employeeId uint64, filter leads.Filter) ([]leads.Lead, uint, error) {
 	resp, err := l.cli.GetLeads(ctx, &pb.GetLeadsRequest{
 		CompanyId:  companyId,
 		EmployeeId: employeeId,
@@ -48,11 +48,11 @@ func (l *leadsClientImpl) GetLeads(ctx context.Context, companyId uint64, employ
 		code := status.Code(err)
 		switch code {
 		case codes.PermissionDenied:
-			return []leads.Lead{}, model.ErrPermissionDenied
+			return []leads.Lead{}, 0, model.ErrPermissionDenied
 		case codes.ResourceExhausted:
-			return []leads.Lead{}, model.ErrLeadsError
+			return []leads.Lead{}, 0, model.ErrLeadsError
 		default:
-			return []leads.Lead{}, model.ErrLeadsError
+			return []leads.Lead{}, 0, model.ErrLeadsError
 		}
 	}
 
@@ -60,7 +60,7 @@ func (l *leadsClientImpl) GetLeads(ctx context.Context, companyId uint64, employ
 	for i, lead := range resp.Leads {
 		leadsList[i] = respToLead(lead)
 	}
-	return leadsList, nil
+	return leadsList, uint(resp.Amount), nil
 }
 
 func (l *leadsClientImpl) GetLeadById(ctx context.Context, companyId uint64, employeeId uint64, leadId uint64) (leads.Lead, error) {

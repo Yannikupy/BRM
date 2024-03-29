@@ -62,7 +62,7 @@ func (a *appImpl) CreateLead(ctx context.Context, adId uint64, clientCompany uin
 	return lead, err
 }
 
-func (a *appImpl) GetLeads(ctx context.Context, companyId uint64, _ uint64, filter model.Filter) ([]model.Lead, error) {
+func (a *appImpl) GetLeads(ctx context.Context, companyId uint64, _ uint64, filter model.Filter) ([]model.Lead, uint, error) {
 	var err error
 	defer func() {
 		a.writeLog(logger.Fields{
@@ -71,8 +71,8 @@ func (a *appImpl) GetLeads(ctx context.Context, companyId uint64, _ uint64, filt
 		}, err)
 	}()
 
-	leads, err := a.leadsRepo.GetLeads(ctx, companyId, filter)
-	return leads, err
+	leads, amount, err := a.leadsRepo.GetLeads(ctx, companyId, filter)
+	return leads, amount, err
 }
 
 func (a *appImpl) GetLeadById(ctx context.Context, companyId uint64, _ uint64, leadId uint64) (model.Lead, error) {

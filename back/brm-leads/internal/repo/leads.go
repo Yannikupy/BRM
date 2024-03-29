@@ -35,6 +35,13 @@ const (
 		ORDER BY "creation_date" DESC
 		LIMIT $6 OFFSET $7;`
 
+	getLeadsAmountQuery = `
+		SELECT  COUNT(*) FROM "leads"
+		INNER JOIN "statuses" ON "leads"."status" = "statuses"."id"                      
+		WHERE "company_id" = $1 AND (NOT "is_deleted")
+			AND ((NOT $2) OR "status" = (SELECT "id" FROM "statuses" WHERE "name" = $3))
+			AND ((NOT $4) OR "responsible" = $5);`
+
 	getLeadByIdQuery = `
 		SELECT  "leads"."id", 
 		        "ad_id", 
@@ -90,7 +97,20 @@ func (l *leadRepoImpl) CreateLead(ctx context.Context, lead model.Lead) (model.L
 	}
 }
 
-func (l *leadRepoImpl) GetLeads(ctx context.Context, companyId uint64, filter model.Filter) ([]model.Lead, error) {
+func (l *leadRepoImpl) GetLeads(ctx context.Context, companyId uint64, filter model.Filter) ([]model.Lead, uint, error) {
+	var amount uint
+	if err := l.QueryRow(ctx, getLeadsAmountQuery,
+		companyId,
+		filter.ByStatus,
+		filter.Status,
+		filter.ByResponsible,
+		filter.Responsible,
+	).Scan(&amount); err != nil {
+		return []model.Lead{}, 0, errors.Join(model.ErrDatabaseError, err)
+	} else if amount == 0 {
+		return []model.Lead{}, 0, nil
+	}
+
 	rows, err := l.Query(ctx, getLeadsQuery,
 		companyId,
 		filter.ByStatus,
@@ -101,7 +121,7 @@ func (l *leadRepoImpl) GetLeads(ctx context.Context, companyId uint64, filter mo
 		filter.Offset,
 	)
 	if err != nil {
-		return []model.Lead{}, errors.Join(model.ErrDatabaseError, err)
+		return []model.Lead{}, 0, errors.Join(model.ErrDatabaseError, err)
 	}
 	defer rows.Close()
 
@@ -124,7 +144,7 @@ func (l *leadRepoImpl) GetLeads(ctx context.Context, companyId uint64, filter mo
 		)
 		leads = append(leads, lead)
 	}
-	return leads, nil
+	return leads, amount, nil
 }
 
 func (l *leadRepoImpl) GetLeadById(ctx context.Context, id uint64) (model.Lead, error) {
