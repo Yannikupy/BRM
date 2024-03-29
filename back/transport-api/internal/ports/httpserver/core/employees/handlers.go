@@ -113,9 +113,10 @@ func GetEmployeesList(a app.App) gin.HandlerFunc {
 		}
 
 		var employees []core.Employee
+		var amount uint
 
 		if pattern, byName := c.GetQuery("name"); byName {
-			employees, err = a.GetEmployeeByName(c,
+			employees, amount, err = a.GetEmployeeByName(c,
 				companyId,
 				employeeId,
 				core.EmployeeByName{
@@ -130,7 +131,7 @@ func GetEmployeesList(a app.App) gin.HandlerFunc {
 			filter.Offset = uint(offset)
 			filter.JobTitle, filter.ByJobTitle = c.GetQuery("jobtitle")
 			filter.Department, filter.ByDepartment = c.GetQuery("department")
-			employees, err = a.GetCompanyEmployees(c,
+			employees, amount, err = a.GetCompanyEmployees(c,
 				companyId,
 				employeeId,
 				filter)
@@ -138,8 +139,12 @@ func GetEmployeesList(a app.App) gin.HandlerFunc {
 
 		switch {
 		case err == nil:
+			data := &employeeListData{
+				Employees: employeesToEmployeeDataList(employees),
+				Amount:    amount,
+			}
 			c.JSON(http.StatusOK, employeeListResponse{
-				Data: employeesToEmployeeDataList(employees),
+				Data: data,
 				Err:  nil,
 			})
 		case errors.Is(err, model.ErrCompanyNotExists):

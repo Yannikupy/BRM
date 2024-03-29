@@ -145,6 +145,7 @@ message FilterEmployee {
 
 message GetCompanyEmployeesResponse {
   repeated Employee list = 1;
+  uint64 amount = 2;
 }
 
 message GetEmployeeByNameRequest {
@@ -161,6 +162,7 @@ message EmployeeByName {
 
 message GetEmployeeByNameResponse {
   repeated Employee list = 1;
+  uint64 amount = 2;
 }
 
 message GetEmployeeByIdRequest {

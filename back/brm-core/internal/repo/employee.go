@@ -35,10 +35,20 @@ const (
 			AND ((NOT $4) OR "department" = $5)
 		LIMIT $6 OFFSET $7;`
 
+	getCompanyEmployeesAmountQuery = `
+		SELECT COUNT(*) FROM "employees"
+		WHERE "company_id" = $1 AND (NOT "is_deleted")
+			AND ((NOT $2) OR "job_title" = $3)
+			AND ((NOT $4) OR "department" = $5);`
+
 	getEmployeeByNameQuery = `
 		SELECT * FROM "employees"
 		WHERE "company_id" = $1 AND (NOT "is_deleted") AND ("first_name" LIKE $2 OR "second_name" LIKE $2)
 		LIMIT $3 OFFSET $4;`
+
+	getEmployeeByNameAmountQuery = `
+		SELECT COUNT(*) FROM "employees"
+		WHERE "company_id" = $1 AND (NOT "is_deleted") AND ("first_name" LIKE $2 OR "second_name" LIKE $2);`
 
 	getEmployeeByIdQuery = `
 		SELECT * FROM "employees"
@@ -102,7 +112,20 @@ func (c *coreRepoImpl) DeleteEmployee(ctx context.Context, employeeId uint64) er
 	}
 }
 
-func (c *coreRepoImpl) GetCompanyEmployees(ctx context.Context, companyId uint64, filter model.FilterEmployee) ([]model.Employee, error) {
+func (c *coreRepoImpl) GetCompanyEmployees(ctx context.Context, companyId uint64, filter model.FilterEmployee) ([]model.Employee, uint, error) {
+	var amount uint
+	if err := c.QueryRow(ctx, getCompanyEmployeesAmountQuery,
+		companyId,
+		filter.ByJobTitle,
+		filter.JobTitle,
+		filter.ByDepartment,
+		filter.Department,
+	).Scan(&amount); err != nil {
+		return nil, 0, errors.Join(model.ErrDatabaseError, err)
+	} else if amount == 0 {
+		return []model.Employee{}, amount, nil
+	}
+
 	rows, err := c.Query(ctx, getCompanyEmployeesQuery,
 		companyId,
 		filter.ByJobTitle,
@@ -112,7 +135,7 @@ func (c *coreRepoImpl) GetCompanyEmployees(ctx context.Context, companyId uint64
 		filter.Limit,
 		filter.Offset)
 	if err != nil {
-		return []model.Employee{}, errors.Join(model.ErrDatabaseError, err)
+		return []model.Employee{}, 0, errors.Join(model.ErrDatabaseError, err)
 	}
 	defer rows.Close()
 
@@ -132,17 +155,27 @@ func (c *coreRepoImpl) GetCompanyEmployees(ctx context.Context, companyId uint64
 			&e.IsDeleted)
 		employees = append(employees, e)
 	}
-	return employees, nil
+	return employees, amount, nil
 }
 
-func (c *coreRepoImpl) GetEmployeeByName(ctx context.Context, companyId uint64, ebn model.EmployeeByName) ([]model.Employee, error) {
+func (c *coreRepoImpl) GetEmployeeByName(ctx context.Context, companyId uint64, ebn model.EmployeeByName) ([]model.Employee, uint, error) {
+	var amount uint
+	if err := c.QueryRow(ctx, getEmployeeByNameAmountQuery,
+		companyId,
+		ebn.Pattern+"%",
+	).Scan(&amount); err != nil {
+		return nil, 0, errors.Join(model.ErrDatabaseError, err)
+	} else if amount == 0 {
+		return []model.Employee{}, amount, nil
+	}
+
 	rows, err := c.Query(ctx, getEmployeeByNameQuery,
 		companyId,
 		ebn.Pattern+"%",
 		ebn.Limit,
 		ebn.Offset)
 	if err != nil {
-		return []model.Employee{}, errors.Join(model.ErrDatabaseError, err)
+		return []model.Employee{}, 0, errors.Join(model.ErrDatabaseError, err)
 	}
 	defer rows.Close()
 
@@ -162,7 +195,7 @@ func (c *coreRepoImpl) GetEmployeeByName(ctx context.Context, companyId uint64, 
 			&e.IsDeleted)
 		employees = append(employees, e)
 	}
-	return employees, nil
+	return employees, amount, nil
 }
 
 func (c *coreRepoImpl) GetEmployeeById(ctx context.Context, employeeId uint64) (model.Employee, error) {
