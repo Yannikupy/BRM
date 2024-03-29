@@ -22,7 +22,7 @@ func addCompanyWithOwner(a app.App) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		var req addCompanyAndOwnerRequest
 		if err := c.BindJSON(&req); err != nil {
-			c.AbortWithStatusJSON(http.StatusBadRequest, model.ErrInvalidInput)
+			c.AbortWithStatusJSON(http.StatusBadRequest, errorResponse(model.ErrInvalidInput))
 			return
 		}
 

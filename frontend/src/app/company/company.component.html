@@ -1,0 +1,28 @@
+<mat-card>
+  <mat-card-header>
+    <h1>Статистика компании</h1>
+  </mat-card-header>
+  <mat-card-content>
+    <div><h2>Активных сделок: {{ mainPage?.data?.active_leads_amount ?? ''}}
+      На сумму: {{ mainPage?.data?.active_leads_price ?? ''}} руб. </h2>
+    </div>
+    <div>
+      <h3>
+        Закрыто сделок:{{ (mainPage?.data?.total_leads_amount
+      && mainPage?.data?.active_leads_amount) ? mainPage!.data.total_leads_amount! - mainPage!.data.active_leads_amount! : '' }}
+        На сумму: {{ mainPage?.data?.closed_leads_price ?? ''}} руб.</h3>
+    </div>
+    <div>
+      <h3>
+        Активных объявлений: {{ mainPage?.data?.active_ads_aount ?? ''}}
+      </h3>
+    </div>
+    <div>
+      <h3>
+        Рейтинг компании:{{ mainPage?.data?.company_absolute_rating ?? ''}}
+        Это выше, чем у {{ mainPage?.data?.company_relative_rating ?? '' }} компаний
+      </h3>
+    </div>
+  </mat-card-content>
+</mat-card>
+

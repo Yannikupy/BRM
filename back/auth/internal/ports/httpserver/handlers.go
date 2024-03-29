@@ -23,7 +23,7 @@ func refresh(a app.App) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		var req refreshRequest
 		if err := c.BindJSON(&req); err != nil {
-			c.AbortWithStatusJSON(http.StatusBadRequest, model.ErrInvalidInput)
+			c.AbortWithStatusJSON(http.StatusBadRequest, errorResponse(model.ErrInvalidInput))
 			return
 		}
 
@@ -73,7 +73,7 @@ func login(a app.App) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		var req loginRequest
 		if err := c.BindJSON(&req); err != nil {
-			c.AbortWithStatusJSON(http.StatusBadRequest, model.ErrInvalidInput)
+			c.AbortWithStatusJSON(http.StatusBadRequest, errorResponse(model.ErrInvalidInput))
 			return
 		}
 
@@ -118,7 +118,7 @@ func logout(a app.App) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		var req logoutRequest
 		if err := c.BindJSON(&req); err != nil {
-			c.AbortWithStatusJSON(http.StatusBadRequest, model.ErrInvalidInput)
+			c.AbortWithStatusJSON(http.StatusBadRequest, errorResponse(model.ErrInvalidInput))
 			return
 		}
 
@@ -134,9 +134,9 @@ func logout(a app.App) gin.HandlerFunc {
 				Err:  nil,
 			})
 		case errors.Is(err, model.ErrAuthRepoError):
-			c.AbortWithStatusJSON(http.StatusInternalServerError, model.ErrAuthRepoError)
+			c.AbortWithStatusJSON(http.StatusInternalServerError, errorResponse(model.ErrAuthRepoError))
 		default:
-			c.AbortWithStatusJSON(http.StatusInternalServerError, model.ErrServiceError)
+			c.AbortWithStatusJSON(http.StatusInternalServerError, errorResponse(model.ErrServiceError))
 		}
 	}
 }
