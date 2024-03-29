@@ -63,6 +63,10 @@ const (
 		WHERE ("title" LIKE $1 OR "text" LIKE $1) AND (NOT "is_deleted")
 		LIMIT $2 OFFSET $3;`
 
+	getAdsByPatternAmountQuery = `
+		SELECT  COUNT(*) FROM "ads"
+		WHERE ("title" LIKE $1 OR "text" LIKE $1) AND (NOT "is_deleted");`
+
 	getIndustriesQuery = `
 		SELECT * FROM "industries";`
 )
@@ -154,14 +158,22 @@ func (a *adRepoImpl) GetAdById(ctx context.Context, id uint64) (model.Ad, error)
 	}
 }
 
-func (a *adRepoImpl) GetAdsList(ctx context.Context, params model.AdsListParams) ([]model.Ad, error) {
+func (a *adRepoImpl) GetAdsList(ctx context.Context, params model.AdsListParams) ([]model.Ad, uint, error) {
 	if params.Search != nil {
+		var amount uint
+		if err := a.QueryRow(ctx, getAdsByPatternAmountQuery,
+			params.Search.Pattern+"%",
+		).Scan(&amount); err != nil {
+			return []model.Ad{}, 0, errors.Join(model.ErrDatabaseError, err)
+		} else if amount == 0 {
+			return []model.Ad{}, 0, nil
+		}
 		rows, err := a.Query(ctx, getAdsByPatternQuery,
 			params.Search.Pattern+"%",
 			params.Limit,
 			params.Offset)
 		if err != nil {
-			return []model.Ad{}, errors.Join(model.ErrDatabaseError, err)
+			return []model.Ad{}, 0, errors.Join(model.ErrDatabaseError, err)
 		}
 		defer rows.Close()
 
@@ -182,7 +194,7 @@ func (a *adRepoImpl) GetAdsList(ctx context.Context, params model.AdsListParams)
 				&ad.IsDeleted)
 			ads = append(ads, ad)
 		}
-		return ads, nil
+		return ads, amount, nil
 	} else {
 		if params.Filter == nil {
 			params.Filter = &model.AdFilter{
@@ -211,6 +223,23 @@ func (a *adRepoImpl) GetAdsList(ctx context.Context, params model.AdsListParams)
 				AND ((NOT $3) OR "industry" = (SELECT "industries"."id" FROM "industries" WHERE "name" = $4))
 			%s
 			LIMIT $5 OFFSET $6;`, getOrderParam(params.Sort))
+		getAdsAmountQuery := `
+			SELECT  COUNT(*) FROM "ads"
+			WHERE (NOT "is_deleted")
+				AND ((NOT $1) OR "company_id" = $2)
+				AND ((NOT $3) OR "industry" = (SELECT "industries"."id" FROM "industries" WHERE "name" = $4));`
+
+		var amount uint
+		if err := a.QueryRow(ctx, getAdsAmountQuery,
+			params.Filter.ByCompany,
+			params.Filter.CompanyId,
+			params.Filter.ByIndustry,
+			params.Filter.Industry,
+		).Scan(&amount); err != nil {
+			return []model.Ad{}, 0, errors.Join(model.ErrDatabaseError, err)
+		} else if amount == 0 {
+			return []model.Ad{}, 0, nil
+		}
 
 		rows, err := a.Query(ctx, getAdsQuery,
 			params.Filter.ByCompany,
@@ -220,7 +249,7 @@ func (a *adRepoImpl) GetAdsList(ctx context.Context, params model.AdsListParams)
 			params.Limit,
 			params.Offset)
 		if err != nil {
-			return []model.Ad{}, errors.Join(model.ErrDatabaseError, err)
+			return []model.Ad{}, 0, errors.Join(model.ErrDatabaseError, err)
 		}
 		defer rows.Close()
 
@@ -241,7 +270,7 @@ func (a *adRepoImpl) GetAdsList(ctx context.Context, params model.AdsListParams)
 				&ad.IsDeleted)
 			ads = append(ads, ad)
 		}
-		return ads, nil
+		return ads, amount, nil
 	}
 }
 

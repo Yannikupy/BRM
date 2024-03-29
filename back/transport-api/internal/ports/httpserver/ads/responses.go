@@ -66,9 +66,14 @@ type adResponse struct {
 	Err  *string `json:"error"`
 }
 
+type adListData struct {
+	Ads    []adData `json:"ads"`
+	Amount uint     `json:"amount"`
+}
+
 type adListResponse struct {
-	Data []adData `json:"data"`
-	Err  *string  `json:"error"`
+	Data *adListData `json:"data"`
+	Err  *string     `json:"error"`
 }
 
 func adsToAdDataList(adList []ads.Ad) []adData {
@@ -84,9 +89,14 @@ type responseResponse struct {
 	Err  *string       `json:"error"`
 }
 
+type responseListData struct {
+	Responses []responseData `json:"responses"`
+	Amount    uint           `json:"amount"`
+}
+
 type responseListResponse struct {
-	Data []responseData `json:"data"`
-	Err  *string        `json:"error"`
+	Data *responseListData `json:"data"`
+	Err  *string           `json:"error"`
 }
 
 func responsesToResponseDataList(resps []ads.Response) []responseData {

@@ -16,6 +16,10 @@ const (
 		SELECT * FROM "responses"
 		WHERE "company_id" = $1
 		LIMIT $2 OFFSET $3;`
+
+	getResponsesAmountQuery = `
+		SELECT COUNT(*) FROM "responses"
+		WHERE "company_id" = $1;`
 )
 
 func (a *adRepoImpl) CreateResponse(ctx context.Context, resp model.Response) (model.Response, error) {
@@ -33,13 +37,22 @@ func (a *adRepoImpl) CreateResponse(ctx context.Context, resp model.Response) (m
 	}
 }
 
-func (a *adRepoImpl) GetResponses(ctx context.Context, companyId uint64, limit uint, offset uint) ([]model.Response, error) {
+func (a *adRepoImpl) GetResponses(ctx context.Context, companyId uint64, limit uint, offset uint) ([]model.Response, uint, error) {
+	var amount uint
+	if err := a.QueryRow(ctx, getResponsesAmountQuery,
+		companyId,
+	).Scan(&amount); err != nil {
+		return []model.Response{}, 0, errors.Join(model.ErrDatabaseError, err)
+	} else if amount == 0 {
+		return []model.Response{}, 0, nil
+	}
+
 	rows, err := a.Query(ctx, getResponsesQuery,
 		companyId,
 		limit,
 		offset)
 	if err != nil {
-		return []model.Response{}, errors.Join(model.ErrDatabaseError, err)
+		return []model.Response{}, 0, errors.Join(model.ErrDatabaseError, err)
 	}
 	defer rows.Close()
 
@@ -55,5 +68,5 @@ func (a *adRepoImpl) GetResponses(ctx context.Context, companyId uint64, limit u
 		)
 		responses = append(responses, resp)
 	}
-	return responses, nil
+	return responses, amount, nil
 }

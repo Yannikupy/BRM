@@ -46,13 +46,13 @@ type CoreContact interface {
 
 type Ads interface {
 	GetAdById(ctx context.Context, id uint64) (ads.Ad, error)
-	GetAdsList(ctx context.Context, params ads.ListParams) ([]ads.Ad, error)
+	GetAdsList(ctx context.Context, params ads.ListParams) ([]ads.Ad, uint, error)
 	CreateAd(ctx context.Context, companyId uint64, employeeId uint64, ad ads.Ad) (ads.Ad, error)
 	UpdateAd(ctx context.Context, companyId uint64, employeeId uint64, adId uint64, upd ads.UpdateAd) (ads.Ad, error)
 	DeleteAd(ctx context.Context, companyId uint64, employeeId uint64, adId uint64) error
 
 	CreateResponse(ctx context.Context, companyId uint64, employeeId uint64, adId uint64) (ads.Response, error)
-	GetResponses(ctx context.Context, companyId uint64, employeeId uint64, limit uint, offset uint) ([]ads.Response, error)
+	GetResponses(ctx context.Context, companyId uint64, employeeId uint64, limit uint, offset uint) ([]ads.Response, uint, error)
 
 	GetAdsIndustries(ctx context.Context) (map[string]uint64, error)
 }

@@ -74,7 +74,7 @@ func (a *adsClientImpl) GetAdById(ctx context.Context, id uint64) (ads.Ad, error
 	return respToAd(resp.Ad), nil
 }
 
-func (a *adsClientImpl) GetAdsList(ctx context.Context, params ads.ListParams) ([]ads.Ad, error) {
+func (a *adsClientImpl) GetAdsList(ctx context.Context, params ads.ListParams) ([]ads.Ad, uint, error) {
 	resp, err := a.cli.GetAdsList(ctx, &pb.GetAdsListRequest{
 		Params: paramsToResp(params),
 	})
@@ -82,16 +82,16 @@ func (a *adsClientImpl) GetAdsList(ctx context.Context, params ads.ListParams) (
 		code := status.Code(err)
 		switch code {
 		case codes.ResourceExhausted:
-			return []ads.Ad{}, model.ErrAdsError
+			return []ads.Ad{}, 0, model.ErrAdsError
 		default:
-			return []ads.Ad{}, model.ErrAdsUnknown
+			return []ads.Ad{}, 0, model.ErrAdsUnknown
 		}
 	}
 	adsList := make([]ads.Ad, len(resp.List))
 	for i, ad := range resp.List {
 		adsList[i] = respToAd(ad)
 	}
-	return adsList, nil
+	return adsList, uint(resp.Amount), nil
 }
 
 func (a *adsClientImpl) CreateAd(ctx context.Context, companyId uint64, employeeId uint64, ad ads.Ad) (ads.Ad, error) {
