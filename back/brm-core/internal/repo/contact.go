@@ -124,6 +124,7 @@ func (c *coreRepoImpl) GetContacts(ctx context.Context, ownerId uint64, paginati
 			&contact.Empl.Email,
 			&contact.Empl.JobTitle,
 			&contact.Empl.Department,
+			&contact.Empl.ImageURL,
 			&contact.Empl.CreationDate,
 			&contact.Empl.IsDeleted,
 		)
