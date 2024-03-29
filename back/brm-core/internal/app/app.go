@@ -306,8 +306,6 @@ func (a *appImpl) GetEmployeeById(ctx context.Context, companyId uint64, employe
 	} else if companyId != employee.CompanyId {
 		return model.Employee{}, model.ErrAuthorization
 	}
-
-	employee, err = a.coreRepo.GetEmployeeById(ctx, employeeIdToFind)
 	return employee, err
 }
 
