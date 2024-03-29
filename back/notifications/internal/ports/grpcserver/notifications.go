@@ -30,7 +30,7 @@ func (s *Server) CreateNotification(ctx context.Context, req *pb.CreateNotificat
 }
 
 func (s *Server) GetNotifications(ctx context.Context, req *pb.GetNotificationsRequest) (*pb.GetNotificationsResponse, error) {
-	notificationsList, err := s.App.GetNotifications(ctx,
+	notificationsList, amount, err := s.App.GetNotifications(ctx,
 		req.CompanyId,
 		uint(req.Limit),
 		uint(req.Offset),
@@ -40,7 +40,8 @@ func (s *Server) GetNotifications(ctx context.Context, req *pb.GetNotificationsR
 		return nil, mapErrors(err)
 	}
 	resp := &pb.GetNotificationsResponse{
-		List: make([]*pb.Notification, len(notificationsList)),
+		List:   make([]*pb.Notification, len(notificationsList)),
+		Amount: uint64(amount),
 	}
 	for i := range notificationsList {
 		resp.List[i] = &pb.Notification{

@@ -432,12 +432,19 @@ definitions:
       viewed:
         type: boolean
     type: object
-  notifications.notificationListResponse:
+  notifications.notificationListData:
     properties:
-      data:
+      amount:
+        type: integer
+      notifications:
         items:
           $ref: '#/definitions/notifications.notificationData'
         type: array
+    type: object
+  notifications.notificationListResponse:
+    properties:
+      data:
+        $ref: '#/definitions/notifications.notificationListData'
       error:
         type: string
     type: object

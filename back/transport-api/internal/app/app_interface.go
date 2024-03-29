@@ -70,7 +70,7 @@ type Stats interface {
 }
 
 type Notifications interface {
-	GetNotifications(ctx context.Context, companyId uint64, limit uint, offset uint, onlyNotViewed bool) ([]notifications.Notification, error)
+	GetNotifications(ctx context.Context, companyId uint64, limit uint, offset uint, onlyNotViewed bool) ([]notifications.Notification, uint, error)
 	GetNotification(ctx context.Context, companyId uint64, notificationId uint64) (notifications.Notification, error)
 	SubmitClosedLead(ctx context.Context, companyId uint64, notificationId uint64, submit bool) error
 }

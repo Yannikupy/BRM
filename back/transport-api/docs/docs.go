@@ -2850,14 +2850,25 @@ const docTemplate = `{
                 }
             }
         },
-        "notifications.notificationListResponse": {
+        "notifications.notificationListData": {
             "type": "object",
             "properties": {
-                "data": {
+                "amount": {
+                    "type": "integer"
+                },
+                "notifications": {
                     "type": "array",
                     "items": {
                         "$ref": "#/definitions/notifications.notificationData"
                     }
+                }
+            }
+        },
+        "notifications.notificationListResponse": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "$ref": "#/definitions/notifications.notificationListData"
                 },
                 "error": {
                     "type": "string"

@@ -43,11 +43,15 @@ func GetNotifications(a app.App) gin.HandlerFunc {
 		onlyNotViewedStr, _ := c.GetQuery("only_not_viewed")
 		onlyNotViewed := onlyNotViewedStr == "true"
 
-		notifications, err := a.GetNotifications(c, companyId, uint(limit), uint(offset), onlyNotViewed)
+		notifications, amount, err := a.GetNotifications(c, companyId, uint(limit), uint(offset), onlyNotViewed)
 		switch {
 		case err == nil:
+			data := &notificationListData{
+				Notifications: notificationsToNotificationsDataList(notifications),
+				Amount:        amount,
+			}
 			c.JSON(http.StatusOK, notificationListResponse{
-				Data: notificationsToNotificationsDataList(notifications),
+				Data: data,
 				Err:  nil,
 			})
 		case errors.Is(err, model.ErrNotificationsError):
