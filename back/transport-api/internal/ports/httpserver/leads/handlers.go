@@ -106,10 +106,13 @@ func GetLeadsList(a app.App) gin.HandlerFunc {
 
 		filter.Status, filter.ByStatus = c.GetQuery("status")
 
-		leadsList, err := a.GetLeads(c, companyId, employeeId, filter)
+		leadsList, amount, err := a.GetLeads(c, companyId, employeeId, filter)
 		switch {
 		case err == nil:
-			data := leadsToLeadsDataList(leadsList)
+			data := &leadsListData{
+				Leads:  leadsToLeadsDataList(leadsList),
+				Amount: amount,
+			}
 			c.JSON(http.StatusOK, leadsListResponse{
 				Data: data,
 				Err:  nil,

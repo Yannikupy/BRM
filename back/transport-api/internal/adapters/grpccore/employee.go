@@ -116,7 +116,7 @@ func (c *coreClientImpl) DeleteEmployee(ctx context.Context, companyId uint64, o
 	return nil
 }
 
-func (c *coreClientImpl) GetCompanyEmployees(ctx context.Context, companyId uint64, employeeId uint64, filter core.FilterEmployee) ([]core.Employee, error) {
+func (c *coreClientImpl) GetCompanyEmployees(ctx context.Context, companyId uint64, employeeId uint64, filter core.FilterEmployee) ([]core.Employee, uint, error) {
 	resp, err := c.cli.GetCompanyEmployees(ctx, &pb.GetCompanyEmployeesRequest{
 		CompanyId:  companyId,
 		EmployeeId: employeeId,
@@ -133,23 +133,23 @@ func (c *coreClientImpl) GetCompanyEmployees(ctx context.Context, companyId uint
 		code := status.Code(err)
 		switch code {
 		case codes.NotFound:
-			return []core.Employee{}, model.ErrEmployeeNotExists
+			return []core.Employee{}, 0, model.ErrEmployeeNotExists
 		case codes.PermissionDenied:
-			return []core.Employee{}, model.ErrPermissionDenied
+			return []core.Employee{}, 0, model.ErrPermissionDenied
 		case codes.ResourceExhausted:
-			return []core.Employee{}, model.ErrCoreError
+			return []core.Employee{}, 0, model.ErrCoreError
 		default:
-			return []core.Employee{}, model.ErrCoreUnknown
+			return []core.Employee{}, 0, model.ErrCoreUnknown
 		}
 	}
 	employees := make([]core.Employee, len(resp.List))
 	for i, empl := range resp.List {
 		employees[i] = respToEmployee(empl)
 	}
-	return employees, nil
+	return employees, uint(resp.Amount), nil
 }
 
-func (c *coreClientImpl) GetEmployeeByName(ctx context.Context, companyId uint64, employeeId uint64, ebn core.EmployeeByName) ([]core.Employee, error) {
+func (c *coreClientImpl) GetEmployeeByName(ctx context.Context, companyId uint64, employeeId uint64, ebn core.EmployeeByName) ([]core.Employee, uint, error) {
 	resp, err := c.cli.GetEmployeeByName(ctx, &pb.GetEmployeeByNameRequest{
 		CompanyId:  companyId,
 		EmployeeId: employeeId,
@@ -163,20 +163,20 @@ func (c *coreClientImpl) GetEmployeeByName(ctx context.Context, companyId uint64
 		code := status.Code(err)
 		switch code {
 		case codes.NotFound:
-			return []core.Employee{}, model.ErrEmployeeNotExists
+			return []core.Employee{}, 0, model.ErrEmployeeNotExists
 		case codes.PermissionDenied:
-			return []core.Employee{}, model.ErrPermissionDenied
+			return []core.Employee{}, 0, model.ErrPermissionDenied
 		case codes.ResourceExhausted:
-			return []core.Employee{}, model.ErrCoreError
+			return []core.Employee{}, 0, model.ErrCoreError
 		default:
-			return []core.Employee{}, model.ErrCoreUnknown
+			return []core.Employee{}, 0, model.ErrCoreUnknown
 		}
 	}
 	employees := make([]core.Employee, len(resp.List))
 	for i, empl := range resp.List {
 		employees[i] = respToEmployee(empl)
 	}
-	return employees, nil
+	return employees, uint(resp.Amount), nil
 }
 
 func (c *coreClientImpl) GetEmployeeById(ctx context.Context, companyId uint64, employeeId uint64, employeeIdToFind uint64) (core.Employee, error) {

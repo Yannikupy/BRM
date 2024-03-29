@@ -5,7 +5,7 @@ import (
 	"transport-api/internal/model/leads"
 )
 
-func (a *appImpl) GetLeads(ctx context.Context, companyId uint64, employeeId uint64, filter leads.Filter) ([]leads.Lead, error) {
+func (a *appImpl) GetLeads(ctx context.Context, companyId uint64, employeeId uint64, filter leads.Filter) ([]leads.Lead, uint, error) {
 	return a.leads.GetLeads(ctx, companyId, employeeId, filter)
 }
 

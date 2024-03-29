@@ -152,10 +152,11 @@ func GetAdsList(a app.App) gin.HandlerFunc {
 		params.Offset = uint(offset)
 
 		var adList []ads.Ad
+		var amount uint
 
 		if pattern, byName := c.GetQuery("pattern"); byName {
 			params.Search = &ads.AdSearcher{Pattern: pattern}
-			adList, err = a.GetAdsList(c, params)
+			adList, amount, err = a.GetAdsList(c, params)
 		} else {
 			filter := &ads.AdFilter{}
 			_, filter.ByIndustry = c.GetQuery("industry")
@@ -199,13 +200,17 @@ func GetAdsList(a app.App) gin.HandlerFunc {
 
 			params.Filter = filter
 			params.Sort = sorter
-			adList, err = a.GetAdsList(c, params)
+			adList, amount, err = a.GetAdsList(c, params)
 		}
 
 		switch {
 		case err == nil:
+			data := &adListData{
+				Ads:    adsToAdDataList(adList),
+				Amount: amount,
+			}
 			c.JSON(http.StatusOK, adListResponse{
-				Data: adsToAdDataList(adList),
+				Data: data,
 				Err:  nil,
 			})
 		case errors.Is(err, model.ErrAdsError):
@@ -400,11 +405,14 @@ func GetResponsesList(a app.App) gin.HandlerFunc {
 			return
 		}
 
-		responses, err := a.GetResponses(c, companyId, employeeId, uint(limit), uint(offset))
+		responses, amount, err := a.GetResponses(c, companyId, employeeId, uint(limit), uint(offset))
 
 		switch {
 		case err == nil:
-			data := responsesToResponseDataList(responses)
+			data := &responseListData{
+				Responses: responsesToResponseDataList(responses),
+				Amount:    amount,
+			}
 			c.JSON(http.StatusOK, responseListResponse{
 				Data: data,
 				Err:  nil,

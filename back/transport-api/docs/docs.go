@@ -2222,14 +2222,25 @@ const docTemplate = `{
                 }
             }
         },
-        "ads.adListResponse": {
+        "ads.adListData": {
             "type": "object",
             "properties": {
-                "data": {
+                "ads": {
                     "type": "array",
                     "items": {
                         "$ref": "#/definitions/ads.adData"
                     }
+                },
+                "amount": {
+                    "type": "integer"
+                }
+            }
+        },
+        "ads.adListResponse": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "$ref": "#/definitions/ads.adListData"
                 },
                 "error": {
                     "type": "string"
@@ -2301,14 +2312,25 @@ const docTemplate = `{
                 }
             }
         },
-        "ads.responseListResponse": {
+        "ads.responseListData": {
             "type": "object",
             "properties": {
-                "data": {
+                "amount": {
+                    "type": "integer"
+                },
+                "responses": {
                     "type": "array",
                     "items": {
                         "$ref": "#/definitions/ads.responseData"
                     }
+                }
+            }
+        },
+        "ads.responseListResponse": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "$ref": "#/definitions/ads.responseListData"
                 },
                 "error": {
                     "type": "string"
@@ -2610,14 +2632,25 @@ const docTemplate = `{
                 }
             }
         },
-        "employees.employeeListResponse": {
+        "employees.employeeListData": {
             "type": "object",
             "properties": {
-                "data": {
+                "amount": {
+                    "type": "integer"
+                },
+                "employees": {
                     "type": "array",
                     "items": {
                         "$ref": "#/definitions/employees.employeeData"
                     }
+                }
+            }
+        },
+        "employees.employeeListResponse": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "$ref": "#/definitions/employees.employeeListData"
                 },
                 "error": {
                     "type": "string"
@@ -2707,14 +2740,25 @@ const docTemplate = `{
                 }
             }
         },
-        "leads.leadsListResponse": {
+        "leads.leadsListData": {
             "type": "object",
             "properties": {
-                "data": {
+                "amount": {
+                    "type": "integer"
+                },
+                "leads": {
                     "type": "array",
                     "items": {
                         "$ref": "#/definitions/leads.leadData"
                     }
+                }
+            }
+        },
+        "leads.leadsListResponse": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "$ref": "#/definitions/leads.leadsListData"
                 },
                 "error": {
                     "type": "string"
@@ -2806,14 +2850,25 @@ const docTemplate = `{
                 }
             }
         },
-        "notifications.notificationListResponse": {
+        "notifications.notificationListData": {
             "type": "object",
             "properties": {
-                "data": {
+                "amount": {
+                    "type": "integer"
+                },
+                "notifications": {
                     "type": "array",
                     "items": {
                         "$ref": "#/definitions/notifications.notificationData"
                     }
+                }
+            }
+        },
+        "notifications.notificationListResponse": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "$ref": "#/definitions/notifications.notificationListData"
                 },
                 "error": {
                     "type": "string"

@@ -44,7 +44,7 @@ func (a *adsClientImpl) CreateResponse(ctx context.Context, companyId uint64, em
 	return respToResponse(resp.Response), nil
 }
 
-func (a *adsClientImpl) GetResponses(ctx context.Context, companyId uint64, employeeId uint64, limit uint, offset uint) ([]ads.Response, error) {
+func (a *adsClientImpl) GetResponses(ctx context.Context, companyId uint64, employeeId uint64, limit uint, offset uint) ([]ads.Response, uint, error) {
 	grpcResp, err := a.cli.GetResponses(ctx, &pb.GetResponsesRequest{
 		CompanyId:  companyId,
 		EmployeeId: employeeId,
@@ -55,14 +55,14 @@ func (a *adsClientImpl) GetResponses(ctx context.Context, companyId uint64, empl
 		code := status.Code(err)
 		switch code {
 		case codes.ResourceExhausted:
-			return []ads.Response{}, model.ErrAdsError
+			return []ads.Response{}, 0, model.ErrAdsError
 		case codes.Unknown:
-			return []ads.Response{}, model.ErrAdsUnknown
+			return []ads.Response{}, 0, model.ErrAdsUnknown
 		}
 	}
 	responses := make([]ads.Response, len(grpcResp.List))
 	for i, resp := range grpcResp.List {
 		responses[i] = respToResponse(resp)
 	}
-	return responses, nil
+	return responses, uint(grpcResp.Amount), nil
 }

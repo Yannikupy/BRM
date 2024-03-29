@@ -31,7 +31,7 @@ func (a *appImpl) CreateNotification(ctx context.Context, notification model.Not
 	return err
 }
 
-func (a *appImpl) GetNotifications(ctx context.Context, companyId uint64, limit uint, offset uint, onlyNotViewed bool) ([]model.Notification, error) {
+func (a *appImpl) GetNotifications(ctx context.Context, companyId uint64, limit uint, offset uint, onlyNotViewed bool) ([]model.Notification, uint, error) {
 	var err error
 	defer func() {
 		a.writeLog(logger.Fields{
@@ -40,9 +40,8 @@ func (a *appImpl) GetNotifications(ctx context.Context, companyId uint64, limit 
 		}, err)
 	}()
 
-	var notifications []model.Notification
-	notifications, err = a.r.GetNotifications(ctx, companyId, limit, offset, onlyNotViewed)
-	return notifications, err
+	notifications, amount, err := a.r.GetNotifications(ctx, companyId, limit, offset, onlyNotViewed)
+	return notifications, amount, err
 }
 
 func (a *appImpl) GetNotification(ctx context.Context, companyId uint64, notificationId uint64) (model.Notification, error) {

@@ -32,7 +32,7 @@ func (a *appImpl) GetAdById(ctx context.Context, id uint64) (model.Ad, error) {
 	return ad, err
 }
 
-func (a *appImpl) GetAdsList(ctx context.Context, params model.AdsListParams) ([]model.Ad, error) {
+func (a *appImpl) GetAdsList(ctx context.Context, params model.AdsListParams) ([]model.Ad, uint, error) {
 	var err error
 	defer func() {
 		a.writeLog(logger.Fields{
@@ -41,12 +41,12 @@ func (a *appImpl) GetAdsList(ctx context.Context, params model.AdsListParams) ([
 	}()
 	if params.Filter != nil && params.Filter.ByCompany {
 		if _, err = a.core.GetCompany(ctx, params.Filter.CompanyId); err != nil {
-			return []model.Ad{}, err
+			return []model.Ad{}, 0, err
 		}
 	}
 
-	ads, err := a.repo.GetAdsList(ctx, params)
-	return ads, err
+	ads, amount, err := a.repo.GetAdsList(ctx, params)
+	return ads, amount, err
 }
 
 func (a *appImpl) CreateAd(ctx context.Context, companyId uint64, employeeId uint64, ad model.Ad) (model.Ad, error) {
@@ -153,7 +153,7 @@ func (a *appImpl) CreateResponse(ctx context.Context, companyId uint64, employee
 	return resp, err
 }
 
-func (a *appImpl) GetResponses(ctx context.Context, companyId uint64, employeeId uint64, limit uint, offset uint) ([]model.Response, error) {
+func (a *appImpl) GetResponses(ctx context.Context, companyId uint64, employeeId uint64, limit uint, offset uint) ([]model.Response, uint, error) {
 	var err error
 	defer func() {
 		a.writeLog(logger.Fields{
@@ -163,8 +163,8 @@ func (a *appImpl) GetResponses(ctx context.Context, companyId uint64, employeeId
 		}, err)
 	}()
 
-	resps, err := a.repo.GetResponses(ctx, companyId, limit, offset)
-	return resps, err
+	resps, amount, err := a.repo.GetResponses(ctx, companyId, limit, offset)
+	return resps, amount, err
 }
 
 func (a *appImpl) GetIndustries(ctx context.Context) (map[string]uint64, error) {

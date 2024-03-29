@@ -54,7 +54,12 @@ type employeeResponse struct {
 	Err  *string       `json:"error"`
 }
 
+type employeeListData struct {
+	Employees []employeeData `json:"employees"`
+	Amount    uint           `json:"amount"`
+}
+
 type employeeListResponse struct {
-	Data []employeeData `json:"data"`
-	Err  *string        `json:"error"`
+	Data *employeeListData `json:"data"`
+	Err  *string           `json:"error"`
 }

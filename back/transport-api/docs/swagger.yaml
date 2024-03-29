@@ -25,12 +25,19 @@ definitions:
       title:
         type: string
     type: object
-  ads.adListResponse:
+  ads.adListData:
     properties:
-      data:
+      ads:
         items:
           $ref: '#/definitions/ads.adData'
         type: array
+      amount:
+        type: integer
+    type: object
+  ads.adListResponse:
+    properties:
+      data:
+        $ref: '#/definitions/ads.adListData'
       error:
         type: string
     type: object
@@ -76,12 +83,19 @@ definitions:
       id:
         type: integer
     type: object
-  ads.responseListResponse:
+  ads.responseListData:
     properties:
-      data:
+      amount:
+        type: integer
+      responses:
         items:
           $ref: '#/definitions/ads.responseData'
         type: array
+    type: object
+  ads.responseListResponse:
+    properties:
+      data:
+        $ref: '#/definitions/ads.responseListData'
       error:
         type: string
     type: object
@@ -277,12 +291,19 @@ definitions:
       second_name:
         type: string
     type: object
-  employees.employeeListResponse:
+  employees.employeeListData:
     properties:
-      data:
+      amount:
+        type: integer
+      employees:
         items:
           $ref: '#/definitions/employees.employeeData'
         type: array
+    type: object
+  employees.employeeListResponse:
+    properties:
+      data:
+        $ref: '#/definitions/employees.employeeListData'
       error:
         type: string
     type: object
@@ -340,12 +361,19 @@ definitions:
       error:
         type: string
     type: object
-  leads.leadsListResponse:
+  leads.leadsListData:
     properties:
-      data:
+      amount:
+        type: integer
+      leads:
         items:
           $ref: '#/definitions/leads.leadData'
         type: array
+    type: object
+  leads.leadsListResponse:
+    properties:
+      data:
+        $ref: '#/definitions/leads.leadsListData'
       error:
         type: string
     type: object
@@ -404,12 +432,19 @@ definitions:
       viewed:
         type: boolean
     type: object
-  notifications.notificationListResponse:
+  notifications.notificationListData:
     properties:
-      data:
+      amount:
+        type: integer
+      notifications:
         items:
           $ref: '#/definitions/notifications.notificationData'
         type: array
+    type: object
+  notifications.notificationListResponse:
+    properties:
+      data:
+        $ref: '#/definitions/notifications.notificationListData'
       error:
         type: string
     type: object

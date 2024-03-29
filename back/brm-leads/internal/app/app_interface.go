@@ -12,7 +12,7 @@ import (
 
 type App interface {
 	CreateLead(ctx context.Context, adId uint64, clientCompany uint64, clientEmployee uint64) (model.Lead, error)
-	GetLeads(ctx context.Context, companyId uint64, employeeId uint64, filter model.Filter) ([]model.Lead, error)
+	GetLeads(ctx context.Context, companyId uint64, employeeId uint64, filter model.Filter) ([]model.Lead, uint, error)
 	GetLeadById(ctx context.Context, companyId uint64, employeeId uint64, leadId uint64) (model.Lead, error)
 	UpdateLead(ctx context.Context, companyId uint64, employeeId uint64, id uint64, upd model.UpdateLead) (model.Lead, error)
 

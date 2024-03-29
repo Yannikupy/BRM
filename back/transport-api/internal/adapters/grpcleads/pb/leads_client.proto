@@ -52,6 +52,7 @@ message GetLeadsRequest {
 
 message GetLeadsResponse {
   repeated Lead leads = 1;
+  uint64 amount = 2;
 }
 
 message GetLeadByIdRequest {

@@ -46,6 +46,7 @@ message GetNotificationsRequest {
 
 message GetNotificationsResponse {
   repeated Notification list = 1;
+  uint64 amount = 2;
 }
 
 message GetNotificationRequest {

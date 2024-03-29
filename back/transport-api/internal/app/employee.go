@@ -17,11 +17,11 @@ func (a *appImpl) DeleteEmployee(ctx context.Context, companyId uint64, ownerId 
 	return a.core.DeleteEmployee(ctx, companyId, ownerId, employeeId)
 }
 
-func (a *appImpl) GetCompanyEmployees(ctx context.Context, companyId uint64, employeeId uint64, filter core.FilterEmployee) ([]core.Employee, error) {
+func (a *appImpl) GetCompanyEmployees(ctx context.Context, companyId uint64, employeeId uint64, filter core.FilterEmployee) ([]core.Employee, uint, error) {
 	return a.core.GetCompanyEmployees(ctx, companyId, employeeId, filter)
 }
 
-func (a *appImpl) GetEmployeeByName(ctx context.Context, companyId uint64, ownerId uint64, ebn core.EmployeeByName) ([]core.Employee, error) {
+func (a *appImpl) GetEmployeeByName(ctx context.Context, companyId uint64, ownerId uint64, ebn core.EmployeeByName) ([]core.Employee, uint, error) {
 	return a.core.GetEmployeeByName(ctx, companyId, ownerId, ebn)
 }
 

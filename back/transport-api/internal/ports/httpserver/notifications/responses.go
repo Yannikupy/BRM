@@ -47,8 +47,13 @@ type notificationResponse struct {
 }
 
 type notificationListResponse struct {
-	Data []notificationData `json:"data"`
-	Err  *string            `json:"error"`
+	Data *notificationListData `json:"data"`
+	Err  *string               `json:"error"`
+}
+
+type notificationListData struct {
+	Notifications []notificationData `json:"notifications"`
+	Amount        uint               `json:"amount"`
 }
 
 type notificationData struct {

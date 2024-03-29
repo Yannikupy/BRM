@@ -5,7 +5,7 @@ import (
 	"transport-api/internal/model/notifications"
 )
 
-func (a *appImpl) GetNotifications(ctx context.Context, companyId uint64, limit uint, offset uint, onlyNotViewed bool) ([]notifications.Notification, error) {
+func (a *appImpl) GetNotifications(ctx context.Context, companyId uint64, limit uint, offset uint, onlyNotViewed bool) ([]notifications.Notification, uint, error) {
 	return a.notifications.GetNotifications(ctx, companyId, limit, offset, onlyNotViewed)
 }
 

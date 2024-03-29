@@ -81,13 +81,14 @@ func (s *Server) GetAdsList(ctx context.Context, req *pb.GetAdsListRequest) (*pb
 	params.Limit = uint(req.Params.Limit)
 	params.Offset = uint(req.Params.Offset)
 
-	ads, err := s.App.GetAdsList(ctx, params)
+	ads, amount, err := s.App.GetAdsList(ctx, params)
 	if err != nil {
 		return nil, mapErrors(err)
 	}
 
 	resp := &pb.GetAdsListResponse{
-		List: make([]*pb.Ad, len(ads)),
+		List:   make([]*pb.Ad, len(ads)),
+		Amount: uint64(amount),
 	}
 	for i, ad := range ads {
 		resp.List[i] = modelAdToAd(ad)

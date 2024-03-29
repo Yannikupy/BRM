@@ -32,6 +32,10 @@ const (
 		ORDER BY "date" DESC
 		LIMIT $3 OFFSET $4;`
 
+	getNotificationsAmountQuery = `
+		SELECT COUNT(*) FROM "notifications"
+		WHERE "company_id" = $1 AND ((NOT $2) OR (NOT "viewed"));`
+
 	getNotificationQuery = `
 		SELECT * FROM "notifications"
 		WHERE "id" = $1;`
@@ -90,7 +94,17 @@ func (n *notificationsRepoImpl) CreateNotification(ctx context.Context, notifica
 	return nil
 }
 
-func (n *notificationsRepoImpl) GetNotifications(ctx context.Context, companyId uint64, limit uint, offset uint, onlyNotViewed bool) ([]model.Notification, error) {
+func (n *notificationsRepoImpl) GetNotifications(ctx context.Context, companyId uint64, limit uint, offset uint, onlyNotViewed bool) ([]model.Notification, uint, error) {
+	var amount uint
+	if err := n.QueryRow(ctx, getNotificationsAmountQuery,
+		companyId,
+		onlyNotViewed,
+	).Scan(&amount); err != nil {
+		return []model.Notification{}, 0, errors.Join(model.ErrDatabaseError, err)
+	} else if amount == 0 {
+		return []model.Notification{}, 0, nil
+	}
+
 	rows, err := n.Query(ctx, getNotificationsQuery,
 		companyId,
 		onlyNotViewed,
@@ -98,7 +112,7 @@ func (n *notificationsRepoImpl) GetNotifications(ctx context.Context, companyId 
 		offset,
 	)
 	if err != nil {
-		return []model.Notification{}, errors.Join(model.ErrDatabaseError, err)
+		return []model.Notification{}, 0, errors.Join(model.ErrDatabaseError, err)
 	}
 	defer rows.Close()
 
@@ -114,7 +128,7 @@ func (n *notificationsRepoImpl) GetNotifications(ctx context.Context, companyId 
 		)
 		notificationsList = append(notificationsList, notification)
 	}
-	return notificationsList, nil
+	return notificationsList, amount, nil
 }
 
 func (n *notificationsRepoImpl) GetNotification(ctx context.Context, id uint64) (model.Notification, error) {

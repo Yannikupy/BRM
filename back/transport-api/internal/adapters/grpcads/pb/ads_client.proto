@@ -79,6 +79,7 @@ message AdSorter {
 
 message GetAdsListResponse {
   repeated Ad list = 1;
+  uint64 amount = 2;
 }
 
 message CreateAdRequest {
@@ -136,6 +137,7 @@ message GetResponsesRequest {
 
 message GetResponsesResponse {
   repeated Response list = 1;
+  uint64 amount = 2;
 }
 
 message GetIndustriesResponse {
