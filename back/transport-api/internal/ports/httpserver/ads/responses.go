@@ -20,6 +20,7 @@ type adData struct {
 	Text         string `json:"text"`
 	Industry     string `json:"industry"`
 	Price        uint   `json:"price"`
+	ImageURL     string `json:"image_url"`
 	CreationDate int64  `json:"creation_date"`
 	CreatedBy    uint64 `json:"created_by"`
 	Responsible  uint64 `json:"responsible"`
@@ -34,6 +35,7 @@ func adToAdData(ad ads.Ad) adData {
 		Text:         ad.Text,
 		Industry:     ad.Industry,
 		Price:        ad.Price,
+		ImageURL:     ad.ImageURL,
 		CreationDate: ad.CreationDate,
 		CreatedBy:    ad.CreatedBy,
 		Responsible:  ad.Responsible,
@@ -64,9 +66,14 @@ type adResponse struct {
 	Err  *string `json:"error"`
 }
 
+type adListData struct {
+	Ads    []adData `json:"ads"`
+	Amount uint     `json:"amount"`
+}
+
 type adListResponse struct {
-	Data []adData `json:"data"`
-	Err  *string  `json:"error"`
+	Data *adListData `json:"data"`
+	Err  *string     `json:"error"`
 }
 
 func adsToAdDataList(adList []ads.Ad) []adData {
@@ -82,9 +89,14 @@ type responseResponse struct {
 	Err  *string       `json:"error"`
 }
 
+type responseListData struct {
+	Responses []responseData `json:"responses"`
+	Amount    uint           `json:"amount"`
+}
+
 type responseListResponse struct {
-	Data []responseData `json:"data"`
-	Err  *string        `json:"error"`
+	Data *responseListData `json:"data"`
+	Err  *string           `json:"error"`
 }
 
 func responsesToResponseDataList(resps []ads.Response) []responseData {

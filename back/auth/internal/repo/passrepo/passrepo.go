@@ -6,10 +6,11 @@ import (
 	"errors"
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgconn"
+	"github.com/jackc/pgx/v5/pgxpool"
 )
 
 type passRepoImpl struct {
-	pgx.Conn
+	*pgxpool.Pool
 }
 
 const (

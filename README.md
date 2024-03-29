@@ -10,6 +10,9 @@
 * [brm-core](back/brm-core/config)
 * [brm-leads](back/brm-leads/config)
 * [transport-api](back/transport-api/config)
+* [stats](back/stats/config)
+* [notifications](back/notifications/config)
+* [images](back/images/config)
 
 В эти директории нужно добавить `.env` файлы, которые соответствуют схеме, 
 описанной в `.env.dist`.
@@ -33,3 +36,4 @@ make run_dev_back
 * [transport-api](http://localhost:8090/swagger/index.html)
 * [registration](http://localhost:8091/swagger/index.html)
 * [auth](http://localhost:8092/swagger/index.html)
+* [images](http://localhost:8093/swagger/index.html)

@@ -11,6 +11,9 @@
   "stats":
     "host": "localhost"
     "port": 50004
+  "notifications":
+    "host": "localhost"
+    "port": 50005
 
 "http-server":
   "host": "localhost"

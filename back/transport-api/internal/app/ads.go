@@ -9,7 +9,7 @@ func (a *appImpl) GetAdById(ctx context.Context, id uint64) (ads.Ad, error) {
 	return a.ads.GetAdById(ctx, id)
 }
 
-func (a *appImpl) GetAdsList(ctx context.Context, params ads.ListParams) ([]ads.Ad, error) {
+func (a *appImpl) GetAdsList(ctx context.Context, params ads.ListParams) ([]ads.Ad, uint, error) {
 	return a.ads.GetAdsList(ctx, params)
 }
 
@@ -29,7 +29,7 @@ func (a *appImpl) CreateResponse(ctx context.Context, companyId uint64, employee
 	return a.ads.CreateResponse(ctx, companyId, employeeId, adId)
 }
 
-func (a *appImpl) GetResponses(ctx context.Context, companyId uint64, employeeId uint64, limit uint, offset uint) ([]ads.Response, error) {
+func (a *appImpl) GetResponses(ctx context.Context, companyId uint64, employeeId uint64, limit uint, offset uint) ([]ads.Response, uint, error) {
 	return a.ads.GetResponses(ctx, companyId, employeeId, limit, offset)
 }
 

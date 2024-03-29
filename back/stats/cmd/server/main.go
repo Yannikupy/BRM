@@ -48,7 +48,7 @@ func main() {
 	}
 	defer func() {
 		if adsConn != nil {
-			_ = adsConn.Close(ctx)
+			adsConn.Close()
 		}
 	}()
 
@@ -58,7 +58,7 @@ func main() {
 	}
 	defer func() {
 		if coreConn != nil {
-			_ = coreConn.Close(ctx)
+			coreConn.Close()
 		}
 	}()
 
@@ -68,7 +68,7 @@ func main() {
 	}
 	defer func() {
 		if leadsConn != nil {
-			_ = leadsConn.Close(ctx)
+			leadsConn.Close()
 		}
 	}()
 
@@ -111,7 +111,7 @@ func main() {
 		}
 	}()
 
-	logs.Info(nil, "service auth successfully started")
+	logs.Info(nil, "service stats successfully started")
 
 	// preparing graceful shutdown
 	osSignals := make(chan os.Signal, 1)

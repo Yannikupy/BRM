@@ -47,8 +47,8 @@ func main() {
 	}
 
 	coreClient, err := grpccore.NewCoreClient(ctx, fmt.Sprintf("%s:%d",
-		viper.GetString("grpc-core-client.host"),
-		viper.GetInt("grpc-core-client.port")))
+		viper.GetString("grpc-clients.core.host"),
+		viper.GetInt("grpc-clients.core.port")))
 	if err != nil {
 		logs.Fatal(nil, fmt.Sprintf("create grpc core client: %s", err.Error()))
 	}

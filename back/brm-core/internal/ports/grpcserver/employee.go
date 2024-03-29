@@ -21,6 +21,7 @@ func employeeToModelEmployee(employee *pb.Employee) model.Employee {
 		Password:     employee.Password,
 		JobTitle:     employee.JobTitle,
 		Department:   employee.Department,
+		ImageURL:     employee.ImageUrl,
 		CreationDate: time.Unix(employee.CreationDate, 0),
 		IsDeleted:    employee.IsDeleted,
 	}
@@ -39,6 +40,7 @@ func modelEmployeeToEmployee(employee model.Employee) *pb.Employee {
 		Password:     employee.Password,
 		JobTitle:     employee.JobTitle,
 		Department:   employee.Department,
+		ImageUrl:     employee.ImageURL,
 		CreationDate: employee.CreationDate.UTC().Unix(),
 		IsDeleted:    employee.IsDeleted,
 	}
@@ -68,6 +70,7 @@ func (s *Server) UpdateEmployee(ctx context.Context, req *pb.UpdateEmployeeReque
 			SecondName: req.Upd.SecondName,
 			JobTitle:   req.Upd.JobTitle,
 			Department: req.Upd.Department,
+			ImageURL:   req.Upd.ImageUrl,
 		},
 	)
 	if err != nil {
@@ -90,7 +93,7 @@ func (s *Server) DeleteEmployee(ctx context.Context, req *pb.DeleteEmployeeReque
 }
 
 func (s *Server) GetCompanyEmployees(ctx context.Context, req *pb.GetCompanyEmployeesRequest) (*pb.GetCompanyEmployeesResponse, error) {
-	employees, err := s.App.GetCompanyEmployees(
+	employees, amount, err := s.App.GetCompanyEmployees(
 		ctx,
 		req.CompanyId,
 		req.EmployeeId,
@@ -107,7 +110,8 @@ func (s *Server) GetCompanyEmployees(ctx context.Context, req *pb.GetCompanyEmpl
 	}
 
 	resp := &pb.GetCompanyEmployeesResponse{
-		List: make([]*pb.Employee, len(employees)),
+		List:   make([]*pb.Employee, len(employees)),
+		Amount: uint64(amount),
 	}
 	for i, empl := range employees {
 		resp.List[i] = modelEmployeeToEmployee(empl)
@@ -116,7 +120,7 @@ func (s *Server) GetCompanyEmployees(ctx context.Context, req *pb.GetCompanyEmpl
 }
 
 func (s *Server) GetEmployeeByName(ctx context.Context, req *pb.GetEmployeeByNameRequest) (*pb.GetEmployeeByNameResponse, error) {
-	employees, err := s.App.GetEmployeeByName(
+	employees, amount, err := s.App.GetEmployeeByName(
 		ctx,
 		req.CompanyId,
 		req.EmployeeId,
@@ -130,7 +134,8 @@ func (s *Server) GetEmployeeByName(ctx context.Context, req *pb.GetEmployeeByNam
 	}
 
 	resp := &pb.GetEmployeeByNameResponse{
-		List: make([]*pb.Employee, len(employees)),
+		List:   make([]*pb.Employee, len(employees)),
+		Amount: uint64(amount),
 	}
 	for i, empl := range employees {
 		resp.List[i] = modelEmployeeToEmployee(empl)

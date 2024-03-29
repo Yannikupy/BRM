@@ -2,6 +2,7 @@ package grpcserver
 
 import (
 	"context"
+	"github.com/golang/protobuf/ptypes/empty"
 	"stats/internal/ports/grpcserver/pb"
 )
 
@@ -19,4 +20,12 @@ func (s *Server) GetCompanyMainPage(ctx context.Context, req *pb.GetCompanyMainP
 		CompanyAbsoluteRating: resp.CompanyAbsoluteRating,
 		CompanyRelativeRating: resp.CompanyRelativeRating,
 	}}, nil
+}
+
+func (s *Server) SubmitClosedLead(ctx context.Context, req *pb.SubmitClosedLeadRequest) (*empty.Empty, error) {
+	err := s.a.UpdateRatingByClosedLead(ctx, req.CompanyId, req.Submit)
+	if err != nil {
+		return nil, mapErrors(err)
+	}
+	return &empty.Empty{}, nil
 }

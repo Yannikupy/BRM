@@ -10,6 +10,8 @@ definitions:
         type: integer
       id:
         type: integer
+      image_url:
+        type: string
       industry:
         type: string
       is_deleted:
@@ -23,12 +25,19 @@ definitions:
       title:
         type: string
     type: object
-  ads.adListResponse:
+  ads.adListData:
     properties:
-      data:
+      ads:
         items:
           $ref: '#/definitions/ads.adData'
         type: array
+      amount:
+        type: integer
+    type: object
+  ads.adListResponse:
+    properties:
+      data:
+        $ref: '#/definitions/ads.adListData'
       error:
         type: string
     type: object
@@ -41,6 +50,8 @@ definitions:
     type: object
   ads.addAdRequest:
     properties:
+      image_url:
+        type: string
       industry:
         type: string
       price:
@@ -72,12 +83,19 @@ definitions:
       id:
         type: integer
     type: object
-  ads.responseListResponse:
+  ads.responseListData:
     properties:
-      data:
+      amount:
+        type: integer
+      responses:
         items:
           $ref: '#/definitions/ads.responseData'
         type: array
+    type: object
+  ads.responseListResponse:
+    properties:
+      data:
+        $ref: '#/definitions/ads.responseListData'
       error:
         type: string
     type: object
@@ -90,6 +108,8 @@ definitions:
     type: object
   ads.updateAdRequest:
     properties:
+      image_url:
+        type: string
       industry:
         type: string
       price:
@@ -215,6 +235,8 @@ definitions:
         type: string
       id:
         type: integer
+      image_url:
+        type: string
       is_deleted:
         type: boolean
       job_title:
@@ -237,6 +259,8 @@ definitions:
         type: string
       first_name:
         type: string
+      image_url:
+        type: string
       job_title:
         type: string
       password:
@@ -258,6 +282,8 @@ definitions:
         type: string
       id:
         type: integer
+      image_url:
+        type: string
       is_deleted:
         type: boolean
       job_title:
@@ -265,12 +291,19 @@ definitions:
       second_name:
         type: string
     type: object
-  employees.employeeListResponse:
+  employees.employeeListData:
     properties:
-      data:
+      amount:
+        type: integer
+      employees:
         items:
           $ref: '#/definitions/employees.employeeData'
         type: array
+    type: object
+  employees.employeeListResponse:
+    properties:
+      data:
+        $ref: '#/definitions/employees.employeeListData'
       error:
         type: string
     type: object
@@ -286,6 +319,8 @@ definitions:
       department:
         type: string
       first_name:
+        type: string
+      image_url:
         type: string
       job_title:
         type: string
@@ -326,12 +361,19 @@ definitions:
       error:
         type: string
     type: object
-  leads.leadsListResponse:
+  leads.leadsListData:
     properties:
-      data:
+      amount:
+        type: integer
+      leads:
         items:
           $ref: '#/definitions/leads.leadData'
         type: array
+    type: object
+  leads.leadsListResponse:
+    properties:
+      data:
+        $ref: '#/definitions/leads.leadsListData'
       error:
         type: string
     type: object
@@ -355,6 +397,62 @@ definitions:
       status:
         type: string
       title:
+        type: string
+    type: object
+  notifications.closedLeadData:
+    properties:
+      ad_id:
+        type: integer
+      answered:
+        type: boolean
+      producer_company:
+        type: integer
+    type: object
+  notifications.newLeadData:
+    properties:
+      client_company:
+        type: integer
+      lead_id:
+        type: integer
+    type: object
+  notifications.notificationData:
+    properties:
+      closed_lead_info:
+        $ref: '#/definitions/notifications.closedLeadData'
+      company_id:
+        type: integer
+      date:
+        type: integer
+      id:
+        type: integer
+      new_lead_info:
+        $ref: '#/definitions/notifications.newLeadData'
+      type:
+        type: string
+      viewed:
+        type: boolean
+    type: object
+  notifications.notificationListData:
+    properties:
+      amount:
+        type: integer
+      notifications:
+        items:
+          $ref: '#/definitions/notifications.notificationData'
+        type: array
+    type: object
+  notifications.notificationListResponse:
+    properties:
+      data:
+        $ref: '#/definitions/notifications.notificationListData'
+      error:
+        type: string
+    type: object
+  notifications.notificationResponse:
+    properties:
+      data:
+        $ref: '#/definitions/notifications.notificationData'
+      error:
         type: string
     type: object
   tasks.addTaskRequest:
@@ -1477,6 +1575,140 @@ paths:
       summary: Получение статусов и их id
       tags:
       - leads
+  /notifications:
+    get:
+      description: Получает список уведомлений
+      parameters:
+      - description: Limit
+        in: query
+        name: limit
+        required: true
+        type: integer
+      - description: Offset
+        in: query
+        name: offset
+        required: true
+        type: integer
+      - description: Вернуть только непрочитанные уведомления
+        in: query
+        name: only_not_viewed
+        type: boolean
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Успешное получение объявлений
+          schema:
+            $ref: '#/definitions/notifications.notificationListResponse'
+        "400":
+          description: Неверный формат входных данных
+          schema:
+            $ref: '#/definitions/notifications.notificationListResponse'
+        "401":
+          description: Ошибка авторизации
+          schema:
+            $ref: '#/definitions/notifications.notificationListResponse'
+        "500":
+          description: Проблемы на стороне сервера
+          schema:
+            $ref: '#/definitions/notifications.notificationListResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Получение списка уведомлений
+      tags:
+      - notifications
+  /notifications/{id}:
+    get:
+      description: Получает уведомление по id
+      parameters:
+      - description: id уведомления
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Успешное получение уведомления
+          schema:
+            $ref: '#/definitions/notifications.notificationResponse'
+        "400":
+          description: Неверный формат входных данных
+          schema:
+            $ref: '#/definitions/notifications.notificationResponse'
+        "401":
+          description: Ошибка авторизации
+          schema:
+            $ref: '#/definitions/notifications.notificationResponse'
+        "403":
+          description: Нет прав для выполнения действия
+          schema:
+            $ref: '#/definitions/notifications.notificationResponse'
+        "404":
+          description: Уведомление не найдено
+          schema:
+            $ref: '#/definitions/notifications.notificationResponse'
+        "500":
+          description: Проблемы на стороне сервера
+          schema:
+            $ref: '#/definitions/notifications.notificationResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Получение уведомления
+      tags:
+      - notifications
+    post:
+      description: Когда компания-поставщик услуги отмечает сделку закрытой, в компанию
+        клиента приходит уведомление об этом. Клиент может подтвердить закрытие сделки,
+        чтобы у поставщика вырос рейтинг
+      parameters:
+      - description: id уведомления
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Подтверждено/не подтверждено
+        in: query
+        name: submit
+        required: true
+        type: boolean
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Успешное подтверждение
+          schema:
+            $ref: '#/definitions/notifications.notificationResponse'
+        "400":
+          description: Неверный формат входных данных
+          schema:
+            $ref: '#/definitions/notifications.notificationResponse'
+        "401":
+          description: Ошибка авторизации
+          schema:
+            $ref: '#/definitions/notifications.notificationResponse'
+        "403":
+          description: Нет прав для выполнения действия
+          schema:
+            $ref: '#/definitions/notifications.notificationResponse'
+        "404":
+          description: Уведомление не найдено
+          schema:
+            $ref: '#/definitions/notifications.notificationResponse'
+        "409":
+          description: Попытка повторного подтверждения
+          schema:
+            $ref: '#/definitions/notifications.notificationResponse'
+        "500":
+          description: Проблемы на стороне сервера
+          schema:
+            $ref: '#/definitions/notifications.notificationResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Подтверждение закрытой сделки
+      tags:
+      - notifications
   /responses:
     get:
       description: Возвращает список откликов компании на объявления

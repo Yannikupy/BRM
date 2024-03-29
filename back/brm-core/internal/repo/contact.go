@@ -30,6 +30,10 @@ const (
 		WHERE "owner_id" = $1 AND (NOT "contacts"."is_deleted")
 		LIMIT $2 OFFSET $3;`
 
+	getContactsAmountQuery = `
+		SELECT COUNT(*) FROM "contacts"
+		WHERE "owner_id" = $1 AND (NOT "is_deleted");`
+
 	getContactByIdQuery = `
 		SELECT * FROM "contacts"
 		INNER JOIN "employees" ON "employee_id" = "employees"."id"
@@ -120,6 +124,7 @@ func (c *coreRepoImpl) GetContacts(ctx context.Context, ownerId uint64, paginati
 			&contact.Empl.Email,
 			&contact.Empl.JobTitle,
 			&contact.Empl.Department,
+			&contact.Empl.ImageURL,
 			&contact.Empl.CreationDate,
 			&contact.Empl.IsDeleted,
 		)
@@ -157,4 +162,12 @@ func (c *coreRepoImpl) GetContactById(ctx context.Context, _ uint64, contactId u
 	}
 
 	return contact, nil
+}
+
+func (c *coreRepoImpl) GetContactsAmount(ctx context.Context, ownerId uint64) (uint, error) {
+	var amount uint
+	if err := c.QueryRow(ctx, getContactsAmountQuery, ownerId).Scan(&amount); err != nil {
+		return 0, errors.Join(model.ErrDatabaseError, err)
+	}
+	return amount, nil
 }

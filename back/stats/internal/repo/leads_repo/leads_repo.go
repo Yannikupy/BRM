@@ -4,11 +4,12 @@ import (
 	"context"
 	"errors"
 	"github.com/jackc/pgx/v5"
+	"github.com/jackc/pgx/v5/pgxpool"
 	"stats/internal/model"
 )
 
 type leadsRepoImpl struct {
-	pgx.Conn
+	*pgxpool.Pool
 }
 
 const (

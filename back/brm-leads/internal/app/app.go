@@ -3,6 +3,7 @@ package app
 import (
 	"brm-leads/internal/adapters/grpcads"
 	"brm-leads/internal/adapters/grpccore"
+	"brm-leads/internal/adapters/grpcnotifications"
 	"brm-leads/internal/model"
 	"brm-leads/internal/repo"
 	"brm-leads/pkg/logger"
@@ -14,10 +15,12 @@ import (
 type appImpl struct {
 	leadsRepo repo.LeadsRepo
 
-	core grpccore.CoreClient
-	ads  grpcads.AdsClient
+	core          grpccore.CoreClient
+	ads           grpcads.AdsClient
+	notifications grpcnotifications.NotificationsClient
 
 	newLeadDefaultStatus string
+	leadDoneStatus       string
 
 	logs logger.Logger
 }
@@ -59,7 +62,7 @@ func (a *appImpl) CreateLead(ctx context.Context, adId uint64, clientCompany uin
 	return lead, err
 }
 
-func (a *appImpl) GetLeads(ctx context.Context, companyId uint64, _ uint64, filter model.Filter) ([]model.Lead, error) {
+func (a *appImpl) GetLeads(ctx context.Context, companyId uint64, _ uint64, filter model.Filter) ([]model.Lead, uint, error) {
 	var err error
 	defer func() {
 		a.writeLog(logger.Fields{
@@ -68,8 +71,8 @@ func (a *appImpl) GetLeads(ctx context.Context, companyId uint64, _ uint64, filt
 		}, err)
 	}()
 
-	leads, err := a.leadsRepo.GetLeads(ctx, companyId, filter)
-	return leads, err
+	leads, amount, err := a.leadsRepo.GetLeads(ctx, companyId, filter)
+	return leads, amount, err
 }
 
 func (a *appImpl) GetLeadById(ctx context.Context, companyId uint64, _ uint64, leadId uint64) (model.Lead, error) {
@@ -112,6 +115,13 @@ func (a *appImpl) UpdateLead(ctx context.Context, companyId uint64, employeeId u
 		return model.Lead{}, err
 	} else if newResponsibleCompanyId != lead.CompanyId {
 		return model.Lead{}, model.ErrAuthorization
+	}
+
+	if upd.Status == a.leadDoneStatus && lead.Status != a.leadDoneStatus {
+		err = a.notifications.CreateCloseLeadNotification(ctx, lead.AdId, lead.CompanyId, lead.ClientCompany)
+		if err != nil {
+			return model.Lead{}, err
+		}
 	}
 
 	lead, err = a.leadsRepo.UpdateLead(ctx, id, upd)

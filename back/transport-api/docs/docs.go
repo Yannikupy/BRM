@@ -1638,6 +1638,210 @@ const docTemplate = `{
                 }
             }
         },
+        "/notifications": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Получает список уведомлений",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "notifications"
+                ],
+                "summary": "Получение списка уведомлений",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Limit",
+                        "name": "limit",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Offset",
+                        "name": "offset",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "boolean",
+                        "description": "Вернуть только непрочитанные уведомления",
+                        "name": "only_not_viewed",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Успешное получение объявлений",
+                        "schema": {
+                            "$ref": "#/definitions/notifications.notificationListResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Неверный формат входных данных",
+                        "schema": {
+                            "$ref": "#/definitions/notifications.notificationListResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Ошибка авторизации",
+                        "schema": {
+                            "$ref": "#/definitions/notifications.notificationListResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Проблемы на стороне сервера",
+                        "schema": {
+                            "$ref": "#/definitions/notifications.notificationListResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/notifications/{id}": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Получает уведомление по id",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "notifications"
+                ],
+                "summary": "Получение уведомления",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "id уведомления",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Успешное получение уведомления",
+                        "schema": {
+                            "$ref": "#/definitions/notifications.notificationResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Неверный формат входных данных",
+                        "schema": {
+                            "$ref": "#/definitions/notifications.notificationResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Ошибка авторизации",
+                        "schema": {
+                            "$ref": "#/definitions/notifications.notificationResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Нет прав для выполнения действия",
+                        "schema": {
+                            "$ref": "#/definitions/notifications.notificationResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Уведомление не найдено",
+                        "schema": {
+                            "$ref": "#/definitions/notifications.notificationResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Проблемы на стороне сервера",
+                        "schema": {
+                            "$ref": "#/definitions/notifications.notificationResponse"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Когда компания-поставщик услуги отмечает сделку закрытой, в компанию клиента приходит уведомление об этом. Клиент может подтвердить закрытие сделки, чтобы у поставщика вырос рейтинг",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "notifications"
+                ],
+                "summary": "Подтверждение закрытой сделки",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "id уведомления",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "boolean",
+                        "description": "Подтверждено/не подтверждено",
+                        "name": "submit",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Успешное подтверждение",
+                        "schema": {
+                            "$ref": "#/definitions/notifications.notificationResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Неверный формат входных данных",
+                        "schema": {
+                            "$ref": "#/definitions/notifications.notificationResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Ошибка авторизации",
+                        "schema": {
+                            "$ref": "#/definitions/notifications.notificationResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Нет прав для выполнения действия",
+                        "schema": {
+                            "$ref": "#/definitions/notifications.notificationResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Уведомление не найдено",
+                        "schema": {
+                            "$ref": "#/definitions/notifications.notificationResponse"
+                        }
+                    },
+                    "409": {
+                        "description": "Попытка повторного подтверждения",
+                        "schema": {
+                            "$ref": "#/definitions/notifications.notificationResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Проблемы на стороне сервера",
+                        "schema": {
+                            "$ref": "#/definitions/notifications.notificationResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/responses": {
             "get": {
                 "security": [
@@ -1995,6 +2199,9 @@ const docTemplate = `{
                 "id": {
                     "type": "integer"
                 },
+                "image_url": {
+                    "type": "string"
+                },
                 "industry": {
                     "type": "string"
                 },
@@ -2015,14 +2222,25 @@ const docTemplate = `{
                 }
             }
         },
-        "ads.adListResponse": {
+        "ads.adListData": {
             "type": "object",
             "properties": {
-                "data": {
+                "ads": {
                     "type": "array",
                     "items": {
                         "$ref": "#/definitions/ads.adData"
                     }
+                },
+                "amount": {
+                    "type": "integer"
+                }
+            }
+        },
+        "ads.adListResponse": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "$ref": "#/definitions/ads.adListData"
                 },
                 "error": {
                     "type": "string"
@@ -2043,6 +2261,9 @@ const docTemplate = `{
         "ads.addAdRequest": {
             "type": "object",
             "properties": {
+                "image_url": {
+                    "type": "string"
+                },
                 "industry": {
                     "type": "string"
                 },
@@ -2091,14 +2312,25 @@ const docTemplate = `{
                 }
             }
         },
-        "ads.responseListResponse": {
+        "ads.responseListData": {
             "type": "object",
             "properties": {
-                "data": {
+                "amount": {
+                    "type": "integer"
+                },
+                "responses": {
                     "type": "array",
                     "items": {
                         "$ref": "#/definitions/ads.responseData"
                     }
+                }
+            }
+        },
+        "ads.responseListResponse": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "$ref": "#/definitions/ads.responseListData"
                 },
                 "error": {
                     "type": "string"
@@ -2119,6 +2351,9 @@ const docTemplate = `{
         "ads.updateAdRequest": {
             "type": "object",
             "properties": {
+                "image_url": {
+                    "type": "string"
+                },
                 "industry": {
                     "type": "string"
                 },
@@ -2311,6 +2546,9 @@ const docTemplate = `{
                 "id": {
                     "type": "integer"
                 },
+                "image_url": {
+                    "type": "string"
+                },
                 "is_deleted": {
                     "type": "boolean"
                 },
@@ -2345,6 +2583,9 @@ const docTemplate = `{
                 "first_name": {
                     "type": "string"
                 },
+                "image_url": {
+                    "type": "string"
+                },
                 "job_title": {
                     "type": "string"
                 },
@@ -2377,6 +2618,9 @@ const docTemplate = `{
                 "id": {
                     "type": "integer"
                 },
+                "image_url": {
+                    "type": "string"
+                },
                 "is_deleted": {
                     "type": "boolean"
                 },
@@ -2388,14 +2632,25 @@ const docTemplate = `{
                 }
             }
         },
-        "employees.employeeListResponse": {
+        "employees.employeeListData": {
             "type": "object",
             "properties": {
-                "data": {
+                "amount": {
+                    "type": "integer"
+                },
+                "employees": {
                     "type": "array",
                     "items": {
                         "$ref": "#/definitions/employees.employeeData"
                     }
+                }
+            }
+        },
+        "employees.employeeListResponse": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "$ref": "#/definitions/employees.employeeListData"
                 },
                 "error": {
                     "type": "string"
@@ -2420,6 +2675,9 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "first_name": {
+                    "type": "string"
+                },
+                "image_url": {
                     "type": "string"
                 },
                 "job_title": {
@@ -2482,14 +2740,25 @@ const docTemplate = `{
                 }
             }
         },
-        "leads.leadsListResponse": {
+        "leads.leadsListData": {
             "type": "object",
             "properties": {
-                "data": {
+                "amount": {
+                    "type": "integer"
+                },
+                "leads": {
                     "type": "array",
                     "items": {
                         "$ref": "#/definitions/leads.leadData"
                     }
+                }
+            }
+        },
+        "leads.leadsListResponse": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "$ref": "#/definitions/leads.leadsListData"
                 },
                 "error": {
                     "type": "string"
@@ -2526,6 +2795,93 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "title": {
+                    "type": "string"
+                }
+            }
+        },
+        "notifications.closedLeadData": {
+            "type": "object",
+            "properties": {
+                "ad_id": {
+                    "type": "integer"
+                },
+                "answered": {
+                    "type": "boolean"
+                },
+                "producer_company": {
+                    "type": "integer"
+                }
+            }
+        },
+        "notifications.newLeadData": {
+            "type": "object",
+            "properties": {
+                "client_company": {
+                    "type": "integer"
+                },
+                "lead_id": {
+                    "type": "integer"
+                }
+            }
+        },
+        "notifications.notificationData": {
+            "type": "object",
+            "properties": {
+                "closed_lead_info": {
+                    "$ref": "#/definitions/notifications.closedLeadData"
+                },
+                "company_id": {
+                    "type": "integer"
+                },
+                "date": {
+                    "type": "integer"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "new_lead_info": {
+                    "$ref": "#/definitions/notifications.newLeadData"
+                },
+                "type": {
+                    "type": "string"
+                },
+                "viewed": {
+                    "type": "boolean"
+                }
+            }
+        },
+        "notifications.notificationListData": {
+            "type": "object",
+            "properties": {
+                "amount": {
+                    "type": "integer"
+                },
+                "notifications": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/notifications.notificationData"
+                    }
+                }
+            }
+        },
+        "notifications.notificationListResponse": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "$ref": "#/definitions/notifications.notificationListData"
+                },
+                "error": {
+                    "type": "string"
+                }
+            }
+        },
+        "notifications.notificationResponse": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "$ref": "#/definitions/notifications.notificationData"
+                },
+                "error": {
                     "type": "string"
                 }
             }

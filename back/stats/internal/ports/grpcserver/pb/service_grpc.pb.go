@@ -11,6 +11,7 @@ import (
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
+	emptypb "google.golang.org/protobuf/types/known/emptypb"
 )
 
 // This is a compile-time assertion to ensure that this generated file
@@ -23,6 +24,7 @@ const _ = grpc.SupportPackageIsVersion7
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type StatsServiceClient interface {
 	GetCompanyMainPage(ctx context.Context, in *GetCompanyMainPageRequest, opts ...grpc.CallOption) (*GetCompanyMainPageResponse, error)
+	SubmitClosedLead(ctx context.Context, in *SubmitClosedLeadRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 }
 
 type statsServiceClient struct {
@@ -42,11 +44,21 @@ func (c *statsServiceClient) GetCompanyMainPage(ctx context.Context, in *GetComp
 	return out, nil
 }
 
+func (c *statsServiceClient) SubmitClosedLead(ctx context.Context, in *SubmitClosedLeadRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+	out := new(emptypb.Empty)
+	err := c.cc.Invoke(ctx, "/stats.StatsService/SubmitClosedLead", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // StatsServiceServer is the server API for StatsService service.
 // All implementations should embed UnimplementedStatsServiceServer
 // for forward compatibility
 type StatsServiceServer interface {
 	GetCompanyMainPage(context.Context, *GetCompanyMainPageRequest) (*GetCompanyMainPageResponse, error)
+	SubmitClosedLead(context.Context, *SubmitClosedLeadRequest) (*emptypb.Empty, error)
 }
 
 // UnimplementedStatsServiceServer should be embedded to have forward compatible implementations.
@@ -55,6 +67,9 @@ type UnimplementedStatsServiceServer struct {
 
 func (UnimplementedStatsServiceServer) GetCompanyMainPage(context.Context, *GetCompanyMainPageRequest) (*GetCompanyMainPageResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetCompanyMainPage not implemented")
+}
+func (UnimplementedStatsServiceServer) SubmitClosedLead(context.Context, *SubmitClosedLeadRequest) (*emptypb.Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method SubmitClosedLead not implemented")
 }
 
 // UnsafeStatsServiceServer may be embedded to opt out of forward compatibility for this service.
@@ -86,6 +101,24 @@ func _StatsService_GetCompanyMainPage_Handler(srv interface{}, ctx context.Conte
 	return interceptor(ctx, in, info, handler)
 }
 
+func _StatsService_SubmitClosedLead_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(SubmitClosedLeadRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(StatsServiceServer).SubmitClosedLead(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/stats.StatsService/SubmitClosedLead",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(StatsServiceServer).SubmitClosedLead(ctx, req.(*SubmitClosedLeadRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // StatsService_ServiceDesc is the grpc.ServiceDesc for StatsService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -96,6 +129,10 @@ var StatsService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetCompanyMainPage",
 			Handler:    _StatsService_GetCompanyMainPage_Handler,
+		},
+		{
+			MethodName: "SubmitClosedLead",
+			Handler:    _StatsService_SubmitClosedLead_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

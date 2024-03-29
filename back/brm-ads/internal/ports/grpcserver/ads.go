@@ -20,6 +20,7 @@ func adToModelAd(ad *pb.Ad) model.Ad {
 		Text:         ad.Text,
 		Industry:     ad.Industry,
 		Price:        uint(ad.Price),
+		ImageURL:     ad.ImageUrl,
 		CreationDate: time.Unix(ad.CreationDate, 0),
 		CreatedBy:    ad.CreatedBy,
 		Responsible:  ad.Responsible,
@@ -38,6 +39,7 @@ func modelAdToAd(ad model.Ad) *pb.Ad {
 		Text:         ad.Text,
 		Industry:     ad.Industry,
 		Price:        uint64(ad.Price),
+		ImageUrl:     ad.ImageURL,
 		CreationDate: ad.CreationDate.UTC().Unix(),
 		CreatedBy:    ad.CreatedBy,
 		Responsible:  ad.Responsible,
@@ -79,13 +81,14 @@ func (s *Server) GetAdsList(ctx context.Context, req *pb.GetAdsListRequest) (*pb
 	params.Limit = uint(req.Params.Limit)
 	params.Offset = uint(req.Params.Offset)
 
-	ads, err := s.App.GetAdsList(ctx, params)
+	ads, amount, err := s.App.GetAdsList(ctx, params)
 	if err != nil {
 		return nil, mapErrors(err)
 	}
 
 	resp := &pb.GetAdsListResponse{
-		List: make([]*pb.Ad, len(ads)),
+		List:   make([]*pb.Ad, len(ads)),
+		Amount: uint64(amount),
 	}
 	for i, ad := range ads {
 		resp.List[i] = modelAdToAd(ad)
@@ -114,6 +117,7 @@ func (s *Server) UpdateAd(ctx context.Context, req *pb.UpdateAdRequest) (*pb.Upd
 			Text:        req.Upd.Text,
 			Industry:    req.Upd.Industry,
 			Price:       uint(req.Upd.Price),
+			ImageURL:    req.Upd.ImageUrl,
 			Responsible: req.Upd.Responsible,
 		})
 	if err != nil {

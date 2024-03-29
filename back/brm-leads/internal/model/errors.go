@@ -10,8 +10,9 @@ var (
 	ErrStatusNotExists   = errors.New("status with required id does not exist")
 	ErrAuthorization     = errors.New("no rights to make operation")
 
-	ErrDatabaseError = errors.New("something wrong with the database")
-	ErrServiceError  = errors.New("something wrong with the server")
-	ErrCoreError     = errors.New("something wrong with the brm-core server")
-	ErrAdsError      = errors.New("something wrong with ads service")
+	ErrDatabaseError      = errors.New("something wrong with the database")
+	ErrServiceError       = errors.New("something wrong with the server")
+	ErrCoreError          = errors.New("something wrong with the brm-core server")
+	ErrAdsError           = errors.New("something wrong with ads service")
+	ErrNotificationsError = errors.New("something wrong with notifications service")
 )

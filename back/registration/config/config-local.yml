@@ -1,6 +1,7 @@
-"grpc-core-client":
-  "host": "localhost"
-  "port": 50000
+"grpc-clients":
+  "core":
+    "host": "localhost"
+    "port": 50000
 
 "http-server":
   "host": "localhost"

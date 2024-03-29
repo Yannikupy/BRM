@@ -4,13 +4,13 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"github.com/jackc/pgx/v5"
+	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/spf13/viper"
 	"os"
 	"time"
 )
 
-func ConnectToPostgresAds(ctx context.Context) (*pgx.Conn, error) {
+func ConnectToPostgresAds(ctx context.Context) (*pgxpool.Pool, error) {
 	coreRepoUrl := fmt.Sprintf("postgres://%s:%s@%s:%d/%s?sslmode=%s",
 		viper.GetString("postgres-ads.username"),
 		os.Getenv("POSTGRES_ADS_PASSWORD"),
@@ -21,7 +21,7 @@ func ConnectToPostgresAds(ctx context.Context) (*pgx.Conn, error) {
 
 	// 30 attempts to connect to postgres starting in docker container
 	for i := 0; i < 30; i++ {
-		conn, err := pgx.Connect(ctx, coreRepoUrl)
+		conn, err := pgxpool.New(ctx, coreRepoUrl)
 		if err != nil {
 			time.Sleep(time.Second)
 		} else {
@@ -32,7 +32,7 @@ func ConnectToPostgresAds(ctx context.Context) (*pgx.Conn, error) {
 	return nil, errors.New("unable to connect to postgres ads repo")
 }
 
-func ConnectToPostgresCore(ctx context.Context) (*pgx.Conn, error) {
+func ConnectToPostgresCore(ctx context.Context) (*pgxpool.Pool, error) {
 	coreRepoUrl := fmt.Sprintf("postgres://%s:%s@%s:%d/%s?sslmode=%s",
 		viper.GetString("postgres-core.username"),
 		os.Getenv("POSTGRES_CORE_PASSWORD"),
@@ -43,7 +43,7 @@ func ConnectToPostgresCore(ctx context.Context) (*pgx.Conn, error) {
 
 	// 30 attempts to connect to postgres starting in docker container
 	for i := 0; i < 30; i++ {
-		conn, err := pgx.Connect(ctx, coreRepoUrl)
+		conn, err := pgxpool.New(ctx, coreRepoUrl)
 		if err != nil {
 			time.Sleep(time.Second)
 		} else {
@@ -54,7 +54,7 @@ func ConnectToPostgresCore(ctx context.Context) (*pgx.Conn, error) {
 	return nil, errors.New("unable to connect to postgres core repo")
 }
 
-func ConnectToPostgresLeads(ctx context.Context) (*pgx.Conn, error) {
+func ConnectToPostgresLeads(ctx context.Context) (*pgxpool.Pool, error) {
 	coreRepoUrl := fmt.Sprintf("postgres://%s:%s@%s:%d/%s?sslmode=%s",
 		viper.GetString("postgres-leads.username"),
 		os.Getenv("POSTGRES_LEADS_PASSWORD"),
@@ -65,7 +65,7 @@ func ConnectToPostgresLeads(ctx context.Context) (*pgx.Conn, error) {
 
 	// 30 attempts to connect to postgres starting in docker container
 	for i := 0; i < 30; i++ {
-		conn, err := pgx.Connect(ctx, coreRepoUrl)
+		conn, err := pgxpool.New(ctx, coreRepoUrl)
 		if err != nil {
 			time.Sleep(time.Second)
 		} else {

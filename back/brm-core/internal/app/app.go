@@ -236,7 +236,7 @@ func (a *appImpl) DeleteEmployee(ctx context.Context, companyId uint64, ownerId 
 	return err
 }
 
-func (a *appImpl) GetCompanyEmployees(ctx context.Context, companyId uint64, employeeId uint64, filter model.FilterEmployee) ([]model.Employee, error) {
+func (a *appImpl) GetCompanyEmployees(ctx context.Context, companyId uint64, employeeId uint64, filter model.FilterEmployee) ([]model.Employee, uint, error) {
 	var err error
 	defer func() {
 		a.writeLog(logger.Fields{
@@ -248,20 +248,20 @@ func (a *appImpl) GetCompanyEmployees(ctx context.Context, companyId uint64, emp
 
 	_, err = a.coreRepo.GetCompany(ctx, companyId)
 	if err != nil {
-		return []model.Employee{}, err
+		return []model.Employee{}, 0, err
 	}
 	employee, err := a.coreRepo.GetEmployeeById(ctx, employeeId)
 	if err != nil {
-		return []model.Employee{}, err
+		return []model.Employee{}, 0, err
 	} else if companyId != employee.CompanyId {
-		return []model.Employee{}, model.ErrAuthorization
+		return []model.Employee{}, 0, model.ErrAuthorization
 	}
 
-	employees, err := a.coreRepo.GetCompanyEmployees(ctx, companyId, filter)
-	return employees, err
+	employees, amount, err := a.coreRepo.GetCompanyEmployees(ctx, companyId, filter)
+	return employees, amount, err
 }
 
-func (a *appImpl) GetEmployeeByName(ctx context.Context, companyId uint64, employeeId uint64, ebn model.EmployeeByName) ([]model.Employee, error) {
+func (a *appImpl) GetEmployeeByName(ctx context.Context, companyId uint64, employeeId uint64, ebn model.EmployeeByName) ([]model.Employee, uint, error) {
 	var err error
 	defer func() {
 		a.writeLog(logger.Fields{
@@ -273,17 +273,17 @@ func (a *appImpl) GetEmployeeByName(ctx context.Context, companyId uint64, emplo
 
 	_, err = a.coreRepo.GetCompany(ctx, companyId)
 	if err != nil {
-		return []model.Employee{}, err
+		return []model.Employee{}, 0, err
 	}
 	employee, err := a.coreRepo.GetEmployeeById(ctx, employeeId)
 	if err != nil {
-		return []model.Employee{}, err
+		return []model.Employee{}, 0, err
 	} else if companyId != employee.CompanyId {
-		return []model.Employee{}, model.ErrAuthorization
+		return []model.Employee{}, 0, model.ErrAuthorization
 	}
 
-	employees, err := a.coreRepo.GetEmployeeByName(ctx, companyId, ebn)
-	return employees, err
+	employees, amount, err := a.coreRepo.GetEmployeeByName(ctx, companyId, ebn)
+	return employees, amount, err
 }
 
 func (a *appImpl) GetEmployeeById(ctx context.Context, companyId uint64, employeeId uint64, employeeIdToFind uint64) (model.Employee, error) {
@@ -395,7 +395,7 @@ func (a *appImpl) DeleteContact(ctx context.Context, ownerId uint64, contactId u
 	return err
 }
 
-func (a *appImpl) GetContacts(ctx context.Context, ownerId uint64, pagination model.GetContacts) ([]model.Contact, error) {
+func (a *appImpl) GetContacts(ctx context.Context, ownerId uint64, pagination model.GetContacts) ([]model.Contact, uint, error) {
 	var err error
 	defer func() {
 		a.writeLog(logger.Fields{
@@ -406,11 +406,16 @@ func (a *appImpl) GetContacts(ctx context.Context, ownerId uint64, pagination mo
 
 	_, err = a.coreRepo.GetEmployeeById(ctx, ownerId)
 	if err != nil {
-		return []model.Contact{}, err
+		return []model.Contact{}, 0, err
+	}
+
+	amount, err := a.coreRepo.GetContactsAmount(ctx, ownerId)
+	if err != nil || amount == 0 {
+		return []model.Contact{}, 0, err
 	}
 
 	contacts, err := a.coreRepo.GetContacts(ctx, ownerId, pagination)
-	return contacts, err
+	return contacts, amount, err
 }
 
 func (a *appImpl) GetContactById(ctx context.Context, ownerId uint64, contactId uint64) (model.Contact, error) {

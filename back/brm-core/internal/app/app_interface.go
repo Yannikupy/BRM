@@ -36,8 +36,8 @@ type EmployeeApp interface {
 	UpdateEmployee(ctx context.Context, companyId uint64, ownerId uint64, employeeId uint64, upd model.UpdateEmployee) (model.Employee, error)
 	DeleteEmployee(ctx context.Context, companyId uint64, ownerId uint64, employeeId uint64) error
 
-	GetCompanyEmployees(ctx context.Context, companyId uint64, employeeId uint64, filter model.FilterEmployee) ([]model.Employee, error)
-	GetEmployeeByName(ctx context.Context, companyId uint64, employeeId uint64, ebn model.EmployeeByName) ([]model.Employee, error)
+	GetCompanyEmployees(ctx context.Context, companyId uint64, employeeId uint64, filter model.FilterEmployee) ([]model.Employee, uint, error)
+	GetEmployeeByName(ctx context.Context, companyId uint64, employeeId uint64, ebn model.EmployeeByName) ([]model.Employee, uint, error)
 	GetEmployeeById(ctx context.Context, companyId uint64, employeeId uint64, employeeIdToFind uint64) (model.Employee, error)
 }
 
@@ -46,6 +46,6 @@ type ContactApp interface {
 	UpdateContact(ctx context.Context, ownerId uint64, contactId uint64, upd model.UpdateContact) (model.Contact, error)
 	DeleteContact(ctx context.Context, ownerId uint64, contactId uint64) error
 
-	GetContacts(ctx context.Context, ownerId uint64, pagination model.GetContacts) ([]model.Contact, error)
+	GetContacts(ctx context.Context, ownerId uint64, pagination model.GetContacts) ([]model.Contact, uint, error)
 	GetContactById(ctx context.Context, ownerId uint64, contactId uint64) (model.Contact, error)
 }

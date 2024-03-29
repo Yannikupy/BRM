@@ -38,7 +38,7 @@ func (s *Server) CreateLead(ctx context.Context, req *pb.CreateLeadRequest) (*pb
 }
 
 func (s *Server) GetLeads(ctx context.Context, req *pb.GetLeadsRequest) (*pb.GetLeadsResponse, error) {
-	leads, err := s.App.GetLeads(ctx, req.CompanyId, req.EmployeeId, model.Filter{
+	leads, amount, err := s.App.GetLeads(ctx, req.CompanyId, req.EmployeeId, model.Filter{
 		Limit:         uint(req.Filter.Limit),
 		Offset:        uint(req.Filter.Offset),
 		Status:        req.Filter.Status,
@@ -50,7 +50,8 @@ func (s *Server) GetLeads(ctx context.Context, req *pb.GetLeadsRequest) (*pb.Get
 		return nil, mapErrors(err)
 	}
 	resp := &pb.GetLeadsResponse{
-		Leads: make([]*pb.Lead, len(leads)),
+		Leads:  make([]*pb.Lead, len(leads)),
+		Amount: uint64(amount),
 	}
 	for i, lead := range leads {
 		resp.Leads[i] = modelLeadToLead(lead)

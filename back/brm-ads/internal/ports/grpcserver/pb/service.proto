@@ -24,10 +24,11 @@ message Ad {
   string text = 4;
   string industry = 5;
   uint64 price = 6;
-  int64 creation_date = 7;
-  uint64 created_by = 8;
-  uint64 responsible = 9;
-  bool is_deleted = 10;
+  string image_url = 7;
+  int64 creation_date = 8;
+  uint64 created_by = 9;
+  uint64 responsible = 10;
+  bool is_deleted = 11;
 }
 
 message Response {
@@ -78,6 +79,7 @@ message AdSorter {
 
 message GetAdsListResponse {
   repeated Ad list = 1;
+  uint64 amount = 2;
 }
 
 message CreateAdRequest {
@@ -102,7 +104,8 @@ message UpdateAdFields {
   string text = 2;
   string industry = 3;
   uint64 price = 4;
-  uint64 responsible = 5;
+  string image_url = 5;
+  uint64 responsible = 6;
 }
 
 message UpdateAdResponse {
@@ -134,6 +137,7 @@ message GetResponsesRequest {
 
 message GetResponsesResponse {
   repeated Response list = 1;
+  uint64 amount = 2;
 }
 
 message GetIndustriesResponse {

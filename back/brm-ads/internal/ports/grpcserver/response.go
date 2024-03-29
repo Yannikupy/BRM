@@ -34,7 +34,7 @@ func (s *Server) CreateResponse(ctx context.Context, req *pb.CreateResponseReque
 }
 
 func (s *Server) GetResponses(ctx context.Context, req *pb.GetResponsesRequest) (*pb.GetResponsesResponse, error) {
-	responses, err := s.App.GetResponses(ctx,
+	responses, amount, err := s.App.GetResponses(ctx,
 		req.CompanyId,
 		req.EmployeeId,
 		uint(req.Limit),
@@ -44,7 +44,8 @@ func (s *Server) GetResponses(ctx context.Context, req *pb.GetResponsesRequest) 
 	}
 
 	grpcResp := &pb.GetResponsesResponse{
-		List: make([]*pb.Response, len(responses)),
+		List:   make([]*pb.Response, len(responses)),
+		Amount: uint64(amount),
 	}
 	for i, resp := range responses {
 		grpcResp.List[i] = modelResponseToResponse(resp)
