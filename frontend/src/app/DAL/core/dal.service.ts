@@ -5,6 +5,7 @@ import {ContactResponse} from "./model/ContactResponse";
 import {environment} from "../../../environments/environment";
 import {CompanyResponse} from "./model/CompanyResponse";
 import {MainPageResponse} from "./model/MainPageResponse";
+import {EmployeeResponse} from "./model/EmployeeResponse";
 
 
 @Injectable({
@@ -24,5 +25,9 @@ export class DalService {
 
   getCompanyMainPage(id: number): Observable<MainPageResponse> {
     return this._http.get<MainPageResponse>(`${environment.coreUrl}/companies/${id}/mainpage`)
+  }
+
+  getEmployeeById(id: number): Observable<EmployeeResponse> {
+    return this._http.get<EmployeeResponse>(`${environment.coreUrl}/employees/${id}`)
   }
 }

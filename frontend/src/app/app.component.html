@@ -10,7 +10,7 @@
           <mat-icon>menu</mat-icon>
         </button>
         <img src="assets/logo.svg" class="logo"/>
-        <h1 class="example-app-name">Название компании</h1>
+        <h1 class="example-app-name">{{companyName}}</h1>
       </div>
       <div>
         <button mat-icon-button (click)="logout()">
@@ -34,7 +34,7 @@
       <app-left-menu></app-left-menu>
     </mat-sidenav>
 
-    <mat-sidenav-content>
+    <mat-sidenav-content class="main-window">
       <router-outlet></router-outlet>
     </mat-sidenav-content>
   </mat-sidenav-container>

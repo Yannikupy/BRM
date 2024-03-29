@@ -7,6 +7,7 @@ import {LoginService} from '../DAL/login/login.service';
 import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatInputModule} from '@angular/material/input';
 import {MatButtonModule} from '@angular/material/button';
+import { jwtDecode } from "jwt-decode";
 
 @Component({
   selector: 'app-login',
@@ -36,6 +37,7 @@ export class LoginComponent {
     this.loginService.login(this.form.getRawValue()).subscribe((response) => {
       localStorage.setItem('token', response.data.access);
       this.authService.currentUserSig.set(response.data);
+      this.authService.currentUserDataSig.set(jwtDecode(response.data.access));
       this.router.navigateByUrl('/');
     });
   }

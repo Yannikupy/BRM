@@ -9,6 +9,9 @@ import {MatSidenavModule} from '@angular/material/sidenav';
 import {MatToolbarModule} from '@angular/material/toolbar';
 import {LeftMenuComponent} from './left-menu/left-menu.component';
 import {LoginComponent} from './login/login.component';
+import {jwtDecode} from "jwt-decode";
+import {DalService} from "./DAL/core/dal.service";
+import {Subscription} from "rxjs";
 
 @Component({
   selector: 'app-root',
@@ -29,11 +32,16 @@ import {LoginComponent} from './login/login.component';
 export class AppComponent implements OnInit, OnDestroy {
   @ViewChild('snav') snav: any
 
+  subscription = new Subscription()
+
   title = 'BRM';
   mobileQuery: MediaQueryList;
   router = inject(Router);
 
   authService = inject(AuthService);
+  dalService = inject(DalService);
+
+  companyName: string = ''
 
   private _mobileQueryListener: () => void;
 
@@ -41,13 +49,22 @@ export class AppComponent implements OnInit, OnDestroy {
     this.mobileQuery = media.matchMedia('(max-width: 600px)');
     this._mobileQueryListener = () => changeDetectorRef.detectChanges();
     this.mobileQuery.addListener(this._mobileQueryListener);
+
+    const token = localStorage.getItem('token');
+
+    if (token && token != '') {
+      this.authService.currentUserSig.set({access: token, refresh: ''});
+      this.authService.currentUserDataSig.set(jwtDecode(token));
+    }
+
+    this.subscription.add(this.dalService.getCompanyById(+this.authService.currentUserDataSig()?.
+      ["company-id"]!).subscribe((
+      value => this.companyName = value.data.name!
+    )))
   }
 
   ngOnInit(): void {
-    const token = localStorage.getItem('token');
-    if (token && token != '') {
-      this.authService.currentUserSig.set({access: token, refresh: ''});
-    }
+
   }
 
   ngOnDestroy(): void {
@@ -57,6 +74,7 @@ export class AppComponent implements OnInit, OnDestroy {
   logout(): void {
     localStorage.setItem('token', '');
     this.authService.currentUserSig.set(null);
+    this.authService.currentUserDataSig.set(null);
     this.snav.close();
     this.router.navigateByUrl('/login');
   }

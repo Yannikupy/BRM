@@ -1,7 +1,7 @@
 import {Component, inject, OnDestroy} from '@angular/core';
 import {DalService} from "../DAL/core/dal.service";
 import {ContactData} from "../DAL/core/model/ContactData";
-import {of, Subscription, switchMap} from "rxjs";
+import {combineLatest, concatMap, from, of, Subscription, switchMap} from "rxjs";
 import {MatCardModule} from '@angular/material/card';
 import {MatDividerModule} from '@angular/material/divider';
 import {MatButtonModule} from '@angular/material/button';
@@ -21,21 +21,21 @@ export class ContactsComponent implements OnDestroy {
 
   dalService = inject(DalService);
 
-  contacts?: ContactData[]
+  contacts: ContactData[] = []
 
   subscription = new Subscription()
 
   constructor() {
-    this.subscription.add(this.dalService.getContacts(5, 0).pipe(switchMap(value => {
-        for (let contact of value.data) {
-          this.subscription.add(this.dalService.getCompanyById(contact.employee?.company_id!).subscribe(
-            value => contact.employee!.company_name = value.data.name
-          ))
-        }
-        return of(value)
-      })).subscribe(
-        value => this.contacts = value.data)
-    )
+    this.subscription.add(
+      this.dalService.getContacts(5, 0).pipe(
+        switchMap(value => from(value.data)),
+        concatMap(value => combineLatest([of(value), this.dalService.getCompanyById(value.employee!.company_id!)])))
+        .subscribe(
+      ([employee, companyName]) => {
+        employee.employee!.company_name = companyName.data.name
+        this.contacts.push(employee)
+      }
+    ))
   }
 
   ngOnDestroy(): void {
