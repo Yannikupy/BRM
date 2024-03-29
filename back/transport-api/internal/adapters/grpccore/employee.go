@@ -22,6 +22,7 @@ func respToEmployee(employee *pb.Employee) core.Employee {
 		Password:     employee.Password,
 		JobTitle:     employee.JobTitle,
 		Department:   employee.Department,
+		ImageURL:     employee.ImageUrl,
 		CreationDate: employee.CreationDate,
 		IsDeleted:    employee.IsDeleted,
 	}
@@ -198,5 +199,6 @@ func (c *coreClientImpl) GetEmployeeById(ctx context.Context, companyId uint64, 
 			return core.Employee{}, model.ErrCoreUnknown
 		}
 	}
-	return respToEmployee(resp.Employee), nil
+	empl := respToEmployee(resp.Employee)
+	return empl, nil
 }
