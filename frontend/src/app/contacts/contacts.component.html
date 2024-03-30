@@ -13,7 +13,29 @@
       <mat-card-title>{{ contact.employee?.first_name }} {{ contact.employee?.second_name }}</mat-card-title>
     </mat-card-header>
     <mat-card-content>
-      <img width="105px" [src]="contact.employee?.image_url" />
+      <div>
+        @if (contact.employee?.imgLoad === false) {
+          <ngx-skeleton-loader
+
+            count="1"
+            [theme]="{
+      borderradius: '7',
+      'background-color': '#ccc',
+      'margin-top': '0',
+      'min-height': '5vh',
+      width: '105px'
+    }"
+          ></ngx-skeleton-loader>
+        }
+        <img
+          (load)="loadImage(contact.employee!)"
+          [hidden]="contact.employee?.imgLoad === false"
+          [src]="contact.employee?.image_url"
+          alt=""
+          width="135px"
+          class="w-100 h-auto image-border"
+        />
+      </div>
       <mat-divider></mat-divider>
       <mat-icon>notes</mat-icon>
       {{ contact.notes }}

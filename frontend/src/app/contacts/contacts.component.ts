@@ -11,7 +11,7 @@ import {
   of,
   startWith,
   Subscription,
-  switchMap
+  switchMap, takeLast
 } from "rxjs";
 import {MatCardModule} from '@angular/material/card';
 import {MatDividerModule} from '@angular/material/divider';
@@ -20,12 +20,15 @@ import {AsyncPipe} from "@angular/common";
 import {MatIconModule} from "@angular/material/icon";
 import {MatPaginator, MatPaginatorModule} from '@angular/material/paginator';
 import {ContactResponse} from "../DAL/core/model/ContactResponse";
+import {HttpClient} from "@angular/common/http";
+import {NgxSkeletonLoaderModule} from "ngx-skeleton-loader";
+import {EmployeeData} from "../DAL/core/model/EmployeeData";
 
 
 @Component({
   selector: 'app-contacts',
   standalone: true,
-  imports: [MatCardModule, MatDividerModule, MatButtonModule, MatIconModule, MatPaginatorModule, AsyncPipe],
+  imports: [MatCardModule, MatDividerModule, MatButtonModule, MatIconModule, MatPaginatorModule, AsyncPipe, NgxSkeletonLoaderModule],
   templateUrl: './contacts.component.html',
   styleUrl: './contacts.component.scss'
 })
@@ -34,16 +37,18 @@ export class ContactsComponent implements OnDestroy {
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
   dalService = inject(DalService);
+  http = inject(HttpClient);
 
   contacts: ContactData[] = []
 
   subscription = new Subscription()
 
+  imgLoad: boolean = false;
+
   resultsLength = 0;
 
   constructor() {
     this.loadData(5, 0).subscribe((contacts) => {
-      console.log(contacts.data.amount)
       this.contacts = contacts.data.contacts
       this.resultsLength = contacts.data.amount
     })
@@ -80,15 +85,20 @@ export class ContactsComponent implements OnDestroy {
       switchMap(
         ([contactResponse, employee, companyName]) => {
           employee.employee!.company_name = companyName.data.name
+          employee.employee!.imgLoad = false
 
           contacts.push(employee)
 
           contactResponse.data.contacts = contacts
 
           return of(contactResponse)
-        }))
+        }), takeLast(1))
 
 
+  }
+
+  loadImage(employee: EmployeeData) {
+    employee.imgLoad = true
   }
 
   ngOnDestroy(): void {
