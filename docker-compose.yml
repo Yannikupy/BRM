@@ -218,6 +218,16 @@ services:
     ports:
       - "8093:8093"
 
+  frontend:
+    build:
+      context: frontend
+      dockerfile: Dockerfile
+    command: ''
+    container_name: frontend
+    profiles: [ "dev_front" ]
+    ports:
+      - "4200:80"
+
 volumes:
   core-data:
   passwords-data:

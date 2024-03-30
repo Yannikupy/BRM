@@ -56,6 +56,9 @@ export class AppComponent implements OnInit, OnDestroy {
       this.authService.currentUserSig.set({access: token, refresh: ''});
       this.authService.currentUserDataSig.set(jwtDecode(token));
     }
+    else {
+      this.router.navigateByUrl('/login');
+    }
 
     this.subscription.add(this.dalService.getCompanyById(+this.authService.currentUserDataSig()?.
       ["company-id"]!).subscribe((
