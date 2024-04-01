@@ -1,9 +1,6 @@
-/back/auth/migrations/passwords-test-data-init.sql
-/back/brm-core/migrations/core-test-data-init.sql
-/back/notifications/migrations/notifications-test-data-init.sql
-/back/brm-ads/migrations/ad-test-data-init.sql
-/back/auth/config/.env
-/back/stats/config/.env
-/back/images/config/.env
-/back/transport-api/config/.env
+.idea
 .vscode
+
+
+.env
+*-test-data-init.sql
