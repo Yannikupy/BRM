@@ -58,7 +58,7 @@ type mainPageResponse struct {
 type mainPageData struct {
 	ActiveLeadsAmount     uint    `json:"active_leads_amount"`
 	ActiveLeadsPrice      uint    `json:"active_leads_price"`
-	ClosedLeadsAmount     uint    `json:"total_leads_amount"`
+	ClosedLeadsAmount     uint    `json:"closed_leads_amount"`
 	ClosedLeadsPrice      uint    `json:"closed_leads_price"`
 	ActiveAdsAmount       uint    `json:"active_ads_aount"`
 	CompanyAbsoluteRating float64 `json:"company_absolute_rating"`

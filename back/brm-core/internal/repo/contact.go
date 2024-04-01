@@ -153,6 +153,7 @@ func (c *coreRepoImpl) GetContactById(ctx context.Context, _ uint64, contactId u
 		&contact.Empl.Email,
 		&contact.Empl.JobTitle,
 		&contact.Empl.Department,
+		&contact.Empl.ImageURL,
 		&contact.Empl.CreationDate,
 		&contact.Empl.IsDeleted,
 	); errors.Is(err, pgx.ErrNoRows) {
