@@ -6,6 +6,8 @@ import {environment} from "../../../environments/environment";
 import {CompanyResponse} from "./model/CompanyResponse";
 import {MainPageResponse} from "./model/MainPageResponse";
 import {EmployeeResponse} from "./model/EmployeeResponse";
+import {AdListResponse} from "./model/AdListResponse";
+import {UpdateContactRequest} from "./model/UpdateContactRequest";
 
 
 @Injectable({
@@ -15,8 +17,15 @@ export class DalService {
   constructor(private _http: HttpClient) {
   }
 
+  getAds(limit: number, offset: number): Observable<AdListResponse> {
+    return this._http.get<AdListResponse>(`${environment.coreUrl}/ads?limit=${limit}&offset=${offset}`)
+  }
   getContacts(limit: number, offset: number): Observable<ContactResponse> {
     return this._http.get<ContactResponse>(`${environment.coreUrl}/contacts?limit=${limit}&offset=${offset}`)
+  }
+
+  updateContact(id: number, updateContactRequest: UpdateContactRequest): Observable<ContactResponse> {
+    return this._http.put<ContactResponse>(`${environment.coreUrl}/contacts/${id}`, updateContactRequest)
   }
 
   getCompanyById(id: number): Observable<CompanyResponse> {

@@ -31,7 +31,7 @@
       [fixedInViewport]="mobileQuery.matches"
       fixedTopGap="56"
     >
-      <app-left-menu></app-left-menu>
+      <app-left-menu [employeeId] = "+authService.currentUserDataSig()?.['employee-id']!"></app-left-menu>
     </mat-sidenav>
 
     <mat-sidenav-content class="main-window">

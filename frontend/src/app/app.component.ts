@@ -1,4 +1,13 @@
-import {ChangeDetectorRef, Component, inject, OnDestroy, OnInit, ViewChild,} from '@angular/core';
+import {
+  ChangeDetectorRef,
+  Component,
+  inject,
+  OnChanges,
+  OnDestroy,
+  OnInit,
+  SimpleChanges,
+  ViewChild,
+} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {Router, RouterOutlet} from '@angular/router';
 import {MediaMatcher} from '@angular/cdk/layout';
@@ -29,7 +38,7 @@ import {Subscription} from "rxjs";
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',
 })
-export class AppComponent implements OnInit, OnDestroy {
+export class AppComponent implements OnInit, OnChanges, OnDestroy {
   @ViewChild('snav') snav: any
 
   subscription = new Subscription()
@@ -59,15 +68,20 @@ export class AppComponent implements OnInit, OnDestroy {
     else {
       this.router.navigateByUrl('/login');
     }
+  }
 
+  ngOnInit(): void {
     this.subscription.add(this.dalService.getCompanyById(+this.authService.currentUserDataSig()?.
       ["company-id"]!).subscribe((
       value => this.companyName = value.data.name!
     )))
   }
 
-  ngOnInit(): void {
-
+  ngOnChanges(changes: SimpleChanges) {
+    this.subscription.add(this.dalService.getCompanyById(+this.authService.currentUserDataSig()?.
+      ["company-id"]!).subscribe((
+      value => this.companyName = value.data.name!
+    )))
   }
 
   ngOnDestroy(): void {

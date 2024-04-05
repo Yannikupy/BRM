@@ -1,0 +1,12 @@
+<h2 mat-dialog-title>Заметки</h2>
+<mat-dialog-content>
+  <p>Редактирование</p>
+  <mat-form-field>
+    <mat-label>Заметка</mat-label>
+    <input matInput [(ngModel)]="note">
+  </mat-form-field>
+</mat-dialog-content>
+<mat-dialog-actions>
+  <button mat-button mat-dialog-close>Отмена</button>
+  <button mat-button [mat-dialog-close]="note" cdkFocusInitial>Сохранить</button>
+</mat-dialog-actions>

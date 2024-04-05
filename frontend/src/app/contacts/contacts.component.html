@@ -38,7 +38,7 @@
       </div>
       <mat-divider></mat-divider>
       <mat-icon>notes</mat-icon>
-      {{ contact.notes }}
+      <span (click)="openDialog(contact)">{{ contact.notes }}</span>
       <mat-divider></mat-divider>
       <mat-icon>email</mat-icon>
       {{ contact.employee?.email }}

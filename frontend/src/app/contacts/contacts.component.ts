@@ -11,7 +11,8 @@ import {
   of,
   startWith,
   Subscription,
-  switchMap, takeLast
+  switchMap,
+  takeLast
 } from "rxjs";
 import {MatCardModule} from '@angular/material/card';
 import {MatDividerModule} from '@angular/material/divider';
@@ -23,6 +24,8 @@ import {ContactResponse} from "../DAL/core/model/ContactResponse";
 import {HttpClient} from "@angular/common/http";
 import {NgxSkeletonLoaderModule} from "ngx-skeleton-loader";
 import {EmployeeData} from "../DAL/core/model/EmployeeData";
+import {MatDialog} from "@angular/material/dialog";
+import {NotesChangingDialogComponent} from "../notes-changing-dialog/notes-changing-dialog.component";
 
 
 @Component({
@@ -47,7 +50,7 @@ export class ContactsComponent implements OnDestroy {
 
   resultsLength = 0;
 
-  constructor() {
+  constructor(public dialog: MatDialog) {
     this.loadData(5, 0).subscribe((contacts) => {
       this.contacts = contacts.data.contacts
       this.resultsLength = contacts.data.amount
@@ -99,6 +102,33 @@ export class ContactsComponent implements OnDestroy {
 
   loadImage(employee: EmployeeData) {
     employee.imgLoad = true
+  }
+
+  openDialog(contact: ContactData) {
+    const dialogRef = this.dialog.open(NotesChangingDialogComponent, {
+      data: contact.notes,
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result != contact.notes) {
+        this.subscription.add(this.dalService.updateContact(contact.id!, {notes: result!})
+          .pipe(
+            switchMap(value => this.loadData(this.paginator.pageSize, this.paginator.pageIndex * this.paginator.pageSize)),
+            map(data => {
+
+              if (data === null) {
+                return [];
+              }
+
+              this.resultsLength = data.data.amount;
+              return data.data.contacts;
+            }),)
+          .subscribe(
+            (value) => this.contacts = value
+          )
+        )
+      }
+    });
   }
 
   ngOnDestroy(): void {
