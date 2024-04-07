@@ -1,6 +1,4 @@
 .idea
 .vscode
 
-
-.env
 *-test-data-init.sql
