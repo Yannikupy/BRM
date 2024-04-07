@@ -5,14 +5,16 @@ import {authGuard} from './guards/auth.guard';
 import {RegisterComponent} from './register/register.component';
 import {CompanyComponent} from "./company/company.component";
 import {AdsComponent} from "./ads/ads.component";
+import {SettingsComponent} from "./settings/settings.component";
 
 export const routes: Routes = [
-  {path: '', redirectTo: 'company', pathMatch:"full"},
+  {path: '', redirectTo: 'company', pathMatch: "full"},
   {
     path: 'contacts',
     component: ContactsComponent,
     canActivate: [authGuard],
   },
+  {path: 'settings', component: SettingsComponent, canActivate: [authGuard]},
   {path: 'company', component: CompanyComponent, canActivate: [authGuard]},
   {path: 'ads', component: AdsComponent, canActivate: [authGuard]},
   {path: 'login', component: LoginComponent},

@@ -51,7 +51,7 @@ export class ContactsComponent implements OnDestroy {
   resultsLength = 0;
 
   constructor(public dialog: MatDialog) {
-    this.loadData(5, 0).subscribe((contacts) => {
+    this.loadData(3, 0).subscribe((contacts) => {
       this.contacts = contacts.data.contacts
       this.resultsLength = contacts.data.amount
     })
