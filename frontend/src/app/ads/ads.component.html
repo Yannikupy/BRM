@@ -1,3 +1,5 @@
+<button mat-flat-button color="primary" id="create-button" (click)="createAd()">Создать объявление</button>
+
 <mat-grid-list cols="3" rowHeight="2:1">
 
   @for (ad of ads; track ad) {
@@ -6,9 +8,6 @@
         <mat-card-header>
           <mat-card-subtitle>
             Компания: {{ ad.company_name }}
-          </mat-card-subtitle>
-
-          <mat-card-subtitle> Ответственный: {{ ad.responsible }}
           </mat-card-subtitle>
           <mat-card-title>{{ ad.title }}</mat-card-title>
         </mat-card-header>
@@ -42,7 +41,7 @@
           <mat-divider></mat-divider>
         </mat-card-content>
         <mat-card-actions>
-          <button mat-button>Написать</button>
+          <button mat-button (click)="response(ad)">Откликнуться</button>
         </mat-card-actions>
       </mat-card>
     </mat-grid-tile>

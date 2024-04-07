@@ -8,6 +8,9 @@ import {MainPageResponse} from "./model/MainPageResponse";
 import {EmployeeResponse} from "./model/EmployeeResponse";
 import {AdListResponse} from "./model/AdListResponse";
 import {UpdateContactRequest} from "./model/UpdateContactRequest";
+import {AdResponse} from "./model/AdResponse";
+import {AddAdRequest} from "./model/AddAdRequest";
+import {ResponseResponse} from "./model/ResponseResponse";
 
 
 @Injectable({
@@ -20,6 +23,15 @@ export class DalService {
   getAds(limit: number, offset: number): Observable<AdListResponse> {
     return this._http.get<AdListResponse>(`${environment.coreUrl}/ads?limit=${limit}&offset=${offset}`)
   }
+
+  saveAd(addAdRequest: AddAdRequest) {
+    return this._http.post<AdResponse>(`${environment.coreUrl}/ads`, addAdRequest)
+  }
+
+  adResponse(id: number): Observable<ResponseResponse> {
+    return this._http.post<ResponseResponse>(`${environment.coreUrl}/ads/${id}/response`, null)
+  }
+
   getContacts(limit: number, offset: number): Observable<ContactResponse> {
     return this._http.get<ContactResponse>(`${environment.coreUrl}/contacts?limit=${limit}&offset=${offset}`)
   }
