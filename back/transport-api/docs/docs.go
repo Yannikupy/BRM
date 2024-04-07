@@ -15,421 +15,6 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/ads": {
-            "get": {
-                "security": [
-                    {
-                        "ApiKeyAuth": []
-                    }
-                ],
-                "description": "Получает список объявлений с использованием фильтрации и пагинации",
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "ads"
-                ],
-                "summary": "Получение списка объявлений",
-                "parameters": [
-                    {
-                        "type": "integer",
-                        "description": "Limit",
-                        "name": "limit",
-                        "in": "query",
-                        "required": true
-                    },
-                    {
-                        "type": "integer",
-                        "description": "Offset",
-                        "name": "offset",
-                        "in": "query",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "Поиск по названию/тексту",
-                        "name": "pattern",
-                        "in": "query"
-                    },
-                    {
-                        "type": "integer",
-                        "description": "Поиск по компании",
-                        "name": "company_id",
-                        "in": "query"
-                    },
-                    {
-                        "type": "string",
-                        "description": "Поиск по отрасли",
-                        "name": "industry",
-                        "in": "query"
-                    },
-                    {
-                        "type": "boolean",
-                        "description": "Сортировка по возрастанию цены",
-                        "name": "by_price",
-                        "in": "query"
-                    },
-                    {
-                        "type": "boolean",
-                        "description": "Сортировка по убыванию цены",
-                        "name": "by_price_desc",
-                        "in": "query"
-                    },
-                    {
-                        "type": "boolean",
-                        "description": "Сортировка по возрастанию даты создания",
-                        "name": "by_date",
-                        "in": "query"
-                    },
-                    {
-                        "type": "boolean",
-                        "description": "Сортировка по убыванию даты создания",
-                        "name": "by_date_desc",
-                        "in": "query"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Успешное получение объявлений",
-                        "schema": {
-                            "$ref": "#/definitions/ads.adListResponse"
-                        }
-                    },
-                    "400": {
-                        "description": "Неверный формат входных данных",
-                        "schema": {
-                            "$ref": "#/definitions/ads.adListResponse"
-                        }
-                    },
-                    "401": {
-                        "description": "Ошибка авторизации",
-                        "schema": {
-                            "$ref": "#/definitions/ads.adResponse"
-                        }
-                    },
-                    "500": {
-                        "description": "Проблемы на стороне сервера",
-                        "schema": {
-                            "$ref": "#/definitions/ads.adListResponse"
-                        }
-                    }
-                }
-            },
-            "post": {
-                "security": [
-                    {
-                        "ApiKeyAuth": []
-                    }
-                ],
-                "description": "Добавляет новое объявление",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "ads"
-                ],
-                "summary": "Добавление нового объявления",
-                "parameters": [
-                    {
-                        "description": "Новое объявление в JSON",
-                        "name": "input",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/ads.addAdRequest"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Успешное добавление объявления",
-                        "schema": {
-                            "$ref": "#/definitions/ads.adResponse"
-                        }
-                    },
-                    "400": {
-                        "description": "Неверный формат входных данных",
-                        "schema": {
-                            "$ref": "#/definitions/ads.adResponse"
-                        }
-                    },
-                    "401": {
-                        "description": "Ошибка авторизации",
-                        "schema": {
-                            "$ref": "#/definitions/ads.adResponse"
-                        }
-                    },
-                    "500": {
-                        "description": "Проблемы на стороне сервера",
-                        "schema": {
-                            "$ref": "#/definitions/ads.adResponse"
-                        }
-                    }
-                }
-            }
-        },
-        "/ads/industries": {
-            "get": {
-                "security": [
-                    {
-                        "ApiKeyAuth": []
-                    }
-                ],
-                "description": "Возвращает словарь из возможных отраслей объявлений и их id",
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "ads"
-                ],
-                "summary": "Получение отраслей",
-                "responses": {
-                    "200": {
-                        "description": "Успешное получение данных",
-                        "schema": {
-                            "$ref": "#/definitions/ads.industriesResponse"
-                        }
-                    },
-                    "500": {
-                        "description": "Проблемы на стороне сервера",
-                        "schema": {
-                            "$ref": "#/definitions/ads.industriesResponse"
-                        }
-                    }
-                }
-            }
-        },
-        "/ads/{id}": {
-            "get": {
-                "security": [
-                    {
-                        "ApiKeyAuth": []
-                    }
-                ],
-                "description": "Получает объявление по id",
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "ads"
-                ],
-                "summary": "Получение объявления",
-                "parameters": [
-                    {
-                        "type": "integer",
-                        "description": "id объявления",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Успешное получение объявления",
-                        "schema": {
-                            "$ref": "#/definitions/ads.adResponse"
-                        }
-                    },
-                    "400": {
-                        "description": "Неверный формат входных данных",
-                        "schema": {
-                            "$ref": "#/definitions/ads.adResponse"
-                        }
-                    },
-                    "401": {
-                        "description": "Ошибка авторизации",
-                        "schema": {
-                            "$ref": "#/definitions/ads.adResponse"
-                        }
-                    },
-                    "404": {
-                        "description": "Объявление не найдено",
-                        "schema": {
-                            "$ref": "#/definitions/ads.adResponse"
-                        }
-                    },
-                    "500": {
-                        "description": "Проблемы на стороне сервера",
-                        "schema": {
-                            "$ref": "#/definitions/ads.adResponse"
-                        }
-                    }
-                }
-            },
-            "put": {
-                "security": [
-                    {
-                        "ApiKeyAuth": []
-                    }
-                ],
-                "description": "Изменяет одно или несколько полей объявления",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "ads"
-                ],
-                "summary": "Редактирование объявления",
-                "parameters": [
-                    {
-                        "type": "integer",
-                        "description": "id объявления",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
-                    },
-                    {
-                        "description": "Новые поля",
-                        "name": "input",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/ads.updateAdRequest"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Успешное обновление данных",
-                        "schema": {
-                            "$ref": "#/definitions/ads.adResponse"
-                        }
-                    },
-                    "400": {
-                        "description": "Неверный формат входных данных",
-                        "schema": {
-                            "$ref": "#/definitions/ads.adResponse"
-                        }
-                    },
-                    "404": {
-                        "description": "Объявление не найдено",
-                        "schema": {
-                            "$ref": "#/definitions/ads.adResponse"
-                        }
-                    },
-                    "500": {
-                        "description": "Проблемы на стороне сервера",
-                        "schema": {
-                            "$ref": "#/definitions/ads.adResponse"
-                        }
-                    }
-                }
-            },
-            "delete": {
-                "security": [
-                    {
-                        "ApiKeyAuth": []
-                    }
-                ],
-                "description": "Безвозвратно удаляет объявление",
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "ads"
-                ],
-                "summary": "Удаление объявления",
-                "parameters": [
-                    {
-                        "type": "integer",
-                        "description": "id объявления",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Успешное удаление объявления",
-                        "schema": {
-                            "$ref": "#/definitions/ads.adResponse"
-                        }
-                    },
-                    "400": {
-                        "description": "Неверный формат входных данных",
-                        "schema": {
-                            "$ref": "#/definitions/ads.adResponse"
-                        }
-                    },
-                    "404": {
-                        "description": "Объявление не найдено",
-                        "schema": {
-                            "$ref": "#/definitions/ads.adResponse"
-                        }
-                    },
-                    "500": {
-                        "description": "Проблемы на стороне сервера",
-                        "schema": {
-                            "$ref": "#/definitions/ads.adResponse"
-                        }
-                    }
-                }
-            }
-        },
-        "/ads/{id}/response": {
-            "post": {
-                "security": [
-                    {
-                        "ApiKeyAuth": []
-                    }
-                ],
-                "description": "Создаёт отклик у откликнувшейся компании и сделку у владельца объявления",
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "ads"
-                ],
-                "summary": "Откликнуться на объявление",
-                "parameters": [
-                    {
-                        "type": "integer",
-                        "description": "id объявления",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Успешное создание отклика",
-                        "schema": {
-                            "$ref": "#/definitions/ads.responseResponse"
-                        }
-                    },
-                    "400": {
-                        "description": "Неверный формат входных данных",
-                        "schema": {
-                            "$ref": "#/definitions/ads.responseResponse"
-                        }
-                    },
-                    "404": {
-                        "description": "Объявление не найдено",
-                        "schema": {
-                            "$ref": "#/definitions/ads.responseResponse"
-                        }
-                    },
-                    "409": {
-                        "description": "Попытка откликнуться на объявление своей же компании",
-                        "schema": {
-                            "$ref": "#/definitions/ads.responseResponse"
-                        }
-                    },
-                    "500": {
-                        "description": "Проблемы на стороне сервера",
-                        "schema": {
-                            "$ref": "#/definitions/ads.responseResponse"
-                        }
-                    }
-                }
-            }
-        },
         "/companies/industries": {
             "get": {
                 "security": [
@@ -1638,6 +1223,421 @@ const docTemplate = `{
                 }
             }
         },
+        "/market": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Получает список объявлений с использованием фильтрации и пагинации",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "ads"
+                ],
+                "summary": "Получение списка объявлений",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Limit",
+                        "name": "limit",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Offset",
+                        "name": "offset",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Поиск по названию/тексту",
+                        "name": "pattern",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Поиск по компании",
+                        "name": "company_id",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Поиск по отрасли",
+                        "name": "industry",
+                        "in": "query"
+                    },
+                    {
+                        "type": "boolean",
+                        "description": "Сортировка по возрастанию цены",
+                        "name": "by_price",
+                        "in": "query"
+                    },
+                    {
+                        "type": "boolean",
+                        "description": "Сортировка по убыванию цены",
+                        "name": "by_price_desc",
+                        "in": "query"
+                    },
+                    {
+                        "type": "boolean",
+                        "description": "Сортировка по возрастанию даты создания",
+                        "name": "by_date",
+                        "in": "query"
+                    },
+                    {
+                        "type": "boolean",
+                        "description": "Сортировка по убыванию даты создания",
+                        "name": "by_date_desc",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Успешное получение объявлений",
+                        "schema": {
+                            "$ref": "#/definitions/ads.adListResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Неверный формат входных данных",
+                        "schema": {
+                            "$ref": "#/definitions/ads.adListResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Ошибка авторизации",
+                        "schema": {
+                            "$ref": "#/definitions/ads.adResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Проблемы на стороне сервера",
+                        "schema": {
+                            "$ref": "#/definitions/ads.adListResponse"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Добавляет новое объявление",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "ads"
+                ],
+                "summary": "Добавление нового объявления",
+                "parameters": [
+                    {
+                        "description": "Новое объявление в JSON",
+                        "name": "input",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/ads.addAdRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Успешное добавление объявления",
+                        "schema": {
+                            "$ref": "#/definitions/ads.adResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Неверный формат входных данных",
+                        "schema": {
+                            "$ref": "#/definitions/ads.adResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Ошибка авторизации",
+                        "schema": {
+                            "$ref": "#/definitions/ads.adResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Проблемы на стороне сервера",
+                        "schema": {
+                            "$ref": "#/definitions/ads.adResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/market/industries": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Возвращает словарь из возможных отраслей объявлений и их id",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "ads"
+                ],
+                "summary": "Получение отраслей",
+                "responses": {
+                    "200": {
+                        "description": "Успешное получение данных",
+                        "schema": {
+                            "$ref": "#/definitions/ads.industriesResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Проблемы на стороне сервера",
+                        "schema": {
+                            "$ref": "#/definitions/ads.industriesResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/market/{id}": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Получает объявление по id",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "ads"
+                ],
+                "summary": "Получение объявления",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "id объявления",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Успешное получение объявления",
+                        "schema": {
+                            "$ref": "#/definitions/ads.adResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Неверный формат входных данных",
+                        "schema": {
+                            "$ref": "#/definitions/ads.adResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Ошибка авторизации",
+                        "schema": {
+                            "$ref": "#/definitions/ads.adResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Объявление не найдено",
+                        "schema": {
+                            "$ref": "#/definitions/ads.adResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Проблемы на стороне сервера",
+                        "schema": {
+                            "$ref": "#/definitions/ads.adResponse"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Изменяет одно или несколько полей объявления",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "ads"
+                ],
+                "summary": "Редактирование объявления",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "id объявления",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Новые поля",
+                        "name": "input",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/ads.updateAdRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Успешное обновление данных",
+                        "schema": {
+                            "$ref": "#/definitions/ads.adResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Неверный формат входных данных",
+                        "schema": {
+                            "$ref": "#/definitions/ads.adResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Объявление не найдено",
+                        "schema": {
+                            "$ref": "#/definitions/ads.adResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Проблемы на стороне сервера",
+                        "schema": {
+                            "$ref": "#/definitions/ads.adResponse"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Безвозвратно удаляет объявление",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "ads"
+                ],
+                "summary": "Удаление объявления",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "id объявления",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Успешное удаление объявления",
+                        "schema": {
+                            "$ref": "#/definitions/ads.adResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Неверный формат входных данных",
+                        "schema": {
+                            "$ref": "#/definitions/ads.adResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Объявление не найдено",
+                        "schema": {
+                            "$ref": "#/definitions/ads.adResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Проблемы на стороне сервера",
+                        "schema": {
+                            "$ref": "#/definitions/ads.adResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/market/{id}/response": {
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Создаёт отклик у откликнувшейся компании и сделку у владельца объявления",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "ads"
+                ],
+                "summary": "Откликнуться на объявление",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "id объявления",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Успешное создание отклика",
+                        "schema": {
+                            "$ref": "#/definitions/ads.responseResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Неверный формат входных данных",
+                        "schema": {
+                            "$ref": "#/definitions/ads.responseResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Объявление не найдено",
+                        "schema": {
+                            "$ref": "#/definitions/ads.responseResponse"
+                        }
+                    },
+                    "409": {
+                        "description": "Попытка откликнуться на объявление своей же компании",
+                        "schema": {
+                            "$ref": "#/definitions/ads.responseResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Проблемы на стороне сервера",
+                        "schema": {
+                            "$ref": "#/definitions/ads.responseResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/notifications": {
             "get": {
                 "security": [
@@ -2437,6 +2437,9 @@ const docTemplate = `{
                 "active_leads_price": {
                     "type": "integer"
                 },
+                "closed_leads_amount": {
+                    "type": "integer"
+                },
                 "closed_leads_price": {
                     "type": "integer"
                 },
@@ -2445,9 +2448,6 @@ const docTemplate = `{
                 },
                 "company_relative_rating": {
                     "type": "number"
-                },
-                "total_leads_amount": {
-                    "type": "integer"
                 }
             }
         },

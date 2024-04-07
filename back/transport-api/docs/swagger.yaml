@@ -164,14 +164,14 @@ definitions:
         type: integer
       active_leads_price:
         type: integer
+      closed_leads_amount:
+        type: integer
       closed_leads_price:
         type: integer
       company_absolute_rating:
         type: number
       company_relative_rating:
         type: number
-      total_leads_amount:
-        type: integer
     type: object
   companies.mainPageResponse:
     properties:
@@ -530,272 +530,6 @@ info:
   title: BRM API
   version: "1.0"
 paths:
-  /ads:
-    get:
-      description: Получает список объявлений с использованием фильтрации и пагинации
-      parameters:
-      - description: Limit
-        in: query
-        name: limit
-        required: true
-        type: integer
-      - description: Offset
-        in: query
-        name: offset
-        required: true
-        type: integer
-      - description: Поиск по названию/тексту
-        in: query
-        name: pattern
-        type: string
-      - description: Поиск по компании
-        in: query
-        name: company_id
-        type: integer
-      - description: Поиск по отрасли
-        in: query
-        name: industry
-        type: string
-      - description: Сортировка по возрастанию цены
-        in: query
-        name: by_price
-        type: boolean
-      - description: Сортировка по убыванию цены
-        in: query
-        name: by_price_desc
-        type: boolean
-      - description: Сортировка по возрастанию даты создания
-        in: query
-        name: by_date
-        type: boolean
-      - description: Сортировка по убыванию даты создания
-        in: query
-        name: by_date_desc
-        type: boolean
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: Успешное получение объявлений
-          schema:
-            $ref: '#/definitions/ads.adListResponse'
-        "400":
-          description: Неверный формат входных данных
-          schema:
-            $ref: '#/definitions/ads.adListResponse'
-        "401":
-          description: Ошибка авторизации
-          schema:
-            $ref: '#/definitions/ads.adResponse'
-        "500":
-          description: Проблемы на стороне сервера
-          schema:
-            $ref: '#/definitions/ads.adListResponse'
-      security:
-      - ApiKeyAuth: []
-      summary: Получение списка объявлений
-      tags:
-      - ads
-    post:
-      consumes:
-      - application/json
-      description: Добавляет новое объявление
-      parameters:
-      - description: Новое объявление в JSON
-        in: body
-        name: input
-        required: true
-        schema:
-          $ref: '#/definitions/ads.addAdRequest'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: Успешное добавление объявления
-          schema:
-            $ref: '#/definitions/ads.adResponse'
-        "400":
-          description: Неверный формат входных данных
-          schema:
-            $ref: '#/definitions/ads.adResponse'
-        "401":
-          description: Ошибка авторизации
-          schema:
-            $ref: '#/definitions/ads.adResponse'
-        "500":
-          description: Проблемы на стороне сервера
-          schema:
-            $ref: '#/definitions/ads.adResponse'
-      security:
-      - ApiKeyAuth: []
-      summary: Добавление нового объявления
-      tags:
-      - ads
-  /ads/{id}:
-    delete:
-      description: Безвозвратно удаляет объявление
-      parameters:
-      - description: id объявления
-        in: path
-        name: id
-        required: true
-        type: integer
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: Успешное удаление объявления
-          schema:
-            $ref: '#/definitions/ads.adResponse'
-        "400":
-          description: Неверный формат входных данных
-          schema:
-            $ref: '#/definitions/ads.adResponse'
-        "404":
-          description: Объявление не найдено
-          schema:
-            $ref: '#/definitions/ads.adResponse'
-        "500":
-          description: Проблемы на стороне сервера
-          schema:
-            $ref: '#/definitions/ads.adResponse'
-      security:
-      - ApiKeyAuth: []
-      summary: Удаление объявления
-      tags:
-      - ads
-    get:
-      description: Получает объявление по id
-      parameters:
-      - description: id объявления
-        in: path
-        name: id
-        required: true
-        type: integer
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: Успешное получение объявления
-          schema:
-            $ref: '#/definitions/ads.adResponse'
-        "400":
-          description: Неверный формат входных данных
-          schema:
-            $ref: '#/definitions/ads.adResponse'
-        "401":
-          description: Ошибка авторизации
-          schema:
-            $ref: '#/definitions/ads.adResponse'
-        "404":
-          description: Объявление не найдено
-          schema:
-            $ref: '#/definitions/ads.adResponse'
-        "500":
-          description: Проблемы на стороне сервера
-          schema:
-            $ref: '#/definitions/ads.adResponse'
-      security:
-      - ApiKeyAuth: []
-      summary: Получение объявления
-      tags:
-      - ads
-    put:
-      consumes:
-      - application/json
-      description: Изменяет одно или несколько полей объявления
-      parameters:
-      - description: id объявления
-        in: path
-        name: id
-        required: true
-        type: integer
-      - description: Новые поля
-        in: body
-        name: input
-        required: true
-        schema:
-          $ref: '#/definitions/ads.updateAdRequest'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: Успешное обновление данных
-          schema:
-            $ref: '#/definitions/ads.adResponse'
-        "400":
-          description: Неверный формат входных данных
-          schema:
-            $ref: '#/definitions/ads.adResponse'
-        "404":
-          description: Объявление не найдено
-          schema:
-            $ref: '#/definitions/ads.adResponse'
-        "500":
-          description: Проблемы на стороне сервера
-          schema:
-            $ref: '#/definitions/ads.adResponse'
-      security:
-      - ApiKeyAuth: []
-      summary: Редактирование объявления
-      tags:
-      - ads
-  /ads/{id}/response:
-    post:
-      description: Создаёт отклик у откликнувшейся компании и сделку у владельца объявления
-      parameters:
-      - description: id объявления
-        in: path
-        name: id
-        required: true
-        type: integer
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: Успешное создание отклика
-          schema:
-            $ref: '#/definitions/ads.responseResponse'
-        "400":
-          description: Неверный формат входных данных
-          schema:
-            $ref: '#/definitions/ads.responseResponse'
-        "404":
-          description: Объявление не найдено
-          schema:
-            $ref: '#/definitions/ads.responseResponse'
-        "409":
-          description: Попытка откликнуться на объявление своей же компании
-          schema:
-            $ref: '#/definitions/ads.responseResponse'
-        "500":
-          description: Проблемы на стороне сервера
-          schema:
-            $ref: '#/definitions/ads.responseResponse'
-      security:
-      - ApiKeyAuth: []
-      summary: Откликнуться на объявление
-      tags:
-      - ads
-  /ads/industries:
-    get:
-      description: Возвращает словарь из возможных отраслей объявлений и их id
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: Успешное получение данных
-          schema:
-            $ref: '#/definitions/ads.industriesResponse'
-        "500":
-          description: Проблемы на стороне сервера
-          schema:
-            $ref: '#/definitions/ads.industriesResponse'
-      security:
-      - ApiKeyAuth: []
-      summary: Получение отраслей
-      tags:
-      - ads
   /companies/{id}:
     delete:
       description: Безвозвратно удаляет компанию и всё, что с этой компанией связано
@@ -1575,6 +1309,272 @@ paths:
       summary: Получение статусов и их id
       tags:
       - leads
+  /market:
+    get:
+      description: Получает список объявлений с использованием фильтрации и пагинации
+      parameters:
+      - description: Limit
+        in: query
+        name: limit
+        required: true
+        type: integer
+      - description: Offset
+        in: query
+        name: offset
+        required: true
+        type: integer
+      - description: Поиск по названию/тексту
+        in: query
+        name: pattern
+        type: string
+      - description: Поиск по компании
+        in: query
+        name: company_id
+        type: integer
+      - description: Поиск по отрасли
+        in: query
+        name: industry
+        type: string
+      - description: Сортировка по возрастанию цены
+        in: query
+        name: by_price
+        type: boolean
+      - description: Сортировка по убыванию цены
+        in: query
+        name: by_price_desc
+        type: boolean
+      - description: Сортировка по возрастанию даты создания
+        in: query
+        name: by_date
+        type: boolean
+      - description: Сортировка по убыванию даты создания
+        in: query
+        name: by_date_desc
+        type: boolean
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Успешное получение объявлений
+          schema:
+            $ref: '#/definitions/ads.adListResponse'
+        "400":
+          description: Неверный формат входных данных
+          schema:
+            $ref: '#/definitions/ads.adListResponse'
+        "401":
+          description: Ошибка авторизации
+          schema:
+            $ref: '#/definitions/ads.adResponse'
+        "500":
+          description: Проблемы на стороне сервера
+          schema:
+            $ref: '#/definitions/ads.adListResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Получение списка объявлений
+      tags:
+      - ads
+    post:
+      consumes:
+      - application/json
+      description: Добавляет новое объявление
+      parameters:
+      - description: Новое объявление в JSON
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/ads.addAdRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Успешное добавление объявления
+          schema:
+            $ref: '#/definitions/ads.adResponse'
+        "400":
+          description: Неверный формат входных данных
+          schema:
+            $ref: '#/definitions/ads.adResponse'
+        "401":
+          description: Ошибка авторизации
+          schema:
+            $ref: '#/definitions/ads.adResponse'
+        "500":
+          description: Проблемы на стороне сервера
+          schema:
+            $ref: '#/definitions/ads.adResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Добавление нового объявления
+      tags:
+      - ads
+  /market/{id}:
+    delete:
+      description: Безвозвратно удаляет объявление
+      parameters:
+      - description: id объявления
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Успешное удаление объявления
+          schema:
+            $ref: '#/definitions/ads.adResponse'
+        "400":
+          description: Неверный формат входных данных
+          schema:
+            $ref: '#/definitions/ads.adResponse'
+        "404":
+          description: Объявление не найдено
+          schema:
+            $ref: '#/definitions/ads.adResponse'
+        "500":
+          description: Проблемы на стороне сервера
+          schema:
+            $ref: '#/definitions/ads.adResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Удаление объявления
+      tags:
+      - ads
+    get:
+      description: Получает объявление по id
+      parameters:
+      - description: id объявления
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Успешное получение объявления
+          schema:
+            $ref: '#/definitions/ads.adResponse'
+        "400":
+          description: Неверный формат входных данных
+          schema:
+            $ref: '#/definitions/ads.adResponse'
+        "401":
+          description: Ошибка авторизации
+          schema:
+            $ref: '#/definitions/ads.adResponse'
+        "404":
+          description: Объявление не найдено
+          schema:
+            $ref: '#/definitions/ads.adResponse'
+        "500":
+          description: Проблемы на стороне сервера
+          schema:
+            $ref: '#/definitions/ads.adResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Получение объявления
+      tags:
+      - ads
+    put:
+      consumes:
+      - application/json
+      description: Изменяет одно или несколько полей объявления
+      parameters:
+      - description: id объявления
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Новые поля
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/ads.updateAdRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Успешное обновление данных
+          schema:
+            $ref: '#/definitions/ads.adResponse'
+        "400":
+          description: Неверный формат входных данных
+          schema:
+            $ref: '#/definitions/ads.adResponse'
+        "404":
+          description: Объявление не найдено
+          schema:
+            $ref: '#/definitions/ads.adResponse'
+        "500":
+          description: Проблемы на стороне сервера
+          schema:
+            $ref: '#/definitions/ads.adResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Редактирование объявления
+      tags:
+      - ads
+  /market/{id}/response:
+    post:
+      description: Создаёт отклик у откликнувшейся компании и сделку у владельца объявления
+      parameters:
+      - description: id объявления
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Успешное создание отклика
+          schema:
+            $ref: '#/definitions/ads.responseResponse'
+        "400":
+          description: Неверный формат входных данных
+          schema:
+            $ref: '#/definitions/ads.responseResponse'
+        "404":
+          description: Объявление не найдено
+          schema:
+            $ref: '#/definitions/ads.responseResponse'
+        "409":
+          description: Попытка откликнуться на объявление своей же компании
+          schema:
+            $ref: '#/definitions/ads.responseResponse'
+        "500":
+          description: Проблемы на стороне сервера
+          schema:
+            $ref: '#/definitions/ads.responseResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Откликнуться на объявление
+      tags:
+      - ads
+  /market/industries:
+    get:
+      description: Возвращает словарь из возможных отраслей объявлений и их id
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Успешное получение данных
+          schema:
+            $ref: '#/definitions/ads.industriesResponse'
+        "500":
+          description: Проблемы на стороне сервера
+          schema:
+            $ref: '#/definitions/ads.industriesResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Получение отраслей
+      tags:
+      - ads
   /notifications:
     get:
       description: Получает список уведомлений
