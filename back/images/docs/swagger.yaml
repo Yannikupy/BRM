@@ -7,7 +7,7 @@ definitions:
       err:
         type: string
     type: object
-host: localhost:8092
+host: localhost:8093
 info:
   contact: {}
   description: Swagger документация к API сервиса для хранения изображений
