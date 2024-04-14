@@ -25,8 +25,13 @@ export class DalService {
   constructor(private _http: HttpClient) {
   }
 
-  getAds(limit: number, offset: number): Observable<AdListResponse> {
-    return this._http.get<AdListResponse>(`${environment.coreUrl}/market?limit=${limit}&offset=${offset}`)
+  getAds(limit: number, offset: number, company_id?: number): Observable<AdListResponse> {
+    let queryString = `${environment.coreUrl}/market?limit=${limit}&offset=${offset}`
+
+    if (company_id)
+      queryString += `&company_id=${company_id}`
+
+    return this._http.get<AdListResponse>(queryString)
   }
 
   saveAd(addAdRequest: AddAdRequest) {
