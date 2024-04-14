@@ -3,11 +3,12 @@ import {MatCardModule} from '@angular/material/card';
 import {DalService} from "../DAL/core/dal.service";
 import {MainPageResponse} from "../DAL/core/model/MainPageResponse";
 import {AuthService} from "../services/auth.service";
+import {MatGridListModule} from "@angular/material/grid-list";
 
 @Component({
   selector: 'app-company',
   standalone: true,
-  imports: [MatCardModule],
+  imports: [MatCardModule, MatGridListModule],
   templateUrl: './company.component.html',
   styleUrl: './company.component.scss'
 })
