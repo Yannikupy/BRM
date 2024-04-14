@@ -1,21 +1,9 @@
 # BRM
 
-## Перед тем как запускать
+## Документация
 
-Для запуска следующих сервисов нужны расширенные конфиги, которых нет в 
-репозитории:
-
-* [auth](back/auth/config)
-* [brm-ads](back/brm-ads/config)
-* [brm-core](back/brm-core/config)
-* [brm-leads](back/brm-leads/config)
-* [transport-api](back/transport-api/config)
-* [stats](back/stats/config)
-* [notifications](back/notifications/config)
-* [images](back/images/config)
-
-В эти директории нужно добавить `.env` файлы, которые соответствуют схеме, 
-описанной в `.env.dist`.
+* [Техническое задание](https://docs.google.com/document/d/1NK2MnQOKXtqQmShMxQeJxH1kPGQj8I0yIqQ5TaXJ1d0/edit#heading=h.bwhogp1n8aje)
+* [Описание сервисов](https://docs.google.com/document/d/1NK2MnQOKXtqQmShMxQeJxH1kPGQj8I0yIqQ5TaXJ1d0/edit#heading=h.xn76w1oe0rlr)
 
 ## Запуск сервисов
 
