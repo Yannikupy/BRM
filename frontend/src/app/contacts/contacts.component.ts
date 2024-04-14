@@ -110,8 +110,8 @@ export class ContactsComponent implements OnDestroy {
     });
 
     dialogRef.afterClosed().subscribe(result => {
-      if (result != contact.notes) {
-        this.subscription.add(this.dalService.updateContact(contact.id!, {notes: result!})
+      if (result?.save && result.note != contact.notes) {
+        this.subscription.add(this.dalService.updateContact(contact.id!, {notes: result.note!})
           .pipe(
             switchMap(value => this.loadData(this.paginator.pageSize, this.paginator.pageIndex * this.paginator.pageSize)),
             map(data => {
