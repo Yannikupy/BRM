@@ -22,7 +22,7 @@ import (
 // @Failure		500		{object}	adResponse		"Проблемы на стороне сервера"
 // @Failure		400		{object}	adResponse		"Неверный формат входных данных"
 // @Failure		401		{object}	adResponse		"Ошибка авторизации"
-// @Router			/ads [post]
+// @Router			/market [post]
 func AddAd(a app.App) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		employeeId, companyId, ok := middleware.GetAuthData(c)
@@ -75,7 +75,7 @@ func AddAd(a app.App) gin.HandlerFunc {
 // @Failure		400	{object}	adResponse	"Неверный формат входных данных"
 // @Failure		401	{object}	adResponse	"Ошибка авторизации"
 // @Failure		404	{object}	adResponse	"Объявление не найдено"
-// @Router			/ads/{id} [get]
+// @Router			/market/{id} [get]
 func GetAd(a app.App) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		_, _, ok := middleware.GetAuthData(c)
@@ -127,7 +127,7 @@ func GetAd(a app.App) gin.HandlerFunc {
 // @Failure		500				{object}	adListResponse	"Проблемы на стороне сервера"
 // @Failure		400				{object}	adListResponse	"Неверный формат входных данных"
 // @Failure		401				{object}	adResponse		"Ошибка авторизации"
-// @Router			/ads [get]
+// @Router			/market [get]
 func GetAdsList(a app.App) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		_, _, ok := middleware.GetAuthData(c)
@@ -233,7 +233,7 @@ func GetAdsList(a app.App) gin.HandlerFunc {
 // @Failure		500		{object}	adResponse		"Проблемы на стороне сервера"
 // @Failure		400		{object}	adResponse		"Неверный формат входных данных"
 // @Failure		404		{object}	adResponse		"Объявление не найдено"
-// @Router			/ads/{id} [put]
+// @Router			/market/{id} [put]
 func UpdateAd(a app.App) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		employeeId, companyId, ok := middleware.GetAuthData(c)
@@ -293,7 +293,7 @@ func UpdateAd(a app.App) gin.HandlerFunc {
 // @Failure		500	{object}	adResponse	"Проблемы на стороне сервера"
 // @Failure		400	{object}	adResponse	"Неверный формат входных данных"
 // @Failure		404	{object}	adResponse	"Объявление не найдено"
-// @Router			/ads/{id} [delete]
+// @Router			/market/{id} [delete]
 func DeleteAd(a app.App) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		employeeId, companyId, ok := middleware.GetAuthData(c)
@@ -339,7 +339,7 @@ func DeleteAd(a app.App) gin.HandlerFunc {
 // @Failure		400	{object}	responseResponse	"Неверный формат входных данных"
 // @Failure		404	{object}	responseResponse	"Объявление не найдено"
 // @Failure		409	{object}	responseResponse	"Попытка откликнуться на объявление своей же компании"
-// @Router			/ads/{id}/response [post]
+// @Router			/market/{id}/response [post]
 func AddResponse(a app.App) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		employeeId, companyId, ok := middleware.GetAuthData(c)
@@ -434,7 +434,7 @@ func GetResponsesList(a app.App) gin.HandlerFunc {
 // @Produce		json
 // @Success		200	{object}	industriesResponse	"Успешное получение данных"
 // @Failure		500	{object}	industriesResponse	"Проблемы на стороне сервера"
-// @Router			/ads/industries [get]
+// @Router			/market/industries [get]
 func GetIndustriesMap(a app.App) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		industries, err := a.GetAdsIndustries(c)

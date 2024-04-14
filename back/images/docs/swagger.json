@@ -6,7 +6,7 @@
         "contact": {},
         "version": "1.0"
     },
-    "host": "localhost:8092",
+    "host": "localhost:8093",
     "basePath": "/api/v1",
     "paths": {
         "/images": {

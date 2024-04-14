@@ -5,5 +5,5 @@ export interface MainPageData {
   closed_leads_price?: number
   company_absolute_rating?: number
   company_relative_rating?: number
-  total_leads_amount?: number
+  closed_leads_amount?: number
 }

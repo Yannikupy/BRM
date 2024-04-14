@@ -12,9 +12,9 @@ import {
   of,
   startWith,
   Subscription,
-  switchMap, takeLast
+  switchMap,
+  takeLast
 } from "rxjs";
-import {EmployeeData} from "../DAL/core/model/EmployeeData";
 import {AdListResponse} from "../DAL/core/model/AdListResponse";
 import {AdData} from "../DAL/core/model/AdData";
 import {MatCardModule} from '@angular/material/card';
@@ -23,6 +23,11 @@ import {MatButtonModule} from '@angular/material/button';
 import {MatIconModule} from "@angular/material/icon";
 import {NgxSkeletonLoaderModule} from "ngx-skeleton-loader";
 import {MatGridListModule} from "@angular/material/grid-list";
+import {MatDialog} from "@angular/material/dialog";
+import {AdCreationDialogComponent} from "../ad-creation-dialog/ad-creation-dialog.component";
+import {FormGroup} from "@angular/forms";
+import {AddAdRequest} from "../DAL/core/model/AddAdRequest";
+import {MatSnackBar} from "@angular/material/snack-bar";
 
 @Component({
   selector: 'app-ads',
@@ -31,7 +36,7 @@ import {MatGridListModule} from "@angular/material/grid-list";
   templateUrl: './ads.component.html',
   styleUrl: './ads.component.scss'
 })
-export class AdsComponent implements AfterViewInit{
+export class AdsComponent implements AfterViewInit {
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
   dalService = inject(DalService);
@@ -45,7 +50,7 @@ export class AdsComponent implements AfterViewInit{
 
   resultsLength = 0;
 
-  constructor() {
+  constructor(public dialog: MatDialog, private _snackBar: MatSnackBar) {
     this.loadData(5, 0).subscribe((contacts) => {
       this.ads = contacts.data.ads
       this.resultsLength = contacts.data.amount
@@ -96,6 +101,34 @@ export class AdsComponent implements AfterViewInit{
 
   loadImage(ad: AdData) {
     ad.imgLoad = true
+  }
+
+  createAd() {
+    this.subscription.add(this.dialog.open(AdCreationDialogComponent, {
+      height: '800px',
+      width: '800px'
+    }).afterClosed().subscribe(value => {
+      if (value instanceof FormGroup) {
+        this.subscription.add(this.dalService.saveAd(value.getRawValue() as AddAdRequest).subscribe(
+          (value) => this.subscription.add(this.loadData(this.paginator.pageSize,
+            this.paginator.pageIndex * this.paginator.pageSize)
+            .subscribe((contacts) => {
+              this.ads = contacts.data.ads
+              this.resultsLength = contacts.data.amount
+            }))
+        ))
+      }
+    }))
+  }
+
+  response(ad: AdData) {
+    this.subscription.add(this.dalService.adResponse(ad.id!)
+      .subscribe({
+        next: (value) =>
+          this._snackBar.open('Вы успешно откликнулись на объявление', undefined, {
+            duration: 5000
+          })
+      }))
   }
 
   ngOnDestroy(): void {

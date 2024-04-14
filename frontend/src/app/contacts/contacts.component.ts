@@ -51,7 +51,7 @@ export class ContactsComponent implements OnDestroy {
   resultsLength = 0;
 
   constructor(public dialog: MatDialog) {
-    this.loadData(5, 0).subscribe((contacts) => {
+    this.loadData(3, 0).subscribe((contacts) => {
       this.contacts = contacts.data.contacts
       this.resultsLength = contacts.data.amount
     })
@@ -110,8 +110,8 @@ export class ContactsComponent implements OnDestroy {
     });
 
     dialogRef.afterClosed().subscribe(result => {
-      if (result != contact.notes) {
-        this.subscription.add(this.dalService.updateContact(contact.id!, {notes: result!})
+      if (result?.save && result.note != contact.notes) {
+        this.subscription.add(this.dalService.updateContact(contact.id!, {notes: result.note!})
           .pipe(
             switchMap(value => this.loadData(this.paginator.pageSize, this.paginator.pageIndex * this.paginator.pageSize)),
             map(data => {

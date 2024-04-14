@@ -1,58 +1,67 @@
-<mat-grid-list cols="3" rowHeight="2:1">
+<mat-card>
+  <mat-card-header>
+    <h2>Объявления</h2>
+  </mat-card-header>
+  <mat-card-content>
+    <button mat-flat-button color="primary" id="create-button" (click)="createAd()">Создать объявление</button>
 
-  @for (ad of ads; track ad) {
-    <mat-grid-tile class="tile">
-      <mat-card class="example-card">
-        <mat-card-header>
-          <mat-card-subtitle>
-            Компания: {{ ad.company_name }}
-          </mat-card-subtitle>
+    <mat-grid-list cols="3" rowHeight="2:1">
 
-          <mat-card-subtitle> Ответственный: {{ ad.responsible }}
-          </mat-card-subtitle>
-          <mat-card-title>{{ ad.title }}</mat-card-title>
-        </mat-card-header>
-        <mat-card-content>
-          <div>
-            @if (ad.imgLoad === false) {
-              <ngx-skeleton-loader
+      @for (ad of ads; track ad) {
+        <mat-grid-tile class="tile">
+          <mat-card class="example-card">
+            <mat-card-header>
+              <mat-card-subtitle>
+                Компания: {{ ad.company_name }}
+              </mat-card-subtitle>
+              <mat-card-title>{{ ad.title }}</mat-card-title>
+            </mat-card-header>
+            <mat-card-content>
+              <div>
+                @if (ad.imgLoad === false) {
+                  <ngx-skeleton-loader
 
-                count="1"
-                [theme]="{
+                    count="1"
+                    [theme]="{
       borderradius: '7',
       'background-color': '#ccc',
       'margin-top': '0',
       'min-height': '5vh',
       width: '105px'
     }"
-              ></ngx-skeleton-loader>
-            }
-            <img
-              (load)="loadImage(ad)"
-              [hidden]="ad.imgLoad === false"
-              [src]="ad.image_url"
-              alt=""
-              width="135px"
-              class="w-100 h-auto image-border"
-            />
-          </div>
-          <mat-divider></mat-divider>
-          <mat-icon>notes</mat-icon>
-          {{ ad.text }}
-          <mat-divider></mat-divider>
-        </mat-card-content>
-        <mat-card-actions>
-          <button mat-button>Написать</button>
-        </mat-card-actions>
-      </mat-card>
-    </mat-grid-tile>
-  }
+                  ></ngx-skeleton-loader>
+                }
+                <img
+                  (load)="loadImage(ad)"
+                  [hidden]="ad.imgLoad === false"
+                  [src]="ad.image_url"
+                  alt=""
+                  width="135px"
+                  class="w-100 h-auto image-border"
+                />
+              </div>
+              <mat-divider></mat-divider>
+              <div class="line">
+                <mat-icon>notes</mat-icon>
+                {{ ad.text }}
+              </div>
+              <mat-divider></mat-divider>
+              <div class="line">Цена: {{ ad.price }}</div>
+            </mat-card-content>
+            <mat-card-actions>
+              <button mat-button (click)="response(ad)">Откликнуться</button>
+            </mat-card-actions>
+          </mat-card>
+        </mat-grid-tile>
+      }
 
-</mat-grid-list>
+    </mat-grid-list>
 
-<mat-paginator
-  [length]="resultsLength"
-  [pageSize]="5"
-  [pageSizeOptions]="[5, 10, 25, 100]"
-  aria-label="Выберите страницу">
-</mat-paginator>
+    <mat-paginator
+      [length]="resultsLength"
+      [pageSize]="5"
+      [pageSizeOptions]="[5, 10, 25, 100]"
+      aria-label="Выберите страницу">
+    </mat-paginator>
+  </mat-card-content>
+</mat-card>
