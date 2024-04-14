@@ -42,11 +42,22 @@
             />
           </div>
           <mat-divider></mat-divider>
-          <mat-icon>notes</mat-icon>
-          <span (click)="openDialog(contact)">{{ contact.notes }}</span>
+          <div class="block">
+            <div>
+              <mat-icon>notes</mat-icon>
+              <span>{{ contact.notes }}</span>
+            </div>
+            <div>
+              <button (click)="openDialog(contact)" mat-icon-button color="accent">
+                <mat-icon>edit</mat-icon>
+              </button>
+            </div>
+          </div>
           <mat-divider></mat-divider>
-          <mat-icon>email</mat-icon>
-          {{ contact.employee?.email }}
+          <div class="block">
+            <mat-icon>email</mat-icon>
+            {{ contact.employee?.email }}
+          </div>
         </mat-card-content>
       </mat-card>
     }
