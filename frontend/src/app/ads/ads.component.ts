@@ -28,6 +28,7 @@ import {AdCreationDialogComponent} from "../ad-creation-dialog/ad-creation-dialo
 import {FormGroup} from "@angular/forms";
 import {AddAdRequest} from "../DAL/core/model/AddAdRequest";
 import {MatSnackBar} from "@angular/material/snack-bar";
+import {AuthService} from "../services/auth.service";
 
 @Component({
   selector: 'app-ads',
@@ -40,9 +41,11 @@ export class AdsComponent implements AfterViewInit {
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
   dalService = inject(DalService);
+  authService = inject(AuthService)
   http = inject(HttpClient);
 
-  ads: AdData[] = []
+  myCompanyAds: AdData[] = []
+  otherCompaniesAds: AdData[] = []
 
   subscription = new Subscription()
 
@@ -51,8 +54,14 @@ export class AdsComponent implements AfterViewInit {
   resultsLength = 0;
 
   constructor(public dialog: MatDialog, private _snackBar: MatSnackBar) {
+    this.loadData(15, 0, +this.authService.currentUserDataSig()?.
+      ["company-id"]!).subscribe((contacts) => {
+      this.myCompanyAds = contacts.data.ads
+      this.resultsLength = contacts.data.amount
+    })
+
     this.loadData(5, 0).subscribe((contacts) => {
-      this.ads = contacts.data.ads
+      this.otherCompaniesAds = contacts.data.ads
       this.resultsLength = contacts.data.amount
     })
   }
@@ -74,13 +83,13 @@ export class AdsComponent implements AfterViewInit {
           return data.data.ads;
         }),
       )
-      .subscribe(data => (this.ads = data));
+      .subscribe(data => (this.otherCompaniesAds = data));
   }
 
-  loadData(limit: number, offset: number): Observable<AdListResponse> {
+  loadData(limit: number, offset: number, company_id?: number): Observable<AdListResponse> {
     let ads: AdData[] = []
 
-    return this.dalService.getAds(limit, offset).pipe(
+    return this.dalService.getAds(limit, offset, company_id).pipe(
       switchMap(value => combineLatest([of(value), from(value.data.ads)])),
       concatMap(([adListResponse, ad]) =>
         combineLatest([of(adListResponse), of(ad), this.dalService.getCompanyById(ad.company_id!)])),
@@ -110,12 +119,20 @@ export class AdsComponent implements AfterViewInit {
     }).afterClosed().subscribe(value => {
       if (value instanceof FormGroup) {
         this.subscription.add(this.dalService.saveAd(value.getRawValue() as AddAdRequest).subscribe(
-          (value) => this.subscription.add(this.loadData(this.paginator.pageSize,
-            this.paginator.pageIndex * this.paginator.pageSize)
-            .subscribe((contacts) => {
-              this.ads = contacts.data.ads
-              this.resultsLength = contacts.data.amount
-            }))
+          (value) => {
+            this.subscription.add(this.loadData(this.paginator.pageSize,
+              this.paginator.pageIndex * this.paginator.pageSize)
+              .subscribe((contacts) => {
+                this.otherCompaniesAds = contacts.data.ads
+                this.resultsLength = contacts.data.amount
+              }));
+            this.subscription.add(this.loadData(this.paginator.pageSize,
+              this.paginator.pageIndex * this.paginator.pageSize, +this.authService.currentUserDataSig()?.
+                ["company-id"]!)
+              .subscribe((contacts) => {
+                this.myCompanyAds = contacts.data.ads
+              }))
+          }
         ))
       }
     }))
@@ -127,11 +144,18 @@ export class AdsComponent implements AfterViewInit {
         next: (value) =>
           this._snackBar.open('Вы успешно откликнулись на объявление', undefined, {
             duration: 5000
-          })
+          }), error: (error) => {
+          this._snackBar.open(error.error.error, undefined, {
+              duration: 5000
+            }
+          )
+        }
       }))
   }
 
-  ngOnDestroy(): void {
+  ngOnDestroy()
+    :
+    void {
     this.subscription.unsubscribe()
   }
 }
