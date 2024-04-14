@@ -3,23 +3,22 @@
     <h2>Статистика компании</h2>
   </mat-card-header>
   <mat-card-content>
-    <div><p>Активных сделок: {{ mainPage?.data?.active_leads_amount ?? ''}}
-      На сумму: {{ mainPage?.data?.active_leads_price ?? ''}} руб. </p>
+    <div><p>Активных сделок: {{ mainPage?.data?.active_leads_amount ?? '' }}
+      На сумму: {{ mainPage?.data?.active_leads_price ?? '' }} руб. </p>
     </div>
     <div>
       <p>
-        Закрыто сделок:{{ (mainPage?.data?.total_leads_amount
-      && mainPage?.data?.active_leads_amount) ? mainPage!.data.total_leads_amount! - mainPage!.data.active_leads_amount! : '' }}
-        На сумму: {{ mainPage?.data?.closed_leads_price ?? ''}} руб.</p>
+        Закрыто сделок:{{ mainPage?.data?.closed_leads_amount ?? '' }}
+        На сумму: {{ mainPage?.data?.closed_leads_price ?? '' }} руб.</p>
     </div>
     <div>
       <p>
-        Активных объявлений: {{ mainPage?.data?.active_ads_aount ?? ''}}
+        Активных объявлений: {{ mainPage?.data?.active_ads_aount ?? '' }}
       </p>
     </div>
     <div>
       <p>
-        Рейтинг компании:{{ mainPage?.data?.company_absolute_rating ?? ''}}
+        Рейтинг компании:{{ mainPage?.data?.company_absolute_rating ?? '' }}
         Это выше, чем у {{ mainPage?.data?.company_relative_rating ?? '' }} компаний
       </p>
     </div>

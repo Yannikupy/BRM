@@ -36,9 +36,12 @@
             />
           </div>
           <mat-divider></mat-divider>
-          <mat-icon>notes</mat-icon>
-          {{ ad.text }}
+          <div class="line">
+            <mat-icon>notes</mat-icon>
+            {{ ad.text }}
+          </div>
           <mat-divider></mat-divider>
+          <div class="line">Цена: {{ ad.price }}</div>
         </mat-card-content>
         <mat-card-actions>
           <button mat-button (click)="response(ad)">Откликнуться</button>

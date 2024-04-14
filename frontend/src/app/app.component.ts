@@ -1,13 +1,4 @@
-import {
-  ChangeDetectorRef,
-  Component,
-  inject,
-  OnChanges,
-  OnDestroy,
-  OnInit,
-  SimpleChanges,
-  ViewChild,
-} from '@angular/core';
+import {ChangeDetectorRef, Component, inject, OnChanges, OnDestroy, SimpleChanges, ViewChild,} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {Router, RouterOutlet} from '@angular/router';
 import {MediaMatcher} from '@angular/cdk/layout';
@@ -21,6 +12,7 @@ import {LoginComponent} from './login/login.component';
 import {jwtDecode} from "jwt-decode";
 import {DalService} from "./DAL/core/dal.service";
 import {Subscription} from "rxjs";
+import {ToolbarComponent} from "./toolbar/toolbar.component";
 
 @Component({
   selector: 'app-root',
@@ -34,11 +26,12 @@ import {Subscription} from "rxjs";
     MatIconModule,
     MatToolbarModule,
     LoginComponent,
+    ToolbarComponent,
   ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',
 })
-export class AppComponent implements OnInit, OnChanges, OnDestroy {
+export class AppComponent implements OnChanges, OnDestroy {
   @ViewChild('snav') snav: any
 
   subscription = new Subscription()
@@ -64,17 +57,9 @@ export class AppComponent implements OnInit, OnChanges, OnDestroy {
     if (token && token != '') {
       this.authService.currentUserSig.set({access: token, refresh: ''});
       this.authService.currentUserDataSig.set(jwtDecode(token));
-    }
-    else {
+    } else {
       this.router.navigateByUrl('/login');
     }
-  }
-
-  ngOnInit(): void {
-    this.subscription.add(this.dalService.getCompanyById(+this.authService.currentUserDataSig()?.
-      ["company-id"]!).subscribe((
-      value => this.companyName = value.data.name!
-    )))
   }
 
   ngOnChanges(changes: SimpleChanges) {
@@ -86,13 +71,5 @@ export class AppComponent implements OnInit, OnChanges, OnDestroy {
 
   ngOnDestroy(): void {
     this.mobileQuery.removeListener(this._mobileQueryListener);
-  }
-
-  logout(): void {
-    localStorage.setItem('token', '');
-    this.authService.currentUserSig.set(null);
-    this.authService.currentUserDataSig.set(null);
-    this.snav.close();
-    this.router.navigateByUrl('/login');
   }
 }

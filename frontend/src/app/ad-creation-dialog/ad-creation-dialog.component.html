@@ -1,0 +1,44 @@
+<h2 mat-dialog-title>Объявление</h2>
+<mat-dialog-content class="fields">
+  @if (!files.length) {
+    <div style="height: 200px; margin-bottom: 12px" appDrag (files)="filesDropped($event)">
+      <div class="text-wrapper">
+        <div class="centered">Перетащите картинку сюда</div>
+      </div>
+    </div>
+  }
+
+  @for (file of files; track file) {
+    <div>
+      @if (file) {
+        <img [src]="file.url" width="600px" height="400px">
+      }
+    </div>
+  }
+  <mat-form-field>
+    <mat-label>Название товара</mat-label>
+    <input matInput [formControl]="adFormGroup.controls.title">
+  </mat-form-field>
+  <mat-form-field>
+    <mat-label>Отрасль</mat-label>
+    <mat-select [formControl]="adFormGroup.controls.industry">
+      <mat-option>--</mat-option>
+      @for (industry of industries | keyvalue; track industry) {
+        <mat-option [value]="industry.key">{{ industry.key }}</mat-option>
+      }
+    </mat-select>
+  </mat-form-field>
+  <mat-form-field>
+    <mat-label>Цена</mat-label>
+    <input matInput type="number" [formControl]="adFormGroup.controls.price">
+  </mat-form-field>
+  <mat-form-field>
+    <mat-label>Описание</mat-label>
+    <input matInput [formControl]="adFormGroup.controls.text">
+  </mat-form-field>
+</mat-dialog-content>
+<mat-dialog-actions>
+  <button mat-button mat-dialog-close color="accent">Выйти</button>
+  <button mat-button [mat-dialog-close]="adFormGroup" cdkFocusInitial color="primary">Разместить на торговой площадке
+  </button>
+</mat-dialog-actions>

@@ -5,18 +5,7 @@
 >
   @if (authService.currentUserSig()) {
     <mat-toolbar class="example-toolbar">
-      <div class="icons">
-        <button mat-icon-button (click)="snav.toggle()">
-          <mat-icon>menu</mat-icon>
-        </button>
-        <img src="assets/logo.svg" class="logo"/>
-        <h1 class="example-app-name">{{companyName}}</h1>
-      </div>
-      <div>
-        <button mat-icon-button (click)="logout()">
-          <mat-icon>logout</mat-icon>
-        </button>
-      </div>
+      <app-toolbar style="width: 100%" [snav]=snav></app-toolbar>
     </mat-toolbar>
   }
 
@@ -31,7 +20,7 @@
       [fixedInViewport]="mobileQuery.matches"
       fixedTopGap="56"
     >
-      <app-left-menu [employeeId] = "+authService.currentUserDataSig()?.['employee-id']!"></app-left-menu>
+      <app-left-menu [employeeId]="+authService.currentUserDataSig()?.['employee-id']!"></app-left-menu>
     </mat-sidenav>
 
     <mat-sidenav-content class="main-window">
