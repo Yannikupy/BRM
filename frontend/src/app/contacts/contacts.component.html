@@ -1,55 +1,62 @@
-@for (contact of contacts; track contact) {
-  <mat-card class="example-card">
-    <mat-card-header>
-      <mat-card-subtitle>
-        Компания: {{ contact.employee?.company_name }}
-      </mat-card-subtitle>
+<mat-card>
+  <mat-card-header>
+    <h2>Контакты</h2>
+  </mat-card-header>
+  <mat-card-content>
+    @for (contact of contacts; track contact) {
+      <mat-card class="example-card">
+        <mat-card-header>
+          <mat-card-subtitle>
+            Компания: {{ contact.employee?.company_name }}
+          </mat-card-subtitle>
 
-      <mat-card-subtitle> Департамент: {{ contact.employee?.department }}
-      </mat-card-subtitle>
-      <mat-card-subtitle>
-        Должность: {{ contact.employee?.job_title }}
-      </mat-card-subtitle>
-      <mat-card-title>{{ contact.employee?.first_name }} {{ contact.employee?.second_name }}</mat-card-title>
-    </mat-card-header>
-    <mat-card-content>
-      <div>
-        @if (contact.employee?.imgLoad === false) {
-          <ngx-skeleton-loader
+          <mat-card-subtitle> Департамент: {{ contact.employee?.department }}
+          </mat-card-subtitle>
+          <mat-card-subtitle>
+            Должность: {{ contact.employee?.job_title }}
+          </mat-card-subtitle>
+          <mat-card-title>{{ contact.employee?.first_name }} {{ contact.employee?.second_name }}</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <div>
+            @if (contact.employee?.imgLoad === false) {
+              <ngx-skeleton-loader
 
-            count="1"
-            [theme]="{
+                count="1"
+                [theme]="{
       borderradius: '7',
       'background-color': '#ccc',
       'margin-top': '0',
       'min-height': '5vh',
       width: '105px'
     }"
-          ></ngx-skeleton-loader>
-        }
-        <img
-          (load)="loadImage(contact.employee!)"
-          [hidden]="contact.employee?.imgLoad === false"
-          [src]="contact.employee?.image_url"
-          alt=""
-          width="135px"
-          class="w-100 h-auto image-border"
-        />
-      </div>
-      <mat-divider></mat-divider>
-      <mat-icon>notes</mat-icon>
-      <span (click)="openDialog(contact)">{{ contact.notes }}</span>
-      <mat-divider></mat-divider>
-      <mat-icon>email</mat-icon>
-      {{ contact.employee?.email }}
-    </mat-card-content>
-  </mat-card>
-}
+              ></ngx-skeleton-loader>
+            }
+            <img
+              (load)="loadImage(contact.employee!)"
+              [hidden]="contact.employee?.imgLoad === false"
+              [src]="contact.employee?.image_url"
+              alt=""
+              width="135px"
+              class="w-100 h-auto image-border"
+            />
+          </div>
+          <mat-divider></mat-divider>
+          <mat-icon>notes</mat-icon>
+          <span (click)="openDialog(contact)">{{ contact.notes }}</span>
+          <mat-divider></mat-divider>
+          <mat-icon>email</mat-icon>
+          {{ contact.employee?.email }}
+        </mat-card-content>
+      </mat-card>
+    }
 
-<mat-paginator
-  style="margin-top: 12px"
-  [length]="resultsLength"
-  [pageSize]="3"
-  [pageSizeOptions]="[3, 5, 10, 25]"
-  aria-label="Выберите страницу">
-</mat-paginator>
+    <mat-paginator
+      style="margin-top: 12px"
+      [length]="resultsLength"
+      [pageSize]="3"
+      [pageSizeOptions]="[3, 5, 10, 25]"
+      aria-label="Выберите страницу">
+    </mat-paginator>
+  </mat-card-content>
+</mat-card>
