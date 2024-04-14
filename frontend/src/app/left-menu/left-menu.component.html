@@ -1,7 +1,7 @@
 <div class="left-menu">
   <mat-nav-list class="left-menu-flex">
     <a mat-list-item [routerLink]="['/company']" class="menu-item">Компания</a>
-    <a mat-list-item class="menu-item">Сделки</a>
+    <a mat-list-item [routerLink]="['/leads']" class="menu-item">Сделки</a>
     <a mat-list-item [routerLink]="['/ads']" class="menu-item">Объявления</a>
     <a mat-list-item [routerLink]="['/contacts']" class="menu-item">Контакты</a>
     <a mat-list-item class="menu-item">Уведомления</a>
@@ -10,7 +10,7 @@
 
   <mat-nav-list class="left-menu-flex">
     <a mat-list-item class="menu-item">
-      <h3>{{employeeName}}</h3>
+      <h3>{{ employeeName }}</h3>
     </a>
   </mat-nav-list>
 </div>

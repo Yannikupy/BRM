@@ -20,12 +20,6 @@
   }
 }
 
-.icons {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-}
-
 .example-is-computer {
   .example-toolbar {
     height: 100px;
@@ -35,10 +29,6 @@
   .logo {
     width: 80px;
   }
-}
-
-h1.example-app-name {
-  margin-left: 8px;
 }
 
 .example-sidenav-container {
@@ -52,4 +42,5 @@ h1.example-app-name {
        `<body>` to be our scrolling element for mobile layouts. */
   flex: 1 0 auto;
 }
+
 

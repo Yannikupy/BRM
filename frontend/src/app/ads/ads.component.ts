@@ -125,7 +125,9 @@ export class AdsComponent implements AfterViewInit {
     this.subscription.add(this.dalService.adResponse(ad.id!)
       .subscribe({
         next: (value) =>
-          this._snackBar.open('Вы успешно откликнулись на объявление')
+          this._snackBar.open('Вы успешно откликнулись на объявление', undefined, {
+            duration: 5000
+          })
       }))
   }
 

@@ -11,6 +11,11 @@ import {UpdateContactRequest} from "./model/UpdateContactRequest";
 import {AdResponse} from "./model/AdResponse";
 import {AddAdRequest} from "./model/AddAdRequest";
 import {ResponseResponse} from "./model/ResponseResponse";
+import {LeadsListResponse} from "./model/LeadsListResponse";
+import {LeadResponse} from "./model/LeadResponse";
+import {StatusesResponse} from "./model/StatusesResponse";
+import {EmployeeListResponse} from "./model/EmployeeListResponse";
+import {UpdateLeadRequest} from "./model/UpdateLeadRequest";
 
 
 @Injectable({
@@ -21,15 +26,31 @@ export class DalService {
   }
 
   getAds(limit: number, offset: number): Observable<AdListResponse> {
-    return this._http.get<AdListResponse>(`${environment.coreUrl}/ads?limit=${limit}&offset=${offset}`)
+    return this._http.get<AdListResponse>(`${environment.coreUrl}/market?limit=${limit}&offset=${offset}`)
   }
 
   saveAd(addAdRequest: AddAdRequest) {
-    return this._http.post<AdResponse>(`${environment.coreUrl}/ads`, addAdRequest)
+    return this._http.post<AdResponse>(`${environment.coreUrl}/market`, addAdRequest)
   }
 
   adResponse(id: number): Observable<ResponseResponse> {
-    return this._http.post<ResponseResponse>(`${environment.coreUrl}/ads/${id}/response`, null)
+    return this._http.post<ResponseResponse>(`${environment.coreUrl}/market/${id}/response`, null)
+  }
+
+  getLeads(limit: number, offset: number): Observable<LeadsListResponse> {
+    return this._http.get<LeadsListResponse>(`${environment.coreUrl}/leads?limit=${limit}&offset=${offset}`)
+  }
+
+  getLeadsStatuses(): Observable<StatusesResponse> {
+    return this._http.get<StatusesResponse>(`${environment.coreUrl}/leads/statuses`)
+  }
+
+  getLeadById(id: number): Observable<LeadResponse> {
+    return this._http.get<LeadResponse>(`${environment.coreUrl}/leads/${id}`)
+  }
+
+  editLead(id: number, updatedLead: UpdateLeadRequest): Observable<LeadResponse> {
+    return this._http.put<LeadResponse>(`${environment.coreUrl}/leads/${id}`, updatedLead)
   }
 
   getContacts(limit: number, offset: number): Observable<ContactResponse> {
@@ -46,6 +67,10 @@ export class DalService {
 
   getCompanyMainPage(id: number): Observable<MainPageResponse> {
     return this._http.get<MainPageResponse>(`${environment.coreUrl}/companies/${id}/mainpage`)
+  }
+
+  getEmployees(limit: number, offset: number): Observable<EmployeeListResponse> {
+    return this._http.get<EmployeeListResponse>(`${environment.coreUrl}/employees?limit=${limit}&offset=${offset}`)
   }
 
   getEmployeeById(id: number): Observable<EmployeeResponse> {
